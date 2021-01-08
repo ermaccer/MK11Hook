@@ -104,6 +104,8 @@ int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
 
+
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -188,10 +190,26 @@ void OnInitializeHook()
 	InjectHook(_mk11addr(0x143E18920), tramp->Jump(MK11Hooks::HookCamSetPos));
 
 
+	InjectHook(_mk11addr(0x1408F71ED), tramp->Jump(MK11Hooks::HookLoadCharacter));
+	
+
 }
 
 
+bool CheckGame()
+{
+	char* gameName = (char*)_mk11addr(0x1425FDAF8);
 
+	if (strcmp(gameName, "Mortal Kombat 11") == 0)
+	{
+		return true;
+	}
+	else
+	{
+		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest (or it needs to be updated) Steam executable, not DirectX12 one.", 0, MB_ICONINFORMATION);
+		return false;
+	}
+}
 
 
 
@@ -200,10 +218,14 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		SettingsMgr->Init();
-		DisableThreadLibraryCalls(hMod);
-		CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
-		OnInitializeHook();
+		if (CheckGame())
+		{
+			SettingsMgr->Init();
+			DisableThreadLibraryCalls(hMod);
+			CreateThread(nullptr, 0, MainThread, hMod, 0, nullptr);
+			OnInitializeHook();
+		}
+
 		break;
 	case DLL_PROCESS_DETACH:
 		kiero::shutdown();

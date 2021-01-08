@@ -161,9 +161,6 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Header Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="kiero\minhook\src\buffer.c">
       <Filter>Header Files\kiero\minhook</Filter>
     </ClCompile>
@@ -184,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="code\eSettingsManager.cpp">
       <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

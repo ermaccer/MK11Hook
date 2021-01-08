@@ -3,9 +3,10 @@
 // as usual, based on mh2 debug menu
 
 enum eTabs {
+	TAB_CHARACTER_MODIFIER,
 	TAB_SPEED,
 	TAB_CAMERA,
-	TAB_PLAYER_CONTROL
+	TAB_PLAYER_CONTROL,
 };
 
 enum eCustomCameras {
@@ -23,6 +24,13 @@ private:
 public:
 	bool	 bSlowMotionEnabled;
 	float	 fSlowMotionSpeed;
+
+	// characters
+	bool bPlayer1ModifierEnabled;
+	bool bPlayer2ModifierEnabled;
+	char szPlayer1ModifierCharacter[128] = {};
+	char szPlayer2ModifierCharacter[128] = {};
+
 
 	// camera
 	bool bCustomCamera;

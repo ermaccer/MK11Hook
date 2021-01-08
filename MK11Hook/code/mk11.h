@@ -1,8 +1,8 @@
 #pragma once
 #include "mk10utils.h"
 
-
-#define GFG_GAME_INFO 0x14348BC40
+#define GFG_GAME_INFO  0x14348BC40
+#define PLAYER_STRUCTS 0x14348B488
 
 enum  PLAYER_NUM
 {
@@ -30,15 +30,28 @@ struct FRotator {
 	int Roll;
 };
 
+
 namespace MK11 {
 
 	int64 GetCharacterObject(PLAYER_NUM plr);
 	int64 GetCharacterInfo(PLAYER_NUM plr);
 
-	void  GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
+
+	int64 GetPlayerData(PLAYER_NUM plr);
+	PLAYER_NUM GetPlayerIDFromData(int64 data);
+
+
+	void GetCharacterDefinition(PLAYER_NUM plr);
+	void GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
+
+	
+
+	void LoadAsset(const char* name);
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
 	void __fastcall CamSetRot(int64 ptr, FRotator* rot);
+
+	bool IsDLC(const char* name);
 }
 
 namespace MK11Hooks {
@@ -48,4 +61,6 @@ namespace MK11Hooks {
 
 	void __fastcall HookCamSetPos(int64 ptr, FVector* pos);
 	void __fastcall HookCamSetRot(int64 ptr, FRotator* rot);
+
+	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
 }
