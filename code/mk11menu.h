@@ -14,6 +14,7 @@ enum eCustomCameras {
 	CAMERA_3RDPERSON2,
 	CAMERA_1STPERSON,
 	CAMERA_1STPERSON_MID,
+//	CAMERA_INJUSTICE_2,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -33,10 +34,14 @@ public:
 
 
 	// camera
+
 	bool bCustomCamera;
+	bool bCustomFOV;
 	bool bCustomCameraRot;
 	FVector camPos;
 	FRotator camRot;
+	float camFov;
+
 	bool bFreeCameraMovement;
 	float fFreeCameraSpeed;
 	int  iFreeCameraRotSpeed;
@@ -48,6 +53,10 @@ public:
 	float fAdjustCam;
 	float fAdjustCamZ;
 	float fAdjustCamX;
+
+	float fAdjustCam3;
+	float fAdjustCamZ3;
+	float fAdjustCamX3;
 	// player
 	FVector plrPos;
 	FVector plrPos2;

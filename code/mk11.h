@@ -30,6 +30,13 @@ struct FRotator {
 	int Roll;
 };
 
+struct MKCameraObj {
+	char pad[0x6BC];
+	FVector pos;
+	FRotator rot;
+	float   FOV;
+};
+
 
 namespace MK11 {
 
@@ -44,13 +51,15 @@ namespace MK11 {
 	void GetCharacterDefinition(PLAYER_NUM plr);
 	void GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
 
-	
+	int64 GetCameraHandle(int camType);
 
 	void LoadAsset(const char* name);
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
 	void __fastcall CamSetRot(int64 ptr, FRotator* rot);
 
+	void __fastcall ActorCamSetPos(int64 ptr, FVector* pos);
+	void __fastcall ActorCamSetRot(int64 ptr, FRotator* rot);
 	bool IsDLC(const char* name);
 }
 
@@ -62,5 +71,9 @@ namespace MK11Hooks {
 	void __fastcall HookCamSetPos(int64 ptr, FVector* pos);
 	void __fastcall HookCamSetRot(int64 ptr, FRotator* rot);
 
+	void __fastcall HookActorCamSetPos(int64 ptr, FVector* pos);
+	void __fastcall HookActorCamSetRot(int64 ptr, FRotator* rot);
+
 	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
+
 }

@@ -182,6 +182,7 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
     <ClInclude Include="mk11hook.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="utils\DelimStringReader.h" />
     <ClInclude Include="utils\HookInit.hpp" />
     <ClInclude Include="utils\LateStaticInit.h" />
@@ -216,6 +217,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="utils\Patterns.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MK11Hook.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -69,10 +69,12 @@ void __fastcall MK11Hooks::HookCamSetPos(int64 ptr, FVector * pos)
 		switch (TheMenu->iCurrentCustomCamera)
 		{
 		case CAMERA_3RDPERSON:
-			pos->X = 5;
+			pos->X = 5 +TheMenu->fAdjustCamX3;
 			pos->Y = oneTime - 330.0f;
 			pos->Y += plrPos.Y * 0.85f;
+			pos->Y += TheMenu->fAdjustCam3;
 			pos->Z = 210.0f + plrPos.Z;
+			pos->Z += TheMenu->fAdjustCamZ3;
 
 			if (p2.Y < plrPos.Y)
 			{
@@ -130,7 +132,6 @@ void __fastcall MK11Hooks::HookCamSetPos(int64 ptr, FVector * pos)
 	}
 	else
 	{
-
 		if (!TheMenu->bCustomCamera)
 		{
 			TheMenu->camPos = *pos;
@@ -230,6 +231,189 @@ void __fastcall MK11Hooks::HookCamSetRot(int64 ptr, FRotator * rot)
 
 }
 
+void __fastcall MK11Hooks::HookActorCamSetPos(int64 ptr, FVector * pos)
+{
+	if (TheMenu->bCustomFOV)
+		*(float*)(ptr + 0x6BC + 24) = TheMenu->camFov;
+	else
+		TheMenu->camFov = *(float*)(ptr + 0x6BC + 24);
+
+	float oneTime = 0.0f;
+	if (!TheMenu->bYObtained)
+	{
+		oneTime = pos->Y;
+		TheMenu->bYObtained = true;
+	}
+	if (TheMenu->bEnableCustomCameras)
+	{
+		FVector plrPos;
+		FVector p2;
+		MK11::GetCharacterPosition(&plrPos, PLAYER1);
+		MK11::GetCharacterPosition(&p2, PLAYER2);
+		switch (TheMenu->iCurrentCustomCamera)
+		{
+		case CAMERA_3RDPERSON:
+			pos->X = 5 + TheMenu->fAdjustCamX3;
+			pos->Y = oneTime - 330.0f;
+			pos->Y += plrPos.Y * 0.85f;
+			pos->Y += TheMenu->fAdjustCam3;
+			pos->Z = 210.0f + plrPos.Z;
+			pos->Z += TheMenu->fAdjustCamZ3;
+
+			if (p2.Y < plrPos.Y)
+			{
+				pos->Y += 600.0f;
+				pos->Z = 210.0f;
+
+			}
+
+
+			TheMenu->camPos = *pos;
+			break;
+		case CAMERA_3RDPERSON2:
+			pos->X = 5;
+			pos->Y = oneTime - 230.0f;
+			pos->Y += plrPos.Y * 0.85f;
+			pos->Z = 260.0f + plrPos.Z;;
+
+			if (p2.Y < plrPos.Y)
+			{
+				pos->Y += 600.0f;
+				pos->Z = 260.0f;
+			}
+
+
+			TheMenu->camPos = *pos;
+			break;
+		case CAMERA_1STPERSON:
+			pos->X = TheMenu->fAdjustCamX;
+			pos->Y = -230;
+			pos->Y += plrPos.Y - pos->Y;
+			if (p2.Y < plrPos.Y)
+				pos->Y += TheMenu->fAdjustCam * -1;
+			else
+				pos->Y += TheMenu->fAdjustCam;
+			pos->Z = TheMenu->fAdjustCamZ + plrPos.Z;
+
+
+			TheMenu->camPos = *pos;
+			break;
+		case CAMERA_1STPERSON_MID:
+			pos->X = 16.0f;
+			pos->Y = -230;
+			pos->Y += plrPos.Y - pos->Y;
+			if (p2.Y < plrPos.Y)
+				pos->Y += 23.0f * -1;
+			else
+				pos->Y += 23.0f;
+			pos->Z = 124.0f + plrPos.Z;
+
+
+			TheMenu->camPos = *pos;
+			break;
+		}
+		MK11::ActorCamSetPos(ptr, pos);
+	}
+	else
+	{
+		if (!TheMenu->bCustomCamera)
+		{
+			TheMenu->camPos = *pos;
+			MK11::ActorCamSetPos(ptr, pos);
+		}
+		else
+		{
+			MK11::ActorCamSetPos(ptr, &TheMenu->camPos);
+		}
+
+	}
+}
+
+void __fastcall MK11Hooks::HookActorCamSetRot(int64 ptr, FRotator * rot)
+{
+	if (TheMenu->bEnableCustomCameras)
+	{
+		FVector p1, p2;
+		switch (TheMenu->iCurrentCustomCamera)
+		{
+		case CAMERA_3RDPERSON:
+			rot->Pitch = -900;
+			rot->Yaw = 16000;
+			rot->Roll = 0;
+			TheMenu->camRot = *rot;
+			MK11::GetCharacterPosition(&p1, PLAYER1);
+			MK11::GetCharacterPosition(&p2, PLAYER2);
+
+			if (p2.Y < p1.Y)
+			{
+				rot->Yaw = -16000;
+				rot->Pitch = -900;
+			}
+
+			TheMenu->camRot = *rot;
+			break;
+		case CAMERA_3RDPERSON2:
+			rot->Pitch = -4000;
+			rot->Yaw = 16000;
+			rot->Roll = 0;
+			TheMenu->camRot = *rot;
+			MK11::GetCharacterPosition(&p1, PLAYER1);
+			MK11::GetCharacterPosition(&p2, PLAYER2);
+
+			if (p2.Y < p1.Y)
+			{
+				rot->Yaw = -16000;
+				rot->Pitch = -4000;
+			}
+
+			TheMenu->camRot = *rot;
+			break;
+		case CAMERA_1STPERSON:
+			rot->Pitch = 0;
+			rot->Yaw = 16000;
+			rot->Roll = 0;
+			TheMenu->camRot = *rot;
+			MK11::GetCharacterPosition(&p1, PLAYER1);
+			MK11::GetCharacterPosition(&p2, PLAYER2);
+
+			if (p2.Y < p1.Y)
+			{
+				rot->Yaw = -16000;
+			}
+
+			TheMenu->camRot = *rot;
+			break;
+		case CAMERA_1STPERSON_MID:
+			rot->Pitch = 0;
+			rot->Yaw = 16000;
+			rot->Roll = 0;
+			TheMenu->camRot = *rot;
+			MK11::GetCharacterPosition(&p1, PLAYER1);
+			MK11::GetCharacterPosition(&p2, PLAYER2);
+
+			if (p2.Y < p1.Y)
+			{
+				rot->Yaw = -16000;
+			}
+
+			TheMenu->camRot = *rot;
+			break;
+		}
+
+		MK11::ActorCamSetRot(ptr, rot);
+	}
+	else
+	{
+		if (!TheMenu->bCustomCameraRot)
+		{
+			TheMenu->camRot = *rot;
+			MK11::ActorCamSetRot(ptr, rot);
+		}
+		else
+			MK11::ActorCamSetRot(ptr, &TheMenu->camRot);
+	}
+}
+
 
 
 int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
@@ -244,8 +428,9 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 				{
 					char* original_name = name;
 					printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer1ModifierCharacter);
-					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);
+					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);				
 					strcpy((char*)(int64)&original_name[0], original_name);
+
 					// crash fix
 					TheMenu->bPlayer1ModifierEnabled = false;
 				}
@@ -258,6 +443,7 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 					printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer2ModifierCharacter);
 					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer2ModifierCharacter);
 					strcpy((char*)(int64)&original_name[0], original_name);
+					TheMenu->bPlayer2ModifierEnabled = false;
 				}
 			}
 		}
@@ -268,6 +454,7 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 	return ((int64(__fastcall*)(int64, char*))_mk11addr(0x1408F7200))(ptr, name);
 
 }
+
 
 int64 MK11::GetCharacterObject(PLAYER_NUM plr)
 {
@@ -329,6 +516,19 @@ void MK11::GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 	((int64(__fastcall*)(int64, FVector*))_mk11addr(0x14114E580))(ptr, vec);
 }
 
+int64 MK11::GetCameraHandle(int camType)
+{
+	int64 result = 0;
+	int64 camManager = ((int64(__fastcall*)())_mk11addr(0x140E3A730))(); 
+
+	if (camManager)
+	{
+		printf("Got camera %d\n", camType);
+		result = ((int64(__fastcall*)(int64, int))_mk11addr(0x140E37520))(camManager, camType);
+	}
+	return result;
+}
+
 void MK11::LoadAsset(const char * name)
 {
 	printf("%s | %s [addr %x]\n", __FUNCTION__, name,(int64)&name[0]);
@@ -344,6 +544,28 @@ void __fastcall MK11::CamSetRot(int64 ptr, FRotator * rot)
 {
 	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x140E48890))(ptr, rot);
 }
+
+void __fastcall MK11::ActorCamSetPos(int64 ptr, FVector * pos)
+{
+	*(float*)(ptr + 0x6BC) = pos->X;
+	*(float*)(ptr + 0x6BC + 4) = pos->Y;
+	*(float*)(ptr + 0x6BC + 8) = pos->Z;
+	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141A0F760))(ptr, pos);
+	// do stuff
+	//
+}
+
+void __fastcall MK11::ActorCamSetRot(int64 ptr, FRotator * rot)
+{
+	*(int*)(ptr + 0x6BC + 12) = rot->Pitch;
+	*(int*)(ptr + 0x6BC + 12 + 4) = rot->Yaw;
+	*(int*)(ptr + 0x6BC + 12 + 8) = rot->Roll;
+	//*(FRotator*)(ptr + 0x6CC) = *rot;
+	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x141A10140))(ptr, rot);
+	//
+}
+
+
 
 
 
@@ -372,7 +594,7 @@ bool MK11::IsDLC(const char * name)
 	{
 		if (strcmp(name, szCharactersDLC[i]) == 0)
 		{
-			printf("MKXHook::Info() | Cannot swap DLC characters!\n");
+			printf("MK11Hook::Info() | Cannot swap DLC characters!\n");
 			return true;
 		}
 	}

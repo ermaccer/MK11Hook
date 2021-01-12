@@ -4,16 +4,17 @@
 #include "mk11.h"
 #include <iostream>
 #include "..\imgui\imgui.h"
+#include "eSettingsManager.h"
 
 static int64 timer = GetTickCount64();
-
+char textBuffer[260] = {};
 const char* szCharacters[] = {
 	// place npcs first for easy access
 	"CHAR_Cyrax",
 	"CHAR_Sektor",
 	"CHAR_FireGod",
 	"CHAR_Kronika",
-	// rest of the cast (TODO)
+	// rest of the cast
 	"CHAR_Baraka",
 	"CHAR_Cage",
 	"CHAR_Cassie",
@@ -45,7 +46,7 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 	"Third Person",
 	"Third Person #2",
 	"First Person",
-	"First Person Mid"
+	"First Person Mid",
 };
 
 int GetCamMode(const char* mode)
@@ -84,6 +85,7 @@ void MK11Menu::Initialize()
 
 	bCustomCamera = false;
 	bCustomCameraRot = false;
+	bCustomFOV = false;
 	iCurrentTab = 0;
 	bSlowMotionEnabled = 0;
 	fSlowMotionSpeed = 0.5f;
@@ -95,6 +97,10 @@ void MK11Menu::Initialize()
 	iCurrentCustomCamera = -1;
 	fAdjustCamZ = 161.0f;
 	fAdjustCamX = -10.0f;
+	fAdjustCam3 = 0;
+	fAdjustCamX3 = 0;
+	fAdjustCamZ3 = 0;
+	camFov = 0;
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
@@ -104,7 +110,7 @@ void MK11Menu::Initialize()
 void MK11Menu::Draw()
 {
 	ImGui::GetIO().MouseDrawCursor = true;
-	ImGui::Begin("MK11Hook by ermaccer (0.2)");
+	ImGui::Begin("MK11Hook by ermaccer (0.3)");
 	if (ImGui::Button("Character Modifier")) iCurrentTab = TAB_CHARACTER_MODIFIER;
 	ImGui::SameLine();
 	if (ImGui::Button("Speed Modifier")) iCurrentTab = TAB_SPEED;
@@ -165,10 +171,17 @@ void MK11Menu::Draw()
 	}
 	if (iCurrentTab == TAB_CAMERA)
 	{
+
 		ImGui::Checkbox("Custom Camera Position", &bCustomCamera);
 		ImGui::InputFloat3("X | Y | Z", &camPos.X);
 		ImGui::Checkbox("Custom Camera Rotation", &bCustomCameraRot);
 		ImGui::InputInt3("Pitch | Yaw | Roll", &camRot.Pitch);
+		if (SettingsMgr->bGlobalCameraHook)
+		{
+			ImGui::Checkbox("Custom FOV", &bCustomFOV);
+			ImGui::InputFloat("FOV", &camFov);
+		}
+		ImGui::Separator();
 		ImGui::Checkbox("Enable Freecam", &bFreeCameraMovement);
 		ImGui::SameLine(); ShowHelpMarker("Requires both toggles enabled!\n You can configure keys in .ini file.");
 		ImGui::InputFloat("Freecam Speed", &fFreeCameraSpeed);
@@ -176,26 +189,40 @@ void MK11Menu::Draw()
 
 
 		ImGui::Separator();
-
-		ImGui::Checkbox("Custom Cameras", &bEnableCustomCameras);
-
-		if (ImGui::BeginCombo("Mode", szCurrentCameraOption))
+		if (MK11::GetCharacterObject(PLAYER1) && MK11::GetCharacterObject(PLAYER2))
 		{
-			for (int n = 0; n < IM_ARRAYSIZE(szCameraModes); n++)
-			{
-				bool is_selected = (szCurrentCameraOption == szCameraModes[n]);
-				if (ImGui::Selectable(szCameraModes[n], is_selected))
-					sprintf(szCurrentCameraOption, szCameraModes[n]);
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
+			ImGui::Checkbox("Custom Cameras", &bEnableCustomCameras);
 
+			if (ImGui::BeginCombo("Mode", szCurrentCameraOption))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szCameraModes); n++)
+				{
+					bool is_selected = (szCurrentCameraOption == szCameraModes[n]);
+					if (ImGui::Selectable(szCameraModes[n], is_selected))
+						sprintf(szCurrentCameraOption, szCameraModes[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
+			iCurrentCustomCamera = GetCamMode(szCurrentCameraOption);
+			if (iCurrentCustomCamera == CAMERA_1STPERSON || iCurrentCustomCamera == CAMERA_1STPERSON_MID)
+			{
+				ImGui::InputFloat("FPS Camera Offset", &fAdjustCam);
+				ImGui::InputFloat("FPS Up/Down Offset", &fAdjustCamZ);
+				ImGui::InputFloat("FPS Left/Right Offset", &fAdjustCamX);
+			}
+			else if (iCurrentCustomCamera == CAMERA_3RDPERSON)
+			{
+				ImGui::InputFloat("TPP Camera Offset", &fAdjustCam3);
+				ImGui::InputFloat("TPP Up/Down Offset", &fAdjustCamZ3);
+				ImGui::InputFloat("TPP Left/Right Offset", &fAdjustCamX3);
+			}
 		}
-		iCurrentCustomCamera = GetCamMode(szCurrentCameraOption);
-		ImGui::InputFloat("FPS Camera Offset", &fAdjustCam);
-		ImGui::InputFloat("FPS Up/Down Offset", &fAdjustCamZ);
-		ImGui::InputFloat("FPS Left/Right Offset", &fAdjustCamX);
+		else
+			ImGui::Text("Custom cameras will appear once ingame!");
+		
 	}
 	if (iCurrentTab == TAB_PLAYER_CONTROL)
 	{
