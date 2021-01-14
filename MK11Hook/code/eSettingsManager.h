@@ -17,13 +17,18 @@ public:
 	int iFreeCameraKeyXMinus;
 	int iFreeCameraKeyYPlus;
 	int iFreeCameraKeyYMinus;
-	int iFreeCameraKeyYawPlus;
-	int iFreeCameraKeyYawMinus;
 	int iFreeCameraKeyZPlus;
 	int iFreeCameraKeyZMinus;
 
+	int iFreeCameraKeyYawPlus;
+	int iFreeCameraKeyYawMinus;
+	int iFreeCameraKeyPitchPlus;
+	int iFreeCameraKeyPitchMinus;
+	int iFreeCameraKeyRollPlus;
+	int iFreeCameraKeyRollMinus;
 
-
+	int iFreeCameraKeyFOVPlus;
+	int iFreeCameraKeyFOVMinus;
 
 };
 

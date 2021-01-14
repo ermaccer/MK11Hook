@@ -7,6 +7,7 @@
 #include "eSettingsManager.h"
 
 static int64 timer = GetTickCount64();
+static int64 func_timer = GetTickCount64();
 char textBuffer[260] = {};
 const char* szCharacters[] = {
 	// place npcs first for easy access
@@ -105,12 +106,21 @@ void MK11Menu::Initialize()
 
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
+	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
+	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
+	mouseSpeedX = 0;
+	mouseSpeedY = 0;
+	mouseScroll = 0;
+	mouseSens = 5;
+	bInvertMouseY = true;
+
+	bFocused = false;
 }
 
 void MK11Menu::Draw()
 {
 	ImGui::GetIO().MouseDrawCursor = true;
-	ImGui::Begin("MK11Hook by ermaccer (0.3)");
+	ImGui::Begin("MK11Hook by ermaccer (0.3.1)");
 	if (ImGui::Button("Character Modifier")) iCurrentTab = TAB_CHARACTER_MODIFIER;
 	ImGui::SameLine();
 	if (ImGui::Button("Speed Modifier")) iCurrentTab = TAB_SPEED;
@@ -171,7 +181,6 @@ void MK11Menu::Draw()
 	}
 	if (iCurrentTab == TAB_CAMERA)
 	{
-
 		ImGui::Checkbox("Custom Camera Position", &bCustomCamera);
 		ImGui::InputFloat3("X | Y | Z", &camPos.X);
 		ImGui::Checkbox("Custom Camera Rotation", &bCustomCameraRot);
@@ -186,6 +195,18 @@ void MK11Menu::Draw()
 		ImGui::SameLine(); ShowHelpMarker("Requires both toggles enabled!\n You can configure keys in .ini file.");
 		ImGui::InputFloat("Freecam Speed", &fFreeCameraSpeed);
 		ImGui::InputInt("Freecam Rotation Speed", &iFreeCameraRotSpeed);
+
+		if (bFreeCameraMovement)
+		{
+			ImGui::Separator();
+			ImGui::Checkbox("Mouse Control", &bEnableMouseControl);
+
+			if (bEnableMouseControl)
+			{
+				ImGui::Checkbox("Invert Y", &bInvertMouseY);
+				ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
+			}
+		}
 
 
 		ImGui::Separator();
@@ -244,6 +265,8 @@ void MK11Menu::Draw()
 void MK11Menu::Process()
 {
 	UpdateControls();
+	if (bFocused && bEnableMouseControl)
+	UpdateMouse();
 }
 
 void MK11Menu::UpdateControls()
@@ -279,6 +302,35 @@ void MK11Menu::UpdateControls()
 			timer = GetTickCount64();
 			fSlowMotionSpeed -= 0.1f;
 			printf("Current speed %f\n", fSlowMotionSpeed);
+		}
+	}
+
+}
+
+void MK11Menu::UpdateMouse()
+{
+	if (bIsActive) return;
+
+	GetCursorPos(&curMouse);
+	mouseSpeedX = curMouse.x - orgMouse.x;
+	mouseSpeedY = curMouse.y - orgMouse.y;
+
+
+	if (bFocused)
+	{
+		if (TheMenu->bFreeCameraMovement)
+		{
+			float newVal = TheMenu->camRot.Yaw;
+			newVal += mouseSpeedX / mouseSens;
+			TheMenu->camRot.Yaw = newVal;
+
+
+			float newValY = TheMenu->camRot.Pitch;
+
+			if (bInvertMouseY) mouseSpeedY *= -1;
+
+			newValY += mouseSpeedY / mouseSens;
+			TheMenu->camRot.Pitch = newValY;
 		}
 	}
 

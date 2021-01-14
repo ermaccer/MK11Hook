@@ -9,24 +9,10 @@
 #include "code/mk11.h"
 #include "code/mk11menu.h"
 #include <iostream>
+#include <chrono>
 
-
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-Present oPresent;
-HWND window = NULL;
-WNDPROC oWndProc;
-ID3D11Device* pDevice = NULL;
-ID3D11DeviceContext* pContext = NULL;
-ID3D11RenderTargetView* mainRenderTargetView;
-
-void InitImGui()
+void SetStyle()
 {
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
-	ImGui_ImplWin32_Init(window);
-	ImGui_ImplDX11_Init(pDevice, pContext);
 
 	ImGuiStyle* style = &ImGui::GetStyle();
 	ImVec4* colors = style->Colors;
@@ -79,10 +65,95 @@ void InitImGui()
 	colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
 	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+}
+
+// compat with asimk11
+extern "C" __declspec(dllexport) ImGuiContext * __stdcall SharedPresent(ImGuiContext * ctx);
+extern "C" __declspec(dllexport) ImGuiContext * SharedStyle(ImGuiContext * ctx = 0);
+
+ImGuiContext * __stdcall SharedPresent(ImGuiContext* ctx)
+{
+	ImGui::SetCurrentContext(ctx);
+
+	TheMenu->Draw();
+
+	return ImGui::GetCurrentContext();
 
 }
 
+ImGuiContext* SharedStyle(ImGuiContext* ctx)
+{
+	if (ctx)
+		ImGui::SetCurrentContext(ctx);
+
+	SetStyle();
+
+
+	return ImGui::GetCurrentContext();
+}
+
+bool bInitShared = false;
+extern "C" __declspec(dllexport) void InitShared()
+{
+	bInitShared = true;
+}
+
+
+inline bool ShouldHookDX(float timeout = 2.5f)
+{
+	auto start = std::chrono::system_clock::now();
+	while (!bInitShared)
+	{
+		std::chrono::duration<double> now = std::chrono::system_clock::now() - start;
+		if (now.count() > timeout) 
+		{
+			return false;
+		}
+	}
+	return true;
+
+}
+
+// end of compat stuff
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+Present oPresent;
+HWND window = NULL;
+WNDPROC oWndProc;
+ID3D11Device* pDevice = NULL;
+ID3D11DeviceContext* pContext = NULL;
+ID3D11RenderTargetView* mainRenderTargetView;
+
+void InitImGui()
+{
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+	ImGui_ImplWin32_Init(window);
+	ImGui_ImplDX11_Init(pDevice, pContext);
+
+	SharedStyle(0);
+}
+
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+
+	switch (uMsg)
+	{
+	case WM_KILLFOCUS:
+		TheMenu->bFocused = false;
+		break;
+	case WM_SETFOCUS:
+		TheMenu->bFocused = true;
+		break;
+	case WM_MOUSEWHEEL:
+		GET_WHEEL_DELTA_WPARAM(wParam);
+		TheMenu->mouseScroll = wParam;
+		// todo
+		break;
+	default:
+		break;
+	}
 
 	if (TheMenu->GetActiveState())
 	{
@@ -137,6 +208,12 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 DWORD WINAPI MainThread(LPVOID lpReserved)
 {
+
+	if (ShouldHookDX(2.5f))
+	{
+		return true;
+	}
+
 	bool init_hook = false;
 	do
 	{
@@ -255,9 +332,6 @@ void OnInitializeHook()
 		InjectHook(_mk11addr(0x1419A6B8E), tramp->Jump(MK11Hooks::HookActorCamSetRot));
 
 	}
-
-
-
 
 	InjectHook(_mk11addr(0x1408F71ED), tramp->Jump(MK11Hooks::HookLoadCharacter));
 	

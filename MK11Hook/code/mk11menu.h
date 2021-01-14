@@ -1,5 +1,6 @@
 #pragma once
 #include "mk11.h"
+#include <Windows.h>
 // as usual, based on mh2 debug menu
 
 enum eTabs {
@@ -25,6 +26,9 @@ private:
 public:
 	bool	 bSlowMotionEnabled;
 	float	 fSlowMotionSpeed;
+	// window data
+
+	bool bFocused;
 
 	// characters
 	bool bPlayer1ModifierEnabled;
@@ -49,6 +53,7 @@ public:
 	int  iCurrentCustomCamera;
 	char szCurrentCameraOption[128];
 	bool bYObtained;
+	
 
 	float fAdjustCam;
 	float fAdjustCamZ;
@@ -57,6 +62,17 @@ public:
 	float fAdjustCam3;
 	float fAdjustCamZ3;
 	float fAdjustCamX3;
+
+	// cam mouse
+	bool bEnableMouseControl;
+	bool bInvertMouseY;
+	POINT orgMouse;
+	POINT curMouse;
+	int     mouseSpeedX;
+	int     mouseSpeedY;
+	int     mouseScroll;
+	int     mouseSens;
+
 	// player
 	FVector plrPos;
 	FVector plrPos2;
@@ -65,6 +81,7 @@ public:
 	void Draw();
 	void Process();
 	void UpdateControls();
+	void UpdateMouse();
 	bool GetActiveState();
 };
 

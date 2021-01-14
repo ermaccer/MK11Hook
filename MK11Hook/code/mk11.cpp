@@ -30,6 +30,21 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			TheMenu->camRot.Yaw -= TheMenu->iFreeCameraRotSpeed;
 		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
 			TheMenu->camRot.Yaw += TheMenu->iFreeCameraRotSpeed;
+
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
+			TheMenu->camRot.Roll -= TheMenu->iFreeCameraRotSpeed;
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
+			TheMenu->camRot.Roll += TheMenu->iFreeCameraRotSpeed;
+
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
+			TheMenu->camRot.Pitch -= TheMenu->iFreeCameraRotSpeed;
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
+			TheMenu->camRot.Pitch += TheMenu->iFreeCameraRotSpeed;
+
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
+			TheMenu->camFov -= 1.0f;
+		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
+			TheMenu->camFov += 1.0f;
 	}
 
 	((void(__fastcall*)())_mk11addr(0x1411518C0))();
@@ -44,10 +59,6 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->bYObtained = false;
 
 
-
-	//((int64(__fastcall*)(int64, int64))_mk11addr(0x1405F8550))(MK11::GetCharacterInfo(PLAYER1), (int64)&name);
-
-	//MK11::SetCharacter(PLAYER1, "char_spawn");
 	((void(__fastcall*)(int64,int64,int64,int64))_mk11addr(0x141157850))(eventID,a2,a3,a4);
 
 }
@@ -551,8 +562,7 @@ void __fastcall MK11::ActorCamSetPos(int64 ptr, FVector * pos)
 	*(float*)(ptr + 0x6BC + 4) = pos->Y;
 	*(float*)(ptr + 0x6BC + 8) = pos->Z;
 	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141A0F760))(ptr, pos);
-	// do stuff
-	//
+
 }
 
 void __fastcall MK11::ActorCamSetRot(int64 ptr, FRotator * rot)
@@ -560,9 +570,7 @@ void __fastcall MK11::ActorCamSetRot(int64 ptr, FRotator * rot)
 	*(int*)(ptr + 0x6BC + 12) = rot->Pitch;
 	*(int*)(ptr + 0x6BC + 12 + 4) = rot->Yaw;
 	*(int*)(ptr + 0x6BC + 12 + 8) = rot->Roll;
-	//*(FRotator*)(ptr + 0x6CC) = *rot;
 	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x141A10140))(ptr, rot);
-	//
 }
 
 
@@ -590,14 +598,14 @@ bool MK11::IsDLC(const char * name)
 {
 	if (name)
 	{
-			for (int i = 0; i < sizeof(szCharactersDLC) / sizeof(szCharactersDLC[0]); i++)
-	{
-		if (strcmp(name, szCharactersDLC[i]) == 0)
+		for (int i = 0; i < sizeof(szCharactersDLC) / sizeof(szCharactersDLC[0]); i++)
 		{
-			printf("MK11Hook::Info() | Cannot swap DLC characters!\n");
-			return true;
+			if (strcmp(name, szCharactersDLC[i]) == 0)
+			{
+				printf("MK11Hook::Info() | Cannot swap DLC characters!\n");
+				return true;
+			}
 		}
-	}
 	}
 
 	return false;
