@@ -239,6 +239,7 @@ void __fastcall  GenericDummy() { }
 
 
 
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -253,95 +254,94 @@ void OnInitializeHook()
 	TheMenu->Initialize();
 
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
-	InjectHook(_mk11addr(0x14092A223), tramp->Jump(MK11Hooks::HookProcessStuff));
-	InjectHook(_mk11addr(0x14090B97A), tramp->Jump(MK11Hooks::HookStartupFightRecording));
+	InjectHook(_mk11addr(0x14092B853), tramp->Jump(MK11Hooks::HookProcessStuff));
+	InjectHook(_mk11addr(0x14090CF53), tramp->Jump(MK11Hooks::HookStartupFightRecording));
 
 	if (!SettingsMgr->bGlobalCameraHook)
 	{
-		InjectHook(_mk11addr(0x140442B48), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140454DA8), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140454E52), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140455267), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140455417), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14045D079), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14045D44C), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140462608), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14046267F), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140463728), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14059CB74), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14063F214), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14063F792), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140660435), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x1406625EA), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14085AECD), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14085B159), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140869E6C), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x1408727BB), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140872C15), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x14090EF7B), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140975C8A), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x1409ABA82), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x1409C9055), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x1409DA08B), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140AFCAE5), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140B57741), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140D9E53F), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140D9F87F), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x140D9F993), tramp->Jump(MK11Hooks::HookCamSetRot));
-		InjectHook(_mk11addr(0x143E1892F), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1404438F8), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140455B58), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140455C02), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140456017), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1404561C7), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14045DE29), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14045E1FC), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1404633B8), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14046342F), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1404644D8), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14059E044), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1406406C4), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140640C42), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1406618D5), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140663A8A), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14085C31D), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14085C5A9), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14086B2FC), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140873C4B), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1408740A5), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1409105AB), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x14097728A), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1409AD092), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1409CA675), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x1409DB6AB), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140AFE135), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140B58ED1), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140DA027F), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140DA15BF), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x140DA16D3), tramp->Jump(MK11Hooks::HookCamSetRot));
+		InjectHook(_mk11addr(0x143D7A34F), tramp->Jump(MK11Hooks::HookCamSetRot));
 
-		InjectHook(_mk11addr(0x140442B39), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140454D9B), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140454E45), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1404550F1), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140455258), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140455408), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14045D432), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1404625F9), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14046268C), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140463719), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140465847), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1404659AF), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14059CB65), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14063F208), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14063F783), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140660429), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1406625DD), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14085AEC0), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14085B14C), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140869E5F), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1408727AE), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140872C06), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x14090EF65), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140975C7E), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1409ABA75), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1409C9046), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x1409D9FFF), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140AFCAD9), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140B57732), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140CFDF66), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140D9E530), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x140D9F7F2), tramp->Jump(MK11Hooks::HookCamSetPos));
-		InjectHook(_mk11addr(0x143E18920), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1404438E9), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140455B4B), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140455BF5), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140455EA1), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140456008), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1404561B8), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14045E1E2), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1404633A9), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14046343C), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1404644C9), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1404665F7), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14046675F), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14059E035), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1406406B8), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140640C33), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1406618C9), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140663A7D), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14085C310), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14085C59C), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14086B2EF), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140873C3E), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140874096), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140910595), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x14097727E), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1409AD085), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1409CA666), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x1409DB61F), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140AFE129), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140B58EC2), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140CFFB16), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140DA0270), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x140DA1532), tramp->Jump(MK11Hooks::HookCamSetPos));
+		InjectHook(_mk11addr(0x143D7A340), tramp->Jump(MK11Hooks::HookCamSetPos));
 	}
 	else
 	{
-		Nop(_mk11addr(0x1419A6B63), 7);
-		Nop(_mk11addr(0x1419A6B73), 8);
-		InjectHook(_mk11addr(0x1419A6B81), tramp->Jump(MK11Hooks::HookActorCamSetPos));
-		InjectHook(_mk11addr(0x1419A6B8E), tramp->Jump(MK11Hooks::HookActorCamSetRot));
+		Nop(_mk11addr(0x1419A9763), 7);
+		Nop(_mk11addr(0x1419A9773), 8);
+		InjectHook(_mk11addr(0x1419A9781), tramp->Jump(MK11Hooks::HookActorCamSetPos));
+		InjectHook(_mk11addr(0x1419A978E), tramp->Jump(MK11Hooks::HookActorCamSetRot));
 
 	}
 
-	InjectHook(_mk11addr(0x1408F71ED), tramp->Jump(MK11Hooks::HookLoadCharacter));
-	
+	InjectHook(_mk11addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
 
 }
 
 
 bool CheckGame()
 {
-	char* gameName = (char*)_mk11addr(0x1425FDAF8);
+	char* gameName = (char*)_mk11addr(0x142600C68);
 
 	if (strcmp(gameName, "Mortal Kombat 11") == 0)
 	{

@@ -1,8 +1,11 @@
 #pragma once
 #include "mk10utils.h"
 
-#define GFG_GAME_INFO  0x14348BC40
-#define PLAYER_STRUCTS 0x14348B488
+#define GFG_GAME_INFO  0x14348ED10
+#define PLAYER_STRUCTS 0x14348E558
+
+
+#define MK11HOOK_VERSION "0.3.2"
 
 enum  PLAYER_NUM
 {
@@ -51,9 +54,18 @@ namespace MK11 {
 	void GetCharacterDefinition(PLAYER_NUM plr);
 	void GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
 
-	int64 GetCameraHandle(int camType);
+	void HideHUD();
+	void ShowHUD();
+	void PauseGame(bool enable);
 
-	void LoadAsset(const char* name);
+
+	void SetCharacterSpeed(PLAYER_NUM plr, float speed);
+	void SlowGameTimeForXTicks(float speed, int ticks);
+	void SetSpeed(float speed);
+
+
+	void  SetCharacterLife(int64 obj, float life);
+	void  SetCharacterMeter(int64 obj, float meter);
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
 	void __fastcall CamSetRot(int64 ptr, FRotator* rot);
@@ -75,5 +87,6 @@ namespace MK11Hooks {
 	void __fastcall HookActorCamSetRot(int64 ptr, FRotator* rot);
 
 	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
+
 
 }

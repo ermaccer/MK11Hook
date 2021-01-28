@@ -5,6 +5,7 @@
 #include <iostream>
 #include "..\imgui\imgui.h"
 #include "eSettingsManager.h"
+#include "..\utils\MemoryMgr.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -77,6 +78,7 @@ static void ShowHelpMarker(const char* desc)
 		ImGui::PopTextWrapPos();
 		ImGui::EndTooltip();
 	}
+
 }
 
 void MK11Menu::Initialize()
@@ -113,14 +115,25 @@ void MK11Menu::Initialize()
 	mouseScroll = 0;
 	mouseSens = 5;
 	bInvertMouseY = true;
-
+	bFreezeWorld = false;
 	bFocused = false;
+	bAboutWindow = false;
+
+	bChangePlayerSpeed = false;
+	fPlayer1Speed = 1.0f;
+	fPlayer2Speed = 1.0f;
+
+
+	bInfiniteHealthPlayer1 = false;
+	bInfiniteHealthPlayer2 = false;
+	bInfiniteSuperBarPlayer1 = false;
+	bInfiniteSuperBarPlayer2 = false;
 }
 
 void MK11Menu::Draw()
 {
 	ImGui::GetIO().MouseDrawCursor = true;
-	ImGui::Begin("MK11Hook by ermaccer (0.3.1)");
+	ImGui::Begin(GetMK11HookVersion());
 	if (ImGui::Button("Character Modifier")) iCurrentTab = TAB_CHARACTER_MODIFIER;
 	ImGui::SameLine();
 	if (ImGui::Button("Speed Modifier")) iCurrentTab = TAB_SPEED;
@@ -128,6 +141,10 @@ void MK11Menu::Draw()
 	if (ImGui::Button("Player Control")) iCurrentTab = TAB_PLAYER_CONTROL;
 	ImGui::SameLine();
 	if (ImGui::Button("Camera Control")) iCurrentTab = TAB_CAMERA;
+	ImGui::SameLine();
+	if (ImGui::Button("Cheats")) iCurrentTab = TAB_CHEATS;
+	ImGui::SameLine();
+	if (ImGui::Button("Misc.")) iCurrentTab = TAB_MISC;
 	ImGui::Separator();
 
 
@@ -178,6 +195,7 @@ void MK11Menu::Draw()
 		if (fSlowMotionSpeed < 0.0f) fSlowMotionSpeed = 0.0f;
 		ImGui::Checkbox("Enable", &bSlowMotionEnabled);
 
+		ImGui::Separator();
 	}
 	if (iCurrentTab == TAB_CAMERA)
 	{
@@ -247,6 +265,17 @@ void MK11Menu::Draw()
 	}
 	if (iCurrentTab == TAB_PLAYER_CONTROL)
 	{
+		ImGui::Checkbox("Change Player Speed", &bChangePlayerSpeed);
+		ImGui::SliderFloat("Player 1", &fPlayer1Speed, 0.0, 10.0f);
+		ImGui::SliderFloat("Player 2", &fPlayer2Speed, 0.0, 10.0f);
+
+		bool reset = ImGui::Button("Reset Speed");
+		if (reset)
+		{
+			fPlayer1Speed = 1.0f;
+			fPlayer2Speed = 1.0f;
+		}
+		ImGui::Separator();
 		ImGui::Text("Position");
 		ImGui::SameLine(); ShowHelpMarker("Preview only!");
 		if (MK11::GetCharacterObject(PLAYER1))
@@ -260,6 +289,32 @@ void MK11Menu::Draw()
 			ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
 		}
 	}
+	if (iCurrentTab == TAB_MISC)
+	{
+		if (ImGui::Button("Hide FightHUD"))
+			MK11::HideHUD();
+		ImGui::SameLine();
+		if (ImGui::Button("Show FightHUD"))
+			MK11::ShowHUD();
+		ImGui::SameLine();
+
+	}
+	if (iCurrentTab == TAB_CHEATS)
+	{
+		ImGui::Text("Player 1");
+		ImGui::Separator();
+		ImGui::Checkbox("Infinite Health", &bInfiniteHealthPlayer1);
+		ImGui::Separator();
+
+		ImGui::Text("Player 2");
+		ImGui::Separator();
+		ImGui::Checkbox("Infinite Health ", &bInfiniteHealthPlayer2);
+		ImGui::Separator();
+		//ImGui::Checkbox("Infinite Timer", &bStopTimer);
+	}
+
+
+
 }
 
 void MK11Menu::Process()
@@ -284,7 +339,6 @@ void MK11Menu::UpdateControls()
 		if (GetTickCount64() - timer <= 150) return;
 		timer = GetTickCount64();
 		bSlowMotionEnabled ^= 1;
-		printf("Slowmotion status %d\n", bSlowMotionEnabled);
 	}
 
 	if (bSlowMotionEnabled)
@@ -294,14 +348,12 @@ void MK11Menu::UpdateControls()
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
 			fSlowMotionSpeed += 0.1f;
-			printf("Current speed %f\n",fSlowMotionSpeed);
 		}
 		if (GetAsyncKeyState(VK_F7))
 		{
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
 			fSlowMotionSpeed -= 0.1f;
-			printf("Current speed %f\n", fSlowMotionSpeed);
 		}
 	}
 
@@ -339,4 +391,11 @@ void MK11Menu::UpdateMouse()
 bool MK11Menu::GetActiveState()
 {
 	return bIsActive;
+}
+
+char * GetMK11HookVersion()
+{
+	char buffer[512];
+	sprintf(buffer, "MK11Hook by ermaccer (%s)", MK11HOOK_VERSION);
+	return buffer;
 }

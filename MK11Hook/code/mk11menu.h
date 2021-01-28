@@ -8,6 +8,8 @@ enum eTabs {
 	TAB_SPEED,
 	TAB_CAMERA,
 	TAB_PLAYER_CONTROL,
+	TAB_MISC,
+	TAB_CHEATS
 };
 
 enum eCustomCameras {
@@ -26,8 +28,9 @@ private:
 public:
 	bool	 bSlowMotionEnabled;
 	float	 fSlowMotionSpeed;
+	bool     bFreezeWorld;
 	// window data
-
+	bool bAboutWindow;
 	bool bFocused;
 
 	// characters
@@ -35,7 +38,18 @@ public:
 	bool bPlayer2ModifierEnabled;
 	char szPlayer1ModifierCharacter[128] = {};
 	char szPlayer2ModifierCharacter[128] = {};
+	bool bChangePlayerSpeed;
+	float fPlayer1Speed;
+	float fPlayer2Speed;
 
+
+
+	// cheats
+	bool bStopTimer;
+	bool bInfiniteHealthPlayer1;
+	bool bInfiniteSuperBarPlayer1;
+	bool bInfiniteHealthPlayer2;
+	bool bInfiniteSuperBarPlayer2;
 
 	// camera
 
@@ -85,5 +99,5 @@ public:
 	bool GetActiveState();
 };
 
-
+char* GetMK11HookVersion();
 extern MK11Menu* TheMenu;

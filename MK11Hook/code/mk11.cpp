@@ -9,8 +9,27 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	TheMenu->Process();
 
 	if (TheMenu->bSlowMotionEnabled)
-		((void(__fastcall*)(float, int, int))_mk11addr(0x1405BEDD0))(TheMenu->fSlowMotionSpeed, 10, 0);
+		MK11::SlowGameTimeForXTicks(TheMenu->fSlowMotionSpeed, 10);
 
+	if (TheMenu->bChangePlayerSpeed)
+	{
+		if (MK11::GetCharacterObject(PLAYER1))
+			MK11::SetCharacterSpeed(PLAYER1, TheMenu->fPlayer1Speed);
+		if (MK11::GetCharacterObject(PLAYER2))
+			MK11::SetCharacterSpeed(PLAYER2, TheMenu->fPlayer2Speed);
+	}
+
+
+	if (TheMenu->bInfiniteHealthPlayer1)
+	{
+		if (MK11::GetCharacterObject(PLAYER1))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER1), 1000.0f);
+	}
+	if (TheMenu->bInfiniteHealthPlayer2)
+	{
+		if (MK11::GetCharacterObject(PLAYER2))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER2), 1000.0f);
+	}
 	if (TheMenu->bFreeCameraMovement)
 	{
 		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXPlus))
@@ -47,7 +66,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			TheMenu->camFov += 1.0f;
 	}
 
-	((void(__fastcall*)())_mk11addr(0x1411518C0))();
+	((void(__fastcall*)())_mk11addr(0x141153C50))();
 }
 
 void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4)
@@ -59,7 +78,7 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->bYObtained = false;
 
 
-	((void(__fastcall*)(int64,int64,int64,int64))_mk11addr(0x141157850))(eventID,a2,a3,a4);
+	((void(__fastcall*)(int64,int64,int64,int64))_mk11addr(0x141159BE0))(eventID,a2,a3,a4);
 
 }
 
@@ -80,7 +99,7 @@ void __fastcall MK11Hooks::HookCamSetPos(int64 ptr, FVector * pos)
 		switch (TheMenu->iCurrentCustomCamera)
 		{
 		case CAMERA_3RDPERSON:
-			pos->X = 5 +TheMenu->fAdjustCamX3;
+			pos->X = 5 + TheMenu->fAdjustCamX3;
 			pos->Y = oneTime - 330.0f;
 			pos->Y += plrPos.Y * 0.85f;
 			pos->Y += TheMenu->fAdjustCam3;
@@ -90,8 +109,8 @@ void __fastcall MK11Hooks::HookCamSetPos(int64 ptr, FVector * pos)
 			if (p2.Y < plrPos.Y)
 			{
 				pos->Y += 600.0f;
-				pos->Z = 210.0f;
-
+				pos->Z = 210.0f + plrPos.Z;
+				pos->Z += TheMenu->fAdjustCamZ3;
 			}
 
 
@@ -274,8 +293,8 @@ void __fastcall MK11Hooks::HookActorCamSetPos(int64 ptr, FVector * pos)
 			if (p2.Y < plrPos.Y)
 			{
 				pos->Y += 600.0f;
-				pos->Z = 210.0f;
-
+				pos->Z = 210.0f + plrPos.Z;
+				pos->Z += TheMenu->fAdjustCamZ3;
 			}
 
 
@@ -462,50 +481,31 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 	
 	
 
-	return ((int64(__fastcall*)(int64, char*))_mk11addr(0x1408F7200))(ptr, name);
+	return ((int64(__fastcall*)(int64, char*))_mk11addr(0x1408F8830))(ptr, name);
 
 }
 
 
 int64 MK11::GetCharacterObject(PLAYER_NUM plr)
 {
-	return ((int64(__fastcall*)(PLAYER_NUM))_mk11addr(0x1408F74D0))(plr);
+	return ((int64(__fastcall*)(PLAYER_NUM))_mk11addr(0x1408F8B00))(plr);
 }
 
 int64 MK11::GetCharacterInfo(PLAYER_NUM plr)
 {
 	int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
 
-	return ((int64(__fastcall*)(int64, PLAYER_NUM, int))_mk11addr(0x140568640))(gameinfo, plr, 0);
+	return ((int64(__fastcall*)(int64, PLAYER_NUM))_mk11addr(0x14056F130))(gameinfo, plr);
 }
 
 int64 MK11::GetPlayerData(PLAYER_NUM plr)
 {
-	int64 ptr = 0;
-	int offset = 0;
-
-	switch (plr)
-	{
-	case PLAYER1:
-		offset = 0;
-		break;
-	case PLAYER2:
-		offset = 8;
-		break;
-	default:
-		break;
-	}
-
-	__int64 p_gameinfo = *(__int64*)_mk11addr(PLAYER_STRUCTS + offset);
-
-	ptr = p_gameinfo;
-
-	return ptr;
+	return GetCharacterInfo(plr);
 }
 
 PLAYER_NUM MK11::GetPlayerIDFromData(int64 data)
 {
-	if (data == *(__int64*)_mk11addr(PLAYER_STRUCTS + 8))
+	if (data == GetCharacterInfo(PLAYER2))
 		return PLAYER2;
 	else
 		return PLAYER1;
@@ -524,44 +524,100 @@ void MK11::GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
 	int64 object = GetCharacterInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
-	((int64(__fastcall*)(int64, FVector*))_mk11addr(0x14114E580))(ptr, vec);
+	((int64(__fastcall*)(int64, FVector*))_mk11addr(0x141150910))(ptr, vec);
 }
 
-int64 MK11::GetCameraHandle(int camType)
+void MK11::HideHUD()
 {
-	int64 result = 0;
-	int64 camManager = ((int64(__fastcall*)())_mk11addr(0x140E3A730))(); 
+	((void(__fastcall*)(int, int))_mk11addr(0x1408F5550))(16, 16);
+}
 
-	if (camManager)
+void MK11::ShowHUD()
+{
+	((void(__fastcall*)(int, int))_mk11addr(0x1408F5E90))(16, 16);
+}
+
+// TODO
+void MK11::PauseGame(bool enable)
+{
+
+	//int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
+	//int64 status = 0;
+	
+	//if (enable)
+	//	status = *(int64*)(gameinfo + 24) = 3;
+	//else
+	//	status = *(int64*)(gameinfo + 24) = 0;
+	//*(int64*)(gameinfo + 24) = status;
+
+	if (enable)
 	{
-		printf("Got camera %d\n", camType);
-		result = ((int64(__fastcall*)(int64, int))_mk11addr(0x140E37520))(camManager, camType);
+		SlowGameTimeForXTicks(0.0f, 0x7FFFFFFF);
+		if (GetCharacterObject(PLAYER1) && GetCharacterObject(PLAYER2))
+		{
+			SetCharacterSpeed(PLAYER1, 0.0f);
+			SetCharacterSpeed(PLAYER2, 0.0f);
+		}
+
 	}
-	return result;
+	else
+	{
+		 SlowGameTimeForXTicks(1.0f, 10);
+		 if (GetCharacterObject(PLAYER1) && GetCharacterObject(PLAYER2))
+		 {
+			 SetCharacterSpeed(PLAYER1, 1.0f);
+			 SetCharacterSpeed(PLAYER2, 1.0f);
+		 }
+	
+	}
+
 }
 
-void MK11::LoadAsset(const char * name)
+void MK11::SetCharacterSpeed(PLAYER_NUM plr, float speed)
 {
-	printf("%s | %s [addr %x]\n", __FUNCTION__, name,(int64)&name[0]);
-	((int64(__fastcall*)(char*))_mk11addr(0x14056F6C0))((char*)name);
+	((void(__fastcall*)(int64, float))_mk11addr(0x1404C3D50))(MK11::GetCharacterObject(plr), speed);
+}
+
+void MK11::SlowGameTimeForXTicks(float speed, int ticks)
+{
+
+	((void(__fastcall*)(float, int, int))_mk11addr(0x1405C04A0))(speed, ticks, 0);
+}
+
+void MK11::SetSpeed(float speed)
+{
+	int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
+	((void(__fastcall*)(int64, int, float))_mk11addr(0x140599510))(gameinfo, 1, speed);
+}
+
+void MK11::SetCharacterLife(int64 obj, float life)
+{
+	((void(__fastcall*)(int64, float))_mk11addr(0x1404C8070))(obj, life);
+}
+
+void MK11::SetCharacterMeter(int64 obj, float meter)
+{
+	//((void(__fastcall*)(int64, float))_mk11addr(0x1405FB480))(obj, meter);
 }
 
 void __fastcall MK11::CamSetPos(int64 ptr, FVector * pos)
 {
-	((void(__fastcall*)(int64, FVector*))_mk11addr(0x140E47FC0))(ptr, pos);
+	((void(__fastcall*)(int64, FVector*))_mk11addr(0x140E49F80))(ptr, pos);
 }
 
 void __fastcall MK11::CamSetRot(int64 ptr, FRotator * rot)
 {
-	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x140E48890))(ptr, rot);
+	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x140E4A850))(ptr, rot);
 }
+
 
 void __fastcall MK11::ActorCamSetPos(int64 ptr, FVector * pos)
 {
 	*(float*)(ptr + 0x6BC) = pos->X;
 	*(float*)(ptr + 0x6BC + 4) = pos->Y;
 	*(float*)(ptr + 0x6BC + 8) = pos->Z;
-	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141A0F760))(ptr, pos);
+	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141A12280))(ptr, pos);
+
 
 }
 
@@ -570,7 +626,8 @@ void __fastcall MK11::ActorCamSetRot(int64 ptr, FRotator * rot)
 	*(int*)(ptr + 0x6BC + 12) = rot->Pitch;
 	*(int*)(ptr + 0x6BC + 12 + 4) = rot->Yaw;
 	*(int*)(ptr + 0x6BC + 12 + 8) = rot->Roll;
-	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x141A10140))(ptr, rot);
+	((void(__fastcall*)(int64, FRotator*))_mk11addr(0x141A12C60))(ptr, rot);
+
 }
 
 
