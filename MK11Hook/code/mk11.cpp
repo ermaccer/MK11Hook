@@ -18,7 +18,13 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (MK11::GetCharacterObject(PLAYER2))
 			MK11::SetCharacterSpeed(PLAYER2, TheMenu->fPlayer2Speed);
 	}
-
+	if (TheMenu->bChangePlayerScale)
+	{
+		if (MK11::GetCharacterObject(PLAYER1))
+			MK11::SetCharacterScale(PLAYER1, &TheMenu->fPlayer1Scale);
+		if (MK11::GetCharacterObject(PLAYER2))
+			MK11::SetCharacterScale(PLAYER2, &TheMenu->fPlayer2Scale);
+	}
 
 	if (TheMenu->bInfiniteHealthPlayer1)
 	{
@@ -576,6 +582,11 @@ void MK11::PauseGame(bool enable)
 void MK11::SetCharacterSpeed(PLAYER_NUM plr, float speed)
 {
 	((void(__fastcall*)(int64, float))_mk11addr(0x1404C3D50))(MK11::GetCharacterObject(plr), speed);
+}
+
+void MK11::SetCharacterScale(PLAYER_NUM plr, FVector* scale)
+{
+	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141161920))(MK11::GetCharacterObject(plr), scale);
 }
 
 void MK11::SlowGameTimeForXTicks(float speed, int ticks)

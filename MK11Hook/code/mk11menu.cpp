@@ -124,6 +124,10 @@ void MK11Menu::Initialize()
 	fPlayer2Speed = 1.0f;
 
 
+	bChangePlayerScale = false;
+	fPlayer1Scale = { 1.0f,1.0f,1.0f };
+	fPlayer2Scale = { 1.0f,1.0f,1.0f };
+
 	bInfiniteHealthPlayer1 = false;
 	bInfiniteHealthPlayer2 = false;
 	bInfiniteSuperBarPlayer1 = false;
@@ -275,6 +279,19 @@ void MK11Menu::Draw()
 			fPlayer1Speed = 1.0f;
 			fPlayer2Speed = 1.0f;
 		}
+
+		ImGui::Separator();
+		ImGui::Checkbox("Change Player Scale", &bChangePlayerScale);
+		ImGui::InputFloat3("Player 1 ", &fPlayer1Scale.X);
+		ImGui::InputFloat3("Player 2 ", &fPlayer2Scale.X);
+
+		bool scale_reset = ImGui::Button("Reset Scale");
+		if (scale_reset)
+		{
+			fPlayer1Scale = { 1.0f,1.0f,1.0f };
+			fPlayer2Scale = { 1.0f,1.0f,1.0f };
+		}
+
 		ImGui::Separator();
 		ImGui::Text("Position");
 		ImGui::SameLine(); ShowHelpMarker("Preview only!");

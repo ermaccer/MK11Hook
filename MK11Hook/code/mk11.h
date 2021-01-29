@@ -5,7 +5,7 @@
 #define PLAYER_STRUCTS 0x14348E558
 
 
-#define MK11HOOK_VERSION "0.3.2"
+#define MK11HOOK_VERSION "0.3.3"
 
 enum  PLAYER_NUM
 {
@@ -60,12 +60,15 @@ namespace MK11 {
 
 
 	void SetCharacterSpeed(PLAYER_NUM plr, float speed);
+	void SetCharacterScale(PLAYER_NUM plr, FVector* scale);
+	
 	void SlowGameTimeForXTicks(float speed, int ticks);
 	void SetSpeed(float speed);
 
 
 	void  SetCharacterLife(int64 obj, float life);
 	void  SetCharacterMeter(int64 obj, float meter);
+
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
 	void __fastcall CamSetRot(int64 ptr, FRotator* rot);

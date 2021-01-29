@@ -42,7 +42,9 @@ public:
 	float fPlayer1Speed;
 	float fPlayer2Speed;
 
-
+	bool bChangePlayerScale;
+	FVector fPlayer1Scale;
+	FVector fPlayer2Scale;
 
 	// cheats
 	bool bStopTimer;
