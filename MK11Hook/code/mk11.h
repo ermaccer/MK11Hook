@@ -27,6 +27,16 @@ struct FVector
 	float Z;
 };
 
+
+struct FLinearColor
+{
+	float A;
+	float B;
+	float G;
+	float R;
+};
+
+
 struct FRotator {
 	int Pitch;
 	int Yaw;
@@ -61,13 +71,20 @@ namespace MK11 {
 
 	void SetCharacterSpeed(PLAYER_NUM plr, float speed);
 	void SetCharacterScale(PLAYER_NUM plr, FVector* scale);
-	
+	// todo
+	void SetControlScheme(int64 obj, int preset);
+
 	void SlowGameTimeForXTicks(float speed, int ticks);
 	void SetSpeed(float speed);
 
 
+	void SetStage(const char* stage);
+
+
 	void  SetCharacterLife(int64 obj, float life);
 	void  SetCharacterMeter(int64 obj, float meter);
+	void  SetCharacterEnergy(int64 obj,int type, float energy);
+	void  SetCharacterEasyKB(int64 obj, int value);
 
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
@@ -90,6 +107,9 @@ namespace MK11Hooks {
 	void __fastcall HookActorCamSetRot(int64 ptr, FRotator* rot);
 
 	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
+	int64 __fastcall HookLoadAssets(char* name);
+
+	void __fastcall  UpdatePauseState(int64 ptr);
 
 
 }

@@ -30,11 +30,47 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	{
 		if (MK11::GetCharacterObject(PLAYER1))
 			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER1), 1000.0f);
+
+	}
+	if (TheMenu->bInfiniteAttackBarPlayer1)
+	{
+		if (MK11::GetCharacterInfo(PLAYER1))
+			MK11::SetCharacterEnergy(MK11::GetCharacterInfo(PLAYER1),0,1000.0f);
+
+	}
+	if (TheMenu->bInfiniteDefendBarPlayer1)
+	{
+		if (MK11::GetCharacterInfo(PLAYER1))
+			MK11::SetCharacterEnergy(MK11::GetCharacterInfo(PLAYER1), 1, 1000.0f);
+
+	}
+	if (TheMenu->bNoHealthPlayer1)
+	{
+		if (MK11::GetCharacterObject(PLAYER1))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER1), 0.0f);
+
 	}
 	if (TheMenu->bInfiniteHealthPlayer2)
 	{
 		if (MK11::GetCharacterObject(PLAYER2))
 			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER2), 1000.0f);
+	}
+	if (TheMenu->bInfiniteAttackBarPlayer2)
+	{
+		if (MK11::GetCharacterInfo(PLAYER2))
+			MK11::SetCharacterEnergy(MK11::GetCharacterInfo(PLAYER2), 0, 1000.0f);
+
+	}
+	if (TheMenu->bInfiniteDefendBarPlayer2)
+	{
+		if (MK11::GetCharacterInfo(PLAYER2))
+			MK11::SetCharacterEnergy(MK11::GetCharacterInfo(PLAYER2), 1, 1000.0f);
+
+	}
+	if (TheMenu->bNoHealthPlayer2)
+	{
+		if (MK11::GetCharacterObject(PLAYER2))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER2), 0.0f);
 	}
 	if (TheMenu->bFreeCameraMovement)
 	{
@@ -462,11 +498,12 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 			{
 				if (ptr == MK11::GetPlayerData(PLAYER1))
 				{
+
 					char* original_name = name;
 					printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer1ModifierCharacter);
 					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);				
 					strcpy((char*)(int64)&original_name[0], original_name);
-
+	
 					// crash fix
 					TheMenu->bPlayer1ModifierEnabled = false;
 				}
@@ -488,6 +525,18 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 	
 
 	return ((int64(__fastcall*)(int64, char*))_mk11addr(0x1408F8830))(ptr, name);
+
+}
+
+int64 __fastcall MK11Hooks::HookLoadAssets(char * name)
+{
+	strcpy((char*)(int64)&name[0], "CHAR_Spawn");
+	printf("Loading %s", name);
+	return ((int64(__fastcall*)(char*))_mk11addr(0x1408F8620))(name);
+}
+
+void __fastcall MK11Hooks::UpdatePauseState(int64 ptr)
+{
 
 }
 
@@ -535,12 +584,12 @@ void MK11::GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 
 void MK11::HideHUD()
 {
-	((void(__fastcall*)(int, int))_mk11addr(0x1408F5550))(16, 16);
+	((void(__fastcall*)(int, int))_mk11addr(0x1408F5550))(8, 8);
 }
 
 void MK11::ShowHUD()
 {
-	((void(__fastcall*)(int, int))_mk11addr(0x1408F5E90))(16, 16);
+	((void(__fastcall*)(int, int))_mk11addr(0x1408F5E90))(8, 8);
 }
 
 // TODO
@@ -589,6 +638,13 @@ void MK11::SetCharacterScale(PLAYER_NUM plr, FVector* scale)
 	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141161920))(MK11::GetCharacterObject(plr), scale);
 }
 
+
+void MK11::SetControlScheme(int64 obj, int preset)
+{
+	((void(__fastcall*)(int64, int))_mk11addr(0x1405FAC50))(obj, preset);
+}
+
+
 void MK11::SlowGameTimeForXTicks(float speed, int ticks)
 {
 
@@ -601,6 +657,13 @@ void MK11::SetSpeed(float speed)
 	((void(__fastcall*)(int64, int, float))_mk11addr(0x140599510))(gameinfo, 1, speed);
 }
 
+void MK11::SetStage(const char * stage)
+{
+	__int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
+
+	((void(__fastcall*)(int64, const char*))_mk11addr(0x14049C360))(gameinfo, stage);
+}
+
 void MK11::SetCharacterLife(int64 obj, float life)
 {
 	((void(__fastcall*)(int64, float))_mk11addr(0x1404C8070))(obj, life);
@@ -609,6 +672,16 @@ void MK11::SetCharacterLife(int64 obj, float life)
 void MK11::SetCharacterMeter(int64 obj, float meter)
 {
 	//((void(__fastcall*)(int64, float))_mk11addr(0x1405FB480))(obj, meter);
+}
+
+void MK11::SetCharacterEnergy(int64 obj, int type, float energy)
+{
+	((void(__fastcall*)(int64,int,float))_mk11addr(0x1405FA670))(obj, type, energy);
+}
+
+void MK11::SetCharacterEasyKB(int64 obj, int value)
+{
+	((void(__fastcall*)(int64, int, int))_mk11addr(0x1404C71B0))(obj, value, 1);
 }
 
 void __fastcall MK11::CamSetPos(int64 ptr, FVector * pos)

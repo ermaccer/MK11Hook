@@ -239,7 +239,6 @@ void __fastcall  GenericDummy() { }
 
 
 
-
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -335,7 +334,6 @@ void OnInitializeHook()
 	}
 
 	InjectHook(_mk11addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
-
 }
 
 

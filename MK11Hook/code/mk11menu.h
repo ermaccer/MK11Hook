@@ -5,6 +5,7 @@
 
 enum eTabs {
 	TAB_CHARACTER_MODIFIER,
+	TAB_STAGE_MODIFIER,
 	TAB_SPEED,
 	TAB_CAMERA,
 	TAB_PLAYER_CONTROL,
@@ -38,6 +39,14 @@ public:
 	bool bPlayer2ModifierEnabled;
 	char szPlayer1ModifierCharacter[128] = {};
 	char szPlayer2ModifierCharacter[128] = {};
+
+
+
+	bool bPlayer1MovesetEnabled;
+	bool bPlayer2MovesetEnabled;
+	char szPlayer1MovesetCharacter[128] = {};
+	char szPlayer2MovesetCharacter[128] = {};
+
 	bool bChangePlayerSpeed;
 	float fPlayer1Speed;
 	float fPlayer2Speed;
@@ -46,13 +55,17 @@ public:
 	FVector fPlayer1Scale;
 	FVector fPlayer2Scale;
 
+
 	// cheats
 	bool bStopTimer;
 	bool bInfiniteHealthPlayer1;
-	bool bInfiniteSuperBarPlayer1;
+	bool bInfiniteAttackBarPlayer1;
+	bool bInfiniteDefendBarPlayer1;
+	bool bNoHealthPlayer1;
 	bool bInfiniteHealthPlayer2;
-	bool bInfiniteSuperBarPlayer2;
-
+	bool bInfiniteAttackBarPlayer2;
+	bool bInfiniteDefendBarPlayer2;
+	bool bNoHealthPlayer2;
 	// camera
 
 	bool bCustomCamera;
