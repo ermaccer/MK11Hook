@@ -232,11 +232,11 @@ using namespace hook;
 
 
 
+
+
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
-
-
 
 
 void OnInitializeHook()
@@ -332,8 +332,53 @@ void OnInitializeHook()
 		InjectHook(_mk11addr(0x1419A978E), tramp->Jump(MK11Hooks::HookActorCamSetRot));
 
 	}
-
 	InjectHook(_mk11addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
+
+	/*
+
+	if (!SettingsMgr->bUseLegacyCharacterModifier)
+	{
+		InjectHook(_mk11addr(0x140580FC4), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140597E1C), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140597E2F), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140597F9C), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1408E83AC), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1409DD548), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140C19ACE), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140C19B01), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140C6AB71), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140CC9D76), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x14086D4DB), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405BD5C0), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405BACA6), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405A67F0), tramp->Jump(MK11Hooks::HookSetCharacter));
+
+		InjectHook(_mk11addr(0x140598AEE), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x140597FAF), tramp->Jump(MK11Hooks::HookSetCharacter));
+
+		InjectHook(_mk11addr(0x1405BDD36), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405BDF7A), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405D1374), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405D14AA), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405D1564), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405D169A), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405E2E43), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405E2E55), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405E2EA9), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405F068A), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405F7459), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405F9AB8), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405F9B8F), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405FBA1B), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x14086E558), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x14086D45B), tramp->Jump(MK11Hooks::HookSetCharacter));
+		InjectHook(_mk11addr(0x1405FC7BA), tramp->Jump(MK11Hooks::HookSetCharacter));
+		// set tower character							  
+		InjectHook(_mk11addr(0x1405F70A9), tramp->Jump(MK11Hooks::HookSetCharacter));
+		// tower boss
+		InjectHook(_mk11addr(0x1405FBB84), tramp->Jump(MK11Hooks::HookSetCharacter));
+	}
+	*/
 }
 
 

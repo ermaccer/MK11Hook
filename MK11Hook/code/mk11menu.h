@@ -22,6 +22,14 @@ enum eCustomCameras {
 	TOTAL_CUSTOM_CAMERAS
 };
 
+
+enum eCHRModifierModes {
+	MODIFIER_SCREEN,
+	MODIFIER_FIGHT,
+	TOTAL_MODES
+};
+
+
 class MK11Menu {
 private:
 	bool bIsActive;
@@ -35,6 +43,9 @@ public:
 	bool bFocused;
 
 	// characters
+
+	int  iCharacterModifierMode;
+	char szCurrentModifier[128] = {};
 	bool bPlayer1ModifierEnabled;
 	bool bPlayer2ModifierEnabled;
 	char szPlayer1ModifierCharacter[128] = {};
@@ -62,10 +73,12 @@ public:
 	bool bInfiniteAttackBarPlayer1;
 	bool bInfiniteDefendBarPlayer1;
 	bool bNoHealthPlayer1;
+	bool b1HealthPlayer1;
 	bool bInfiniteHealthPlayer2;
 	bool bInfiniteAttackBarPlayer2;
 	bool bInfiniteDefendBarPlayer2;
 	bool bNoHealthPlayer2;
+	bool b1HealthPlayer2;
 	// camera
 
 	bool bCustomCamera;

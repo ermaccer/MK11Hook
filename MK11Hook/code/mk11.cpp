@@ -50,6 +50,12 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER1), 0.0f);
 
 	}
+	if (TheMenu->b1HealthPlayer1)
+	{
+		if (MK11::GetCharacterObject(PLAYER1))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER1), 0.01f);
+
+	}
 	if (TheMenu->bInfiniteHealthPlayer2)
 	{
 		if (MK11::GetCharacterObject(PLAYER2))
@@ -71,6 +77,11 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	{
 		if (MK11::GetCharacterObject(PLAYER2))
 			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER2), 0.0f);
+	}
+	if (TheMenu->b1HealthPlayer2)
+	{
+		if (MK11::GetCharacterObject(PLAYER2))
+			MK11::SetCharacterLife(MK11::GetCharacterObject(PLAYER2), 0.01f);
 	}
 	if (TheMenu->bFreeCameraMovement)
 	{
@@ -119,6 +130,16 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->bCustomCameraRot = false;
 	TheMenu->bYObtained = false;
 
+	if (TheMenu->iCharacterModifierMode == MODIFIER_FIGHT)
+	{
+		if (TheMenu->bPlayer1ModifierEnabled)
+			MK11::SetCharacterMKX(PLAYER1, TheMenu->szPlayer1ModifierCharacter);
+		if (TheMenu->bPlayer2ModifierEnabled)
+			MK11::SetCharacterMKX(PLAYER2, TheMenu->szPlayer2ModifierCharacter);
+	}
+
+
+	printf("MK11Hook::Info() | %s VS %s\n", MK11::GetCharacterName(PLAYER1), MK11::GetCharacterName(PLAYER2));
 
 	((void(__fastcall*)(int64,int64,int64,int64))_mk11addr(0x141159BE0))(eventID,a2,a3,a4);
 
@@ -490,55 +511,61 @@ void __fastcall MK11Hooks::HookActorCamSetRot(int64 ptr, FRotator * rot)
 
 int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 {
-	if (name)
+	if (TheMenu->iCharacterModifierMode == MODIFIER_SCREEN)
 	{
-		if (!MK11::IsDLC(name))
+		if (name)
 		{
-			if (TheMenu->bPlayer1ModifierEnabled)
+			if (!MK11::IsDLC(name))
 			{
-				if (ptr == MK11::GetPlayerData(PLAYER1))
+				if (TheMenu->bPlayer1ModifierEnabled)
 				{
+					if (ptr == MK11::GetPlayerData(PLAYER1))
+					{
 
-					char* original_name = name;
-					printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer1ModifierCharacter);
-					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);				
-					strcpy((char*)(int64)&original_name[0], original_name);
-	
-					// crash fix
-					TheMenu->bPlayer1ModifierEnabled = false;
+						char* original_name = name;
+						printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer1ModifierCharacter);
+						strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);
+						strcpy((char*)(int64)&original_name[0], original_name);
+
+						// crash fix
+						TheMenu->bPlayer1ModifierEnabled = false;
+					}
 				}
-			}
-			if (TheMenu->bPlayer2ModifierEnabled)
-			{
-				if (ptr == MK11::GetPlayerData(PLAYER2))
+				if (TheMenu->bPlayer2ModifierEnabled)
 				{
-					char* original_name = name;
-					printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer2ModifierCharacter);
-					strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer2ModifierCharacter);
-					strcpy((char*)(int64)&original_name[0], original_name);
-					TheMenu->bPlayer2ModifierEnabled = false;
+					if (ptr == MK11::GetPlayerData(PLAYER2))
+					{
+						char* original_name = name;
+						printf("MK11Hook::Info() | Setting Player %d as %s\n", MK11::GetPlayerIDFromData(ptr), TheMenu->szPlayer2ModifierCharacter);
+						strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer2ModifierCharacter);
+						strcpy((char*)(int64)&original_name[0], original_name);
+						TheMenu->bPlayer2ModifierEnabled = false;
+					}
 				}
 			}
 		}
-	}
-	
-	
 
+	}
 	return ((int64(__fastcall*)(int64, char*))_mk11addr(0x1408F8830))(ptr, name);
 
 }
 
-int64 __fastcall MK11Hooks::HookLoadAssets(char * name)
+void MK11Hooks::HookSetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
 {
-	strcpy((char*)(int64)&name[0], "CHAR_Spawn");
-	printf("Loading %s", name);
-	return ((int64(__fastcall*)(char*))_mk11addr(0x1408F8620))(name);
+	MK11::SetCharacter(chr, name, ptr, unk);
+
+	if (TheMenu->bPlayer1ModifierEnabled)
+		MK11::SetCharacterMKX(PLAYER1, TheMenu->szPlayer1ModifierCharacter);
+	if (TheMenu->bPlayer2ModifierEnabled)
+		MK11::SetCharacterMKX(PLAYER2, TheMenu->szPlayer2ModifierCharacter);
 }
 
 void __fastcall MK11Hooks::UpdatePauseState(int64 ptr)
 {
 
 }
+
+
 
 
 int64 MK11::GetCharacterObject(PLAYER_NUM plr)
@@ -566,14 +593,6 @@ PLAYER_NUM MK11::GetPlayerIDFromData(int64 data)
 		return PLAYER1;
 }
 
-void MK11::GetCharacterDefinition(PLAYER_NUM plr)
-{
-	int64 object = GetCharacterObject(plr);
-	int64 ptr = *(int64*)(object + 216);
-
-
-
-}
 
 void MK11::GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
@@ -638,6 +657,42 @@ void MK11::SetCharacterScale(PLAYER_NUM plr, FVector* scale)
 	((void(__fastcall*)(int64, FVector*))_mk11addr(0x141161920))(MK11::GetCharacterObject(plr), scale);
 }
 
+void MK11::SetCharacterMKX(PLAYER_NUM plr,char * name)
+{
+
+	int64 ptr = GetCharacterInfo(plr);
+	int64 chr = (ptr + 216);
+	printf("Setting character %d as %s\n", plr, name);
+	MK11::SetCharacter(chr, name, 0,0);
+	((void(__fastcall*)(int64, const char*, int64, int64))_mk11addr(0x1405982F0))(chr,name,0,0);
+
+}
+
+void MK11::SetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
+{
+	((void(__fastcall*)(int64, const char*, int64, int64))_mk11addr(0x1405982F0))(chr, name, ptr, unk);
+
+}
+
+PLAYER_NUM MK11::GetIDFromData(int64 data)
+{
+	int64 plr1 = GetCharacterInfo(PLAYER1);
+	int64 plr2 = GetCharacterInfo(PLAYER2);
+
+	if (data == *(int64*)(plr1 + 216))
+		return PLAYER1;
+	else
+		return PLAYER2;
+}
+
+char * MK11::GetCharacterName(PLAYER_NUM plr)
+{
+	int64 info = GetCharacterInfo(plr);
+	character_info* chr = *(character_info**)(info + 216);
+
+	return chr->name;
+}
+
 
 void MK11::SetControlScheme(int64 obj, int preset)
 {
@@ -683,6 +738,18 @@ void MK11::SetCharacterEasyKB(int64 obj, int value)
 {
 	((void(__fastcall*)(int64, int, int))_mk11addr(0x1404C71B0))(obj, value, 1);
 }
+
+int64 MK11::GetCharacterMovie(int64 chr, int unk, char * buffer, int id)
+{
+	return ((int64(__fastcall*)(int64, int, char*, int))_mk11addr(0x14056AC80))(chr, unk, buffer, id);
+}
+
+int64 MK11::GetCinemaByName(char * a1, char * a2, char * a3, int id)
+{
+	printf("cin - %s | %s | %s | %d\n", a1, a2, a3, id);
+	return ((int64(__fastcall*)(char*, char*, char*, int))_mk11addr(0x140CEE9B0))(a1,a2,a3,id);
+}
+
 
 void __fastcall MK11::CamSetPos(int64 ptr, FVector * pos)
 {

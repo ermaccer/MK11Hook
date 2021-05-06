@@ -12,6 +12,9 @@ public:
 	bool bGlobalCameraHook;
 
 	int iHookMenuOpenKey;
+	
+	bool bUseLegacyCharacterModifier;
+	
 	// free camera keys
 	int iFreeCameraKeyXPlus;
 	int iFreeCameraKeyXMinus;
