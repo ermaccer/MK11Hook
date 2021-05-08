@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="code\eNotifManager.h" />
     <ClInclude Include="code\eSettingsManager.h" />
     <ClInclude Include="code\mk10utils.h" />
     <ClInclude Include="code\mk11.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="utils\Trampoline.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
     <ClCompile Include="code\mk10utils.cpp" />
     <ClCompile Include="code\mk11.cpp" />

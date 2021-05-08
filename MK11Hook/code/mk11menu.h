@@ -119,6 +119,14 @@ public:
 	FVector plrPos;
 	FVector plrPos2;
 
+	// stage
+	bool bStageModifier;
+	char szStageModifierStage[128] = {};
+
+	// krypt
+	bool bChangeKryptCharacter;
+	char szCurrentKryptCharacter[128];
+	char szCurrentKryptCharacterClass[128];
 	void Initialize();
 	void Draw();
 	void Process();
@@ -129,3 +137,4 @@ public:
 
 char* GetMK11HookVersion();
 extern MK11Menu* TheMenu;
+

@@ -2,10 +2,10 @@
 #include "mk10utils.h"
 
 #define GFG_GAME_INFO  0x14348ED10
-#define PLAYER_STRUCTS 0x14348E558
+#define GALLERY_INFO   0x14348A610
 
 
-#define MK11HOOK_VERSION "0.3.5"
+#define MK11HOOK_VERSION "0.4"
 
 enum  PLAYER_NUM
 {
@@ -31,8 +31,8 @@ struct FVector
 struct FLinearColor
 {
 	float A;
-	float B;
 	float G;
+	float B;
 	float R;
 };
 
@@ -56,8 +56,16 @@ struct character_info {
 };
 
 
-namespace MK11 {
+enum eCharacterClass {
+	Base,
+	TestCharacters,
+	Generated,
+	NPCs,
+	TOTAL_CHARACTER_CLASSES
+};
 
+
+namespace MK11 {
 	int64 GetCharacterObject(PLAYER_NUM plr);
 	int64 GetCharacterInfo(PLAYER_NUM plr);
 
@@ -75,20 +83,18 @@ namespace MK11 {
 
 	// mkx recreation
 	void SetCharacterMKX(PLAYER_NUM plr, char* name);
-
+	void SetStage(const char* stage);
 	void SetCharacter(int64 chr, char* name, int64 ptr, int64 unk);
+
 
 	PLAYER_NUM GetIDFromData(int64 data);
 	char* GetCharacterName(PLAYER_NUM plr);
 		
-	// todo
 	void SetControlScheme(int64 obj, int preset);
 
 	void SlowGameTimeForXTicks(float speed, int ticks);
 	void SetSpeed(float speed);
 
-
-	void SetStage(const char* stage);
 
 
 	void  SetCharacterSpeed(PLAYER_NUM plr, float speed);
@@ -97,9 +103,16 @@ namespace MK11 {
 	void  SetCharacterMeter(int64 obj, float meter);
 	void  SetCharacterEnergy(int64 obj,int type, float energy);
 	void  SetCharacterEasyKB(int64 obj, int value);
+	void  SetCharacterDecalColor(int64 obj,int64 name, FLinearColor* color);
+	void  SetCharacterDecalColor2(int64 obj, int64 name, FVector* color);
+
+
 
 	int64 GetCharacterMovie(int64 chr, int unk, char* buffer, int id);
 	int64 GetCinemaByName(char* a1, char* a2, char* a3, int id);
+
+
+
 
 
 	void __fastcall CamSetPos(int64 ptr, FVector* pos);
@@ -108,6 +121,12 @@ namespace MK11 {
 	void __fastcall ActorCamSetPos(int64 ptr, FVector* pos);
 	void __fastcall ActorCamSetRot(int64 ptr, FRotator* rot);
 	bool IsDLC(const char* name);
+
+	void SetKryptCharacter(int64 ptr, char* name);
+	void SetKryptCharacterL(int64 ptr, char* name, int unk);
+	void SetKryptCharacterClass(int64 ptr, char* name, int unk);
+
+
 }
 
 namespace MK11Hooks {
@@ -123,6 +142,8 @@ namespace MK11Hooks {
 
 	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
 	void			 HookSetCharacter(int64 chr, char* name, int64 ptr, int64 unk);
+	void			 HookSetCharacterBloodColor(int64 obj, int64 name, FLinearColor* color);
+	void			 HookSetCharacterBloodColor2(int64 obj, int64 name, FVector* color);
 	void __fastcall  UpdatePauseState(int64 ptr);
 
 

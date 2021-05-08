@@ -3,10 +3,12 @@
 #include <Windows.h>
 #include "mk11menu.h"
 #include "eSettingsManager.h"
+#include "eNotifManager.h"
 
 void __fastcall MK11Hooks::HookProcessStuff()
 {
 	TheMenu->Process();
+	Notifications->Update();
 
 	if (TheMenu->bSlowMotionEnabled)
 		MK11::SlowGameTimeForXTicks(TheMenu->fSlowMotionSpeed, 10);
@@ -129,6 +131,10 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->bCustomCamera = false;
 	TheMenu->bCustomCameraRot = false;
 	TheMenu->bYObtained = false;
+
+	if (TheMenu->bStageModifier)
+		MK11::SetStage(TheMenu->szStageModifierStage);
+
 
 	if (TheMenu->iCharacterModifierMode == MODIFIER_FIGHT)
 	{
@@ -560,6 +566,24 @@ void MK11Hooks::HookSetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
 		MK11::SetCharacterMKX(PLAYER2, TheMenu->szPlayer2ModifierCharacter);
 }
 
+
+struct FString {
+	char* string;
+};
+
+void MK11Hooks::HookSetCharacterBloodColor(int64 obj, int64 name, FLinearColor * color)
+{
+	printf("Decal [%x] color: R %f G %f B %f A %f\n", name, color->R, color->G, color->B, color->A);
+	MK11::SetCharacterDecalColor(obj, name, color);
+}
+
+void MK11Hooks::HookSetCharacterBloodColor2(int64 obj, int64 name, FVector * color)
+{
+	printf("CALL2 - Decal [%x] color: R %f G %f B %f\n", name, color->X, color->Y, color->Z);
+	MK11::SetCharacterDecalColor2(obj, name, color);
+}
+
+
 void __fastcall MK11Hooks::UpdatePauseState(int64 ptr)
 {
 
@@ -576,7 +600,6 @@ int64 MK11::GetCharacterObject(PLAYER_NUM plr)
 int64 MK11::GetCharacterInfo(PLAYER_NUM plr)
 {
 	int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
-
 	return ((int64(__fastcall*)(int64, PLAYER_NUM))_mk11addr(0x14056F130))(gameinfo, plr);
 }
 
@@ -659,10 +682,8 @@ void MK11::SetCharacterScale(PLAYER_NUM plr, FVector* scale)
 
 void MK11::SetCharacterMKX(PLAYER_NUM plr,char * name)
 {
-
 	int64 ptr = GetCharacterInfo(plr);
 	int64 chr = (ptr + 216);
-	printf("Setting character %d as %s\n", plr, name);
 	MK11::SetCharacter(chr, name, 0,0);
 	((void(__fastcall*)(int64, const char*, int64, int64))_mk11addr(0x1405982F0))(chr,name,0,0);
 
@@ -716,7 +737,7 @@ void MK11::SetStage(const char * stage)
 {
 	__int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO);
 
-	((void(__fastcall*)(int64, const char*))_mk11addr(0x14049C360))(gameinfo, stage);
+	((void(__fastcall*)(int64, const char*))_mk11addr(0x140599CA0))(gameinfo, stage);
 }
 
 void MK11::SetCharacterLife(int64 obj, float life)
@@ -739,6 +760,20 @@ void MK11::SetCharacterEasyKB(int64 obj, int value)
 	((void(__fastcall*)(int64, int, int))_mk11addr(0x1404C71B0))(obj, value, 1);
 }
 
+void MK11::SetCharacterDecalColor(int64 obj, int64 name, FLinearColor * color)
+{
+	((void(__fastcall*)(int64, int64, FLinearColor*))_mk11addr(0x1404CAB10))(obj, name, color);
+}
+
+void MK11::SetCharacterDecalColor2(int64 obj, int64 name, FVector * color)
+{
+	((void(__fastcall*)(int64, int64, FVector*))_mk11addr(0x140DC1FD0))(obj, name, color);
+}
+
+
+
+
+
 int64 MK11::GetCharacterMovie(int64 chr, int unk, char * buffer, int id)
 {
 	return ((int64(__fastcall*)(int64, int, char*, int))_mk11addr(0x14056AC80))(chr, unk, buffer, id);
@@ -746,7 +781,6 @@ int64 MK11::GetCharacterMovie(int64 chr, int unk, char * buffer, int id)
 
 int64 MK11::GetCinemaByName(char * a1, char * a2, char * a3, int id)
 {
-	printf("cin - %s | %s | %s | %d\n", a1, a2, a3, id);
 	return ((int64(__fastcall*)(char*, char*, char*, int))_mk11addr(0x140CEE9B0))(a1,a2,a3,id);
 }
 
@@ -811,6 +845,12 @@ bool MK11::IsDLC(const char * name)
 			if (strcmp(name, szCharactersDLC[i]) == 0)
 			{
 				printf("MK11Hook::Info() | Cannot swap DLC characters!\n");
+				if (TheMenu->bPlayer1ModifierEnabled)
+				{
+					Notifications->SetNotificationTime(5500);
+					Notifications->PushNotification("Cannot swap DLC characters!");
+				}
+
 				return true;
 			}
 		}
@@ -818,3 +858,30 @@ bool MK11::IsDLC(const char * name)
 
 	return false;
 }
+
+void MK11::SetKryptCharacter(int64 ptr, char * name)
+{
+	if (TheMenu->bChangeKryptCharacter)
+		name = TheMenu->szCurrentKryptCharacter;
+
+	printf("MK11Hook::SetKryptCharacter() | Loading character %s\n", name);
+
+	((void(__fastcall*)(int64, char*))_mk11addr(0x140821CD0))(ptr, name);
+}
+
+void MK11::SetKryptCharacterL(int64 ptr, char * name, int unk)
+{
+	//if (TheMenu->bChangeKryptCharacter)
+	//	name = 0;
+	((void(__fastcall*)(int64, char*, int))_mk11addr(0x141A69CC0))(ptr, name, unk);
+}
+
+void MK11::SetKryptCharacterClass(int64 ptr, char * name, int unk)
+{
+	if (TheMenu->bChangeKryptCharacter)
+		name = TheMenu->szCurrentKryptCharacterClass;
+	((void(__fastcall*)(int64, char*, int))_mk11addr(0x142395E20))(ptr, name, unk);
+}
+
+
+

@@ -32,7 +32,6 @@ const char* szCharacters[] = {
 	"CHAR_Kitana",
 	"CHAR_Kollector",
 	"CHAR_Kotal",
-	"CHAR_Kronika",
 	"CHAR_KungLao",
 	"CHAR_LiuKang",
 	"CHAR_Noob",
@@ -42,7 +41,6 @@ const char* szCharacters[] = {
 	"CHAR_Sonya",
 	"CHAR_SubZero",
 	"CHAR_Terminas",
-
 	// story (512 in total) fun ones in front
 	"SEK_Story_Upgraded",
 	"KRO_Story_Crown",
@@ -569,6 +567,44 @@ const char* szCharacters[] = {
 };
 
 
+const char* szStageNames[]{
+	"BGND_BlackMarketAlley",
+	"BGND_CyberLinKueiAssembly",
+	"BGND_GorosLair",
+	"BGND_KharonsShip",
+	"BGND_KoliseumBeastiary",
+	"BGND_KotalsKoliseum",
+	"BGND_KronikaHourGlass",
+	"BGND_KronikaHourGlassNT",
+	"BGND_KronikaHourGlassPrehistoric",
+	"BGND_KronikaHourGlassChoatian",
+	"BGND_KytinnLostHive",
+	"BGND_MainMenuBackground",
+	"BGND_SeaOfBlood",
+	"BGND_ShangTsungsIslandRuins",
+	"BGND_ShaolinTrapDungeon",
+	"BGND_ShinnoksBoneSepulcher",
+	"BGND_ShiRaiRyuFireGarden",
+	"BGND_SpecialForcesDesertCommand",
+	"BGND_TankGarageBunker",
+	"BGND_TarkatanWarCamp",
+	"BGND_TournamentLevel",
+	"BGND_TournamentLVCMB",
+	"BGND_TournamentLVNRS",
+	"BGND_TournamentLVCEO",
+	"BGND_TournamentLVEVO",
+	"BGND_TournamentLVVNY",
+	"BGND_TournamentLVDRM",
+	"BGND_TournamentLVCTD",
+	"BGND_TournamentLVBGS",
+	"BGND_TournamentLVNEC",
+	"BGND_TournamentLVECT",
+	"BGND_TournamentLVFKT",
+	"BGND_WuShiDragonGrotto",
+
+};
+
+
 
 
 const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
@@ -580,6 +616,62 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 const char* szModifierModes[TOTAL_MODES] = {
 	"Select Screen Swap",
 	"Fight Init",
+};
+
+
+const char* szCharClasses[TOTAL_CHARACTER_CLASSES] = {
+	"Base",
+	"TestCharacters",
+	"Generated",
+	"NPCs",
+};
+
+
+const char* szKryptCharacters[] = {
+	// place npcs first for easy access
+	"CHAR_Cyrax",
+	"CHAR_Sektor",
+	"CHAR_FireGod",
+	"CHAR_Kronika",
+
+	// rest of the cast
+	"CHAR_Baraka",
+	"CHAR_Cage",
+	"CHAR_Cassie",
+	"CHAR_Cetrion",
+	"CHAR_DVorah",
+	"CHAR_ErronBlack",
+	"CHAR_Jacqui",
+	"CHAR_Jade",
+	"CHAR_Jax",
+	"CHAR_Kabal",
+	"CHAR_Kano",
+	"CHAR_Kitana",
+	"CHAR_Kollector",
+	"CHAR_Kotal",
+	"CHAR_KungLao",
+	"CHAR_LiuKang",
+	"CHAR_Noob",
+	"CHAR_Raiden",
+	"CHAR_Scorpion",
+	"CHAR_Skarlet",
+	"CHAR_Sonya",
+	"CHAR_SubZero",
+	"CHAR_Terminas",
+	"CHAR_Terminator",
+	"CHAR_Spawn",
+	"CHAR_Sindel",
+	"CHAR_ShaoKahn",
+	"CHAR_Rambo",
+	"CHAR_Robocop",
+	"CHAR_Rain",
+	"CHAR_ShangTsung",
+	"CHAR_Joker",
+	"CHAR_Fujin",
+	"CHAR_Sheeva",
+	"CHAR_CyberFrost",
+	"CHAR_Nightwolf",
+	"CHAR_Mileena",
 };
 
 
@@ -654,6 +746,7 @@ void MK11Menu::Initialize()
 	sprintf(szCurrentModifier, szModifierModes[0]);
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
+	sprintf(szStageModifierStage, szStageNames[0]);
 	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
 	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
 	mouseSpeedX = 0;
@@ -685,6 +778,11 @@ void MK11Menu::Initialize()
 	bNoHealthPlayer2 = false;
 	b1HealthPlayer1 = false;
 	b1HealthPlayer2 = false;
+
+
+	bChangeKryptCharacter = false;
+	sprintf(szCurrentKryptCharacter, szCharacters[0]);
+	sprintf(szCurrentKryptCharacterClass, szCharClasses[0]);
 }
 
 void MK11Menu::Draw()
@@ -758,6 +856,27 @@ void MK11Menu::Draw()
 			}
 			ImGui::Separator();
 
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Stage Modifier"))
+		{
+
+
+			ImGui::Checkbox("Enable Stage Modifier", &bStageModifier);
+
+			if (ImGui::BeginCombo("Stage", szStageModifierStage))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szStageNames); n++)
+				{
+					bool is_selected = (szStageModifierStage == szCameraModes[n]);
+					if (ImGui::Selectable(szStageNames[n], is_selected))
+						sprintf(szStageModifierStage, szStageNames[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Player Control"))
@@ -917,6 +1036,49 @@ void MK11Menu::Draw()
 
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("Krypt Modifier"))
+		{
+
+			ImGui::Text("Make sure you match the character class! It's trial & error if a character doesn't work.");
+			ImGui::Text("Normal characters use Base class, while Sektor/Cyrax use NPCs. Some might not work at all.");
+			ImGui::Separator();
+			ImGui::Checkbox("Change Krypt Character",&bChangeKryptCharacter);
+
+			if (ImGui::BeginCombo("Character Class", szCurrentKryptCharacterClass))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szCharClasses); n++)
+				{
+					bool is_selected = (szCurrentKryptCharacterClass == szCharClasses[n]);
+					if (ImGui::Selectable(szCharClasses[n], is_selected))
+						sprintf(szCurrentKryptCharacterClass, szCharClasses[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+
+
+			if (ImGui::BeginCombo("Krypt Character", szCurrentKryptCharacter))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				{
+					bool is_selected = (szCurrentKryptCharacter == szKryptCharacters[n]);
+					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+						sprintf(szCurrentKryptCharacter, szKryptCharacters[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+
+
+			ImGui::Separator();
+			ImGui::Text("NOTE: This only changes character during krypt load!");
+
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Misc."))
 		{
 			if (ImGui::Button("Hide FightHUD"))
@@ -1022,4 +1184,8 @@ char * GetMK11HookVersion()
 	char buffer[512];
 	sprintf(buffer, "MK11Hook by ermaccer (%s)", MK11HOOK_VERSION);
 	return buffer;
+}
+
+void PushNotification()
+{
 }
