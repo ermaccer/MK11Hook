@@ -14,7 +14,7 @@ public:
 	int iHookMenuOpenKey;
 	
 	bool bUseLegacyCharacterModifier;
-	
+	bool bMakeAllAbilities1Slot;
 	// free camera keys
 	int iFreeCameraKeyXPlus;
 	int iFreeCameraKeyXMinus;

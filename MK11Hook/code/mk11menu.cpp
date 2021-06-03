@@ -563,6 +563,10 @@ const char* szCharacters[] = {
 	"RAN_DefaultPreset_02",
 	"RAN_E",
 	"RAN_NoMask",
+	// more weird stuff
+	"LIU_Story_FireGod",
+	"LIU_Tower_FireGod",
+
 
 };
 
@@ -1089,6 +1093,7 @@ void MK11Menu::Draw()
 			ImGui::EndTabItem();
 
 		}
+
 		ImGui::End();
 	}
 
@@ -1112,13 +1117,6 @@ void MK11Menu::Process()
 
 void MK11Menu::UpdateControls()
 {
-
-	if (GetAsyncKeyState(VK_F1))
-	{
-		if (GetTickCount64() - timer <= 150) return;
-		timer = GetTickCount64();
-		bIsActive ^= 1;
-	}
 
 	if (GetAsyncKeyState(VK_F5))
 	{

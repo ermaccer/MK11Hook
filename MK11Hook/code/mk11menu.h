@@ -32,9 +32,9 @@ enum eCHRModifierModes {
 
 class MK11Menu {
 private:
-	bool bIsActive;
 	int  iCurrentTab;
 public:
+	bool     bIsActive;
 	bool	 bSlowMotionEnabled;
 	float	 fSlowMotionSpeed;
 	bool     bFreezeWorld;

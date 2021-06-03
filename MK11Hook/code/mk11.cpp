@@ -567,9 +567,6 @@ void MK11Hooks::HookSetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
 }
 
 
-struct FString {
-	char* string;
-};
 
 void MK11Hooks::HookSetCharacterBloodColor(int64 obj, int64 name, FLinearColor * color)
 {
@@ -784,6 +781,12 @@ int64 MK11::GetCinemaByName(char * a1, char * a2, char * a3, int id)
 	return ((int64(__fastcall*)(char*, char*, char*, int))_mk11addr(0x140CEE9B0))(a1,a2,a3,id);
 }
 
+int64 MK11::GetUser(PLAYER_NUM plr)
+{
+	__int64 gameinfo = *(__int64*)_mk11addr(GFG_GAME_INFO); 
+	return ((int64(__fastcall*)(int64, PLAYER_NUM))_mk11addr(0x14056F150))(gameinfo, plr);
+}
+
 
 void __fastcall MK11::CamSetPos(int64 ptr, FVector * pos)
 {
@@ -883,5 +886,12 @@ void MK11::SetKryptCharacterClass(int64 ptr, char * name, int unk)
 	((void(__fastcall*)(int64, char*, int))_mk11addr(0x142395E20))(ptr, name, unk);
 }
 
+FName::FName(char * text, int num)
+{
+	((void(__thiscall*)(FName*, char*, int))_mk11addr(0x141A69CC0))(this, text, num);
+}
 
-
+char * FName::ToString(const char* str)
+{
+	((void*(__thiscall*)(FName*, const char*))_mk11addr(0x141AFBEC0))(this, str);
+}

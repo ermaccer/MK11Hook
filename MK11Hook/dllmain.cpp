@@ -152,6 +152,10 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		TheMenu->mouseScroll = wParam;
 		// todo
 		break;
+	case WM_KEYDOWN:
+		if (wParam == SettingsMgr->iHookMenuOpenKey)
+			TheMenu->bIsActive ^= 1;
+		break;
 	default:
 		break;
 	}
@@ -353,6 +357,9 @@ void OnInitializeHook()
 	InjectHook(_mk11addr(0x140976E0B), tramp->Jump(MK11::SetKryptCharacterL));
 	InjectHook(_mk11addr(0x140976E6A), tramp->Jump(MK11::SetKryptCharacterClass));
 
+
+	if (SettingsMgr->bMakeAllAbilities1Slot)
+		InjectHook(_mk11addr(0x140720E90), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
 
 }
 

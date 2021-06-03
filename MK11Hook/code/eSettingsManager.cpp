@@ -12,7 +12,7 @@ void eSettingsManager::Init()
 	iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);
 
 	bUseLegacyCharacterModifier = ini.ReadBoolean("Settings", "bUseLegacyCharacterModifier", false);
-
+	bMakeAllAbilities1Slot = ini.ReadBoolean("Settings", "bMakeAllAbilities1Slot", false);
 	iFreeCameraKeyXPlus = ini.ReadInteger("Settings", "iFreeCameraKeyXPlus", 0);
 	iFreeCameraKeyXMinus = ini.ReadInteger("Settings", "iFreeCameraKeyXMinus", 0);
 

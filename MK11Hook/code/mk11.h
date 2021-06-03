@@ -5,7 +5,7 @@
 #define GALLERY_INFO   0x14348A610
 
 
-#define MK11HOOK_VERSION "0.4"
+#define MK11HOOK_VERSION "0.4.1"
 
 enum  PLAYER_NUM
 {
@@ -42,6 +42,22 @@ struct FRotator {
 	int Yaw;
 	int Roll;
 };
+
+class FString {
+public:
+	char buffer[512];
+};
+
+class FName
+{
+public:
+	int Index;
+	int Number;
+
+	FName(char* text, int num);
+	char* ToString(const char* string);
+};
+
 
 struct MKCameraObj {
 	char pad[0x6BC];
@@ -112,6 +128,7 @@ namespace MK11 {
 	int64 GetCinemaByName(char* a1, char* a2, char* a3, int id);
 
 
+	int64 GetUser(PLAYER_NUM plr);
 
 
 
