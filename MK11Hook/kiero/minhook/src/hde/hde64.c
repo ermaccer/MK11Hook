@@ -292,7 +292,7 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
         }
         if (op64) {
             hs->flags |= F_IMM64;
-            hs->imm.imm64 = *(uint64_t *)p;
+            hs->imm.imm64 = *(int64 *)p;
             p += 8;
         } else if (!(pref & PRE_66)) {
             hs->flags |= F_IMM32;

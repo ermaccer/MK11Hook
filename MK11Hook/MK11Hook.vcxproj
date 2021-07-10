@@ -168,6 +168,11 @@
     <ClInclude Include="code\mk10utils.h" />
     <ClInclude Include="code\mk11.h" />
     <ClInclude Include="code\mk11menu.h" />
+    <ClInclude Include="code\mkcamera.h" />
+    <ClInclude Include="code\MKCharacter.h" />
+    <ClInclude Include="code\MKModifier.h" />
+    <ClInclude Include="code\MKStructs.h" />
+    <ClInclude Include="eDirectX11Hook.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -202,7 +207,11 @@
     <ClCompile Include="code\mk10utils.cpp" />
     <ClCompile Include="code\mk11.cpp" />
     <ClCompile Include="code\mk11menu.cpp" />
+    <ClCompile Include="code\mkcamera.cpp" />
+    <ClCompile Include="code\MKCharacter.cpp" />
+    <ClCompile Include="code\MKModifier.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="eDirectX11Hook.cpp" />
     <ClCompile Include="HookInit.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />

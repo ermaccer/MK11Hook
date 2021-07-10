@@ -6,6 +6,8 @@
 #include "..\imgui\imgui.h"
 #include "eSettingsManager.h"
 #include "..\utils\MemoryMgr.h"
+#include "eNotifManager.h"
+#include "MKCamera.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -567,7 +569,6 @@ const char* szCharacters[] = {
 	"LIU_Story_FireGod",
 	"LIU_Tower_FireGod",
 
-
 };
 
 
@@ -616,6 +617,7 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 	"Third Person #2",
 	"First Person",
 	"First Person Mid",
+	"Injustice 2"
 };
 const char* szModifierModes[TOTAL_MODES] = {
 	"Select Screen Swap",
@@ -745,6 +747,7 @@ void MK11Menu::Initialize()
 	fAdjustCam3 = 0;
 	fAdjustCamX3 = 0;
 	fAdjustCamZ3 = 0;
+	fAdjustCamCrouch = 120.0f;
 	camFov = 0;
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szCurrentModifier, szModifierModes[0]);
@@ -787,6 +790,13 @@ void MK11Menu::Initialize()
 	bChangeKryptCharacter = false;
 	sprintf(szCurrentKryptCharacter, szCharacters[0]);
 	sprintf(szCurrentKryptCharacterClass, szCharClasses[0]);
+
+	bRepositionCursor = false;
+	bAutoHideHUD = false;
+	bDisableGearLoadouts = false;
+	bForceDisableHUD = false;
+	bHookDispatch = false;
+	bForceMoveCamera = false;
 }
 
 void MK11Menu::Draw()
@@ -800,8 +810,10 @@ void MK11Menu::Draw()
 		{
 
 			ImGui::Text("Select a method for replacing characters.\nSelect Screen - replaces character during selection, works with normal gamemodes\n"
-				"Fight Init - Replaces character during game loading, allows to change characters\nin story mode, attract, practice.\n"
-				"NOTE: Game modes with intros crash!\n");
+				"Fight Init - Replaces character during game loading, allows to change characters\nin story mode, attract, practice.\n");
+
+			if (iCharacterModifierMode == MODIFIER_FIGHT)
+				ImGui::Text("NOTE: Game modes with intros crash in fight init modifier!\n");
 			if (ImGui::BeginCombo("Modifier Mode", szCurrentModifier))
 			{
 				for (int n = 0; n < IM_ARRAYSIZE(szModifierModes); n++)
@@ -894,6 +906,10 @@ void MK11Menu::Draw()
 			{
 				fPlayer1Speed = 1.0f;
 				fPlayer2Speed = 1.0f;
+				if (MK11::GetCharacterObject(PLAYER1))
+					MK11::GetCharacterObject(PLAYER1)->SetSpeed(1.0f);
+				if (MK11::GetCharacterObject(PLAYER2))
+					MK11::GetCharacterObject(PLAYER2)->SetSpeed(1.0f);
 			}
 
 			ImGui::Separator();
@@ -906,6 +922,10 @@ void MK11Menu::Draw()
 			{
 				fPlayer1Scale = { 1.0f,1.0f,1.0f };
 				fPlayer2Scale = { 1.0f,1.0f,1.0f };
+				if (MK11::GetCharacterObject(PLAYER1))
+					MK11::GetCharacterObject(PLAYER1)->SetScale(&fPlayer1Scale);
+				if (MK11::GetCharacterObject(PLAYER2))
+					MK11::GetCharacterObject(PLAYER2)->SetScale(&fPlayer2Scale);
 			}
 
 			ImGui::Separator();
@@ -932,6 +952,21 @@ void MK11Menu::Draw()
 			if (fSlowMotionSpeed > 2.0f) fSlowMotionSpeed = 2.0f;
 			if (fSlowMotionSpeed < 0.0f) fSlowMotionSpeed = 0.0f;
 			ImGui::Checkbox("Enable", &bSlowMotionEnabled);
+			ImGui::SameLine();
+			ShowHelpMarker("Hotkey - F5");
+
+
+			ImGui::Separator();
+			ImGui::Text("Tick this checkbox if you want to freeze game with a button, this might cause\nissues with pause menus and stuff so enable only when needed!");
+			ImGui::Checkbox("Hook Freeze World", &bHookDispatch);
+
+			if (bHookDispatch)
+			{
+				ImGui::Checkbox("Freeze World", &bFreezeWorld);
+				ImGui::SameLine();
+				ShowHelpMarker("Hotkey - F2");
+			}
+
 
 			ImGui::Separator();
 			ImGui::EndTabItem();
@@ -942,27 +977,28 @@ void MK11Menu::Draw()
 			ImGui::InputFloat3("X | Y | Z", &camPos.X);
 			ImGui::Checkbox("Custom Camera Rotation", &bCustomCameraRot);
 			ImGui::InputInt3("Pitch | Yaw | Roll", &camRot.Pitch);
-			if (SettingsMgr->bGlobalCameraHook)
-			{
-				ImGui::Checkbox("Custom FOV", &bCustomFOV);
-				ImGui::InputFloat("FOV", &camFov);
-			}
+
+			ImGui::Checkbox("Custom FOV", &bCustomFOV);
+			ImGui::InputFloat("FOV", &camFov);
+
 			ImGui::Separator();
 			ImGui::Checkbox("Enable Freecam", &bFreeCameraMovement);
-			ImGui::SameLine(); ShowHelpMarker("Requires both toggles enabled!\n You can configure keys in .ini file.");
+			ImGui::SameLine(); ShowHelpMarker("Requires all custom toggles enabled!\nYou can configure keys in .ini file.");
 			ImGui::InputFloat("Freecam Speed", &fFreeCameraSpeed);
 			ImGui::InputInt("Freecam Rotation Speed", &iFreeCameraRotSpeed);
 
-			if (bFreeCameraMovement)
-			{
-				ImGui::Separator();
-				ImGui::Checkbox("Mouse Control", &bEnableMouseControl);
+			ImGui::Separator();
+			ImGui::Text("Check this option if the game you can't move camera anymore after fatalities or win poses.");
+			ImGui::Checkbox("Force Camera To Move", &bForceMoveCamera);
+			
 
-				if (bEnableMouseControl)
-				{
-					ImGui::Checkbox("Invert Y", &bInvertMouseY);
-					ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
-				}
+			ImGui::Separator();
+			ImGui::Checkbox("Mouse Control", &bEnableMouseControl);
+
+			if (bEnableMouseControl)
+			{
+				ImGui::Checkbox("Invert Y", &bInvertMouseY);
+				ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
 			}
 
 
@@ -990,6 +1026,7 @@ void MK11Menu::Draw()
 					ImGui::InputFloat("FPS Camera Offset", &fAdjustCam);
 					ImGui::InputFloat("FPS Up/Down Offset", &fAdjustCamZ);
 					ImGui::InputFloat("FPS Left/Right Offset", &fAdjustCamX);
+					ImGui::InputFloat("FPS Crouch Offset", &fAdjustCamCrouch);
 				}
 				else if (iCurrentCustomCamera == CAMERA_3RDPERSON)
 				{
@@ -1016,9 +1053,9 @@ void MK11Menu::Draw()
 			if (MK11::GetCharacterObject(PLAYER1))
 			{
 				if (ImGui::Button("Enable Easy Krushing Blows"))
-					MK11::SetCharacterEasyKB(MK11::GetCharacterObject(PLAYER1), 1);
+					MK11::GetCharacterObject(PLAYER1)->SetEasyKrushingBlows(true);
 				if (ImGui::Button("Disable Easy Krushing Blows"))
-					MK11::SetCharacterEasyKB(MK11::GetCharacterObject(PLAYER1), 0);
+					MK11::GetCharacterObject(PLAYER1)->SetEasyKrushingBlows(false);
 			}
 			ImGui::Separator();
 
@@ -1029,12 +1066,12 @@ void MK11Menu::Draw()
 			ImGui::Checkbox("Infinite Defensive Bar ", &bInfiniteDefendBarPlayer2);
 			ImGui::Checkbox("Zero Health ", &bNoHealthPlayer2);
 			ImGui::Checkbox("1 Health ", &b1HealthPlayer2);
-			if (MK11::GetCharacterObject(PLAYER2))
+			if (MK11::GetCharacterObject(PLAYER1))
 			{
 				if (ImGui::Button("Enable Easy Krushing Blows "))
-					MK11::SetCharacterEasyKB(MK11::GetCharacterObject(PLAYER2), 1);
+					MK11::GetCharacterObject(PLAYER2)->SetEasyKrushingBlows(true);
 				if (ImGui::Button("Disable Easy Krushing Blows "))
-					MK11::SetCharacterEasyKB(MK11::GetCharacterObject(PLAYER2), 0);
+					MK11::GetCharacterObject(PLAYER2)->SetEasyKrushingBlows(false);
 			}
 			ImGui::Separator();
 
@@ -1090,6 +1127,15 @@ void MK11Menu::Draw()
 			ImGui::SameLine();
 			if (ImGui::Button("Show FightHUD"))
 				MK11::ShowHUD();
+
+			ImGui::Checkbox("Hide FightHUD In Game", &bAutoHideHUD);
+			ImGui::Checkbox("Disable HUD Completely", &bForceDisableHUD);
+			ImGui::SameLine();
+			ShowHelpMarker("You'll need to go in-game/back to menu for this option to take effect.");
+
+			ImGui::Checkbox("Disable Nondefault Gear Loadouts",&bDisableGearLoadouts);
+			ImGui::SameLine();
+			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
 
 		}
@@ -1112,7 +1158,8 @@ void MK11Menu::Process()
 {
 	UpdateControls();
 	if (bFocused && bEnableMouseControl)
-	UpdateMouse();
+		UpdateMouse();
+
 }
 
 void MK11Menu::UpdateControls()
@@ -1123,6 +1170,17 @@ void MK11Menu::UpdateControls()
 		if (GetTickCount64() - timer <= 150) return;
 		timer = GetTickCount64();
 		bSlowMotionEnabled ^= 1;
+	}
+
+	if (GetAsyncKeyState(VK_F2))
+	{
+		if (bHookDispatch)
+		{
+			if (GetTickCount64() - timer <= 150) return;
+			timer = GetTickCount64();
+			bFreezeWorld ^= 1;
+		}
+
 	}
 
 	if (bSlowMotionEnabled)
@@ -1156,12 +1214,12 @@ void MK11Menu::UpdateMouse()
 	{
 		if (TheMenu->bFreeCameraMovement)
 		{
-			float newVal = TheMenu->camRot.Yaw;
+			int newVal = TheMenu->camRot.Yaw;
 			newVal += mouseSpeedX / mouseSens;
 			TheMenu->camRot.Yaw = newVal;
 
 
-			float newValY = TheMenu->camRot.Pitch;
+			int newValY = TheMenu->camRot.Pitch;
 
 			if (bInvertMouseY) mouseSpeedY *= -1;
 

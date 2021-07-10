@@ -7,7 +7,6 @@ void eSettingsManager::Init()
 {
 	CIniReader ini("");
 	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
-	bGlobalCameraHook = ini.ReadBoolean("Settings", "bGlobalCameraHook", true);
 
 	iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);
 

@@ -9,8 +9,6 @@ public:
 	void Init();
 
 	bool bEnableConsoleWindow;
-	bool bGlobalCameraHook;
-
 	int iHookMenuOpenKey;
 	
 	bool bUseLegacyCharacterModifier;

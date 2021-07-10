@@ -28,6 +28,9 @@
     <Filter Include="Header Files\kiero\minhook">
       <UniqueIdentifier>{db46cdf8-7c42-4a12-a5f1-14ed4879f476}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\dx">
+      <UniqueIdentifier>{7187d197-8447-41c0-9f40-8dcab7f80186}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -126,6 +129,21 @@
     <ClInclude Include="code\eNotifManager.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="code\mkcamera.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MKCharacter.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="eDirectX11Hook.h">
+      <Filter>Source Files\dx</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MKStructs.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MKModifier.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -192,6 +210,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="code\eNotifManager.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\mkcamera.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\MKCharacter.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="eDirectX11Hook.cpp">
+      <Filter>Source Files\dx</Filter>
+    </ClCompile>
+    <ClCompile Include="code\MKModifier.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>

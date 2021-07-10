@@ -1,11 +1,12 @@
 #pragma once
 #include "mk10utils.h"
-
+#include "MKStructs.h"
+#include "MKCharacter.h"
+#include "MKModifier.h"
 #define GFG_GAME_INFO  0x14348ED10
-#define GALLERY_INFO   0x14348A610
 
 
-#define MK11HOOK_VERSION "0.4.1"
+#define MK11HOOK_VERSION "0.4.2"
 
 enum  PLAYER_NUM
 {
@@ -20,57 +21,6 @@ enum  PLAYER_NUM
 	BACKGROUND_PLAYER
 };
 
-struct FVector
-{
-	float X;
-	float Y;
-	float Z;
-};
-
-
-struct FLinearColor
-{
-	float A;
-	float G;
-	float B;
-	float R;
-};
-
-
-struct FRotator {
-	int Pitch;
-	int Yaw;
-	int Roll;
-};
-
-class FString {
-public:
-	char buffer[512];
-};
-
-class FName
-{
-public:
-	int Index;
-	int Number;
-
-	FName(char* text, int num);
-	char* ToString(const char* string);
-};
-
-
-struct MKCameraObj {
-	char pad[0x6BC];
-	FVector pos;
-	FRotator rot;
-	float   FOV;
-};
-
-
-struct character_info {
-	char	name[16];
-};
-
 
 enum eCharacterClass {
 	Base,
@@ -82,7 +32,7 @@ enum eCharacterClass {
 
 
 namespace MK11 {
-	int64 GetCharacterObject(PLAYER_NUM plr);
+	MKCharacter* GetCharacterObject(PLAYER_NUM plr);
 	int64 GetCharacterInfo(PLAYER_NUM plr);
 
 
@@ -93,7 +43,6 @@ namespace MK11 {
 
 	void HideHUD();
 	void ShowHUD();
-	void PauseGame(bool enable);
 
 
 
@@ -102,41 +51,17 @@ namespace MK11 {
 	void SetStage(const char* stage);
 	void SetCharacter(int64 chr, char* name, int64 ptr, int64 unk);
 
-
-	PLAYER_NUM GetIDFromData(int64 data);
 	char* GetCharacterName(PLAYER_NUM plr);
 		
-	void SetControlScheme(int64 obj, int preset);
 
 	void SlowGameTimeForXTicks(float speed, int ticks);
 	void SetSpeed(float speed);
 
 
 
-	void  SetCharacterSpeed(PLAYER_NUM plr, float speed);
-	void  SetCharacterScale(PLAYER_NUM plr, FVector* scale);
-	void  SetCharacterLife(int64 obj, float life);
-	void  SetCharacterMeter(int64 obj, float meter);
 	void  SetCharacterEnergy(int64 obj,int type, float energy);
-	void  SetCharacterEasyKB(int64 obj, int value);
-	void  SetCharacterDecalColor(int64 obj,int64 name, FLinearColor* color);
-	void  SetCharacterDecalColor2(int64 obj, int64 name, FVector* color);
 
 
-
-	int64 GetCharacterMovie(int64 chr, int unk, char* buffer, int id);
-	int64 GetCinemaByName(char* a1, char* a2, char* a3, int id);
-
-
-	int64 GetUser(PLAYER_NUM plr);
-
-
-
-	void __fastcall CamSetPos(int64 ptr, FVector* pos);
-	void __fastcall CamSetRot(int64 ptr, FRotator* rot);
-
-	void __fastcall ActorCamSetPos(int64 ptr, FVector* pos);
-	void __fastcall ActorCamSetRot(int64 ptr, FRotator* rot);
 	bool IsDLC(const char* name);
 
 	void SetKryptCharacter(int64 ptr, char* name);
@@ -144,24 +69,24 @@ namespace MK11 {
 	void SetKryptCharacterClass(int64 ptr, char* name, int unk);
 
 
+	MKModifier* GetModifierManager();
+
 }
 
 namespace MK11Hooks {
 	// hooks
-	void __fastcall HookProcessStuff();
-	void __fastcall HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4);
+	void  HookProcessStuff();
+	void  HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4);
+	int64 PostLoadHook();
 
-	void __fastcall HookCamSetPos(int64 ptr, FVector* pos);
-	void __fastcall HookCamSetRot(int64 ptr, FRotator* rot);
+	int64 HookLoadCharacter(int64 ptr, char* name);
 
-	void __fastcall HookActorCamSetPos(int64 ptr, FVector* pos);
-	void __fastcall HookActorCamSetRot(int64 ptr, FRotator* rot);
+	int64  HookSetProperty(int64 ptr, char* name, int64 unk);
+	void   HookReadPropertyValue(int64 ptr, int64* unk, int64* value);
 
-	int64 __fastcall HookLoadCharacter(int64 ptr, char* name);
-	void			 HookSetCharacter(int64 chr, char* name, int64 ptr, int64 unk);
-	void			 HookSetCharacterBloodColor(int64 obj, int64 name, FLinearColor* color);
-	void			 HookSetCharacterBloodColor2(int64 obj, int64 name, FVector* color);
-	void __fastcall  UpdatePauseState(int64 ptr);
+	int64  HookLoadouts(int64 ptr);
+
+	void   HookDispatch(int64 ptr, int a2);
 
 
 }

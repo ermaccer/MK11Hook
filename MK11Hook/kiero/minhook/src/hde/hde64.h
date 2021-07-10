@@ -86,7 +86,7 @@ typedef struct {
         uint8_t imm8;
         uint16_t imm16;
         uint32_t imm32;
-        uint64_t imm64;
+        int64 imm64;
     } imm;
     union {
         uint8_t disp8;

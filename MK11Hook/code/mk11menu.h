@@ -18,7 +18,7 @@ enum eCustomCameras {
 	CAMERA_3RDPERSON2,
 	CAMERA_1STPERSON,
 	CAMERA_1STPERSON_MID,
-//	CAMERA_INJUSTICE_2,
+	CAMERA_INJUSTICE_2,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -101,12 +101,17 @@ public:
 	float fAdjustCamZ;
 	float fAdjustCamX;
 
+	float fAdjustCamCrouch;
+
 	float fAdjustCam3;
 	float fAdjustCamZ3;
 	float fAdjustCamX3;
 
+	bool  bForceMoveCamera;
+
 	// cam mouse
 	bool bEnableMouseControl;
+	bool bRepositionCursor;
 	bool bInvertMouseY;
 	POINT orgMouse;
 	POINT curMouse;
@@ -127,6 +132,14 @@ public:
 	bool bChangeKryptCharacter;
 	char szCurrentKryptCharacter[128];
 	char szCurrentKryptCharacterClass[128];
+
+	// misc
+	bool bForceDisableHUD;
+	bool bAutoHideHUD;
+	bool bDisableGearLoadouts;
+
+	bool bHookDispatch;
+
 	void Initialize();
 	void Draw();
 	void Process();

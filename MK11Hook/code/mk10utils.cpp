@@ -7,7 +7,7 @@ int64 GetMKXEntryPoint()
 	return addr;
 }
 
-int64 _mk11addr(__int64 addr)
+int64 _addr(__int64 addr)
 {
 	return GetMKXEntryPoint() - 0x140000000 + addr;
 }
