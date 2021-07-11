@@ -725,6 +725,8 @@ static void ShowHelpMarker(const char* desc)
 
 void MK11Menu::Initialize()
 {
+	bIsActive = false;
+
 	bPlayer1ModifierEnabled = false;
 	bPlayer2ModifierEnabled = false;
 

@@ -162,9 +162,6 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 			MK11::SetCharacterMKX(PLAYER2, TheMenu->szPlayer2ModifierCharacter);
 	}
 
-	if (TheMenu->bAutoHideHUD)
-		MK11::HideHUD();
-
 	printf("MK11Hook::Info() | %s VS %s\n", MK11::GetCharacterName(PLAYER1), MK11::GetCharacterName(PLAYER2));
 
 
@@ -224,9 +221,9 @@ int64 MK11Hooks::HookSetProperty(int64 ptr, char * name, int64 unk)
 	return ((int64(__fastcall*)(int64, char*, int64))_addr(0x141A6B8B0))(ptr,name,unk);
 }
 
-void MK11Hooks::HookReadPropertyValue(int64 ptr, int64 * unk, int64 * value)
+void MK11Hooks::HookReadPropertyValue(int64 ptr, int* unk, int* value)
 {
-	int64 input = *value;
+	int input = *value;
 	if (ptr == hud_property)
 	{
 		if (TheMenu->bForceDisableHUD)
@@ -234,7 +231,7 @@ void MK11Hooks::HookReadPropertyValue(int64 ptr, int64 * unk, int64 * value)
 	}
 
 
-	*unk = *(int64*)(ptr + 408) & input | *unk & ~*(int64*)(ptr + 408);
+	*unk = *(int*)(ptr + 408) & input | *unk & ~*(int*)(ptr + 408);
 }
 
 int64 MK11Hooks::HookLoadouts(int64 ptr)

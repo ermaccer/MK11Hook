@@ -82,7 +82,7 @@ namespace MK11Hooks {
 	int64 HookLoadCharacter(int64 ptr, char* name);
 
 	int64  HookSetProperty(int64 ptr, char* name, int64 unk);
-	void   HookReadPropertyValue(int64 ptr, int64* unk, int64* value);
+	void   HookReadPropertyValue(int64 ptr, int* unk, int* value);
 
 	int64  HookLoadouts(int64 ptr);
 
