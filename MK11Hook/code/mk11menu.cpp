@@ -1166,6 +1166,13 @@ void MK11Menu::Process()
 
 void MK11Menu::UpdateControls()
 {
+	if (GetAsyncKeyState(SettingsMgr->iHookMenuOpenKey))
+	{
+		if (GetTickCount64() - timer <= 150) return;
+		timer = GetTickCount64();
+		bIsActive ^= 1;
+	}
+
 
 	if (GetAsyncKeyState(VK_F5))
 	{
