@@ -39,4 +39,4 @@ DWORD WINAPI DirectXHookThread(LPVOID lpReserved);
 // compat with asimk11
 extern "C" __declspec(dllexport) void __stdcall SharedPresent();
 extern "C" __declspec(dllexport) void SharedStyle();
-extern "C" __declspec(dllexport) void InitShared();
+extern "C" __declspec(dllexport) void InitShared(ImGuiContext* ctx);

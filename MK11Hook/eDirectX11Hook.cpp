@@ -16,10 +16,11 @@ bool eDirectX11Hook::ms_bFirstDraw;
 
 
 // compat
-bool bInitShared = false;
-extern "C" __declspec(dllexport) void InitShared()
+bool bInitShared= false;
+void InitShared(ImGuiContext* ctx) 
 {
 	bInitShared = true;
+	ImGui::SetCurrentContext(ctx);
 }
 
 void SharedStyle()
@@ -189,14 +190,7 @@ LRESULT __stdcall eDirectX11Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 	case WM_SETFOCUS:
 		TheMenu->bFocused = true;
 		break;
-	case WM_MOUSEWHEEL:
-		GET_WHEEL_DELTA_WPARAM(wParam);
-		TheMenu->mouseScroll = wParam;
-		// todo
-		break;
 	case WM_KEYDOWN:
-		if (wParam == SettingsMgr->iHookMenuOpenKey)
-			TheMenu->bIsActive ^= 1;
 		break;
 	default:
 		break;
