@@ -142,6 +142,11 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	((void(__fastcall*)())_addr(0x141153C50))();
 }
 
+void MK11Hooks::PreLoadHook(int64 a1, int64 a2, int a3)
+{
+	((void(__fastcall*)(int64, int64, int))_addr(0x1408FCDB0))(a1,a2,a3);
+}
+
 void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4)
 {
 	printf("MK11Hook::Info() | Starting a new fight!\n");
@@ -153,7 +158,6 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	if (TheMenu->bStageModifier)
 		MK11::SetStage(TheMenu->szStageModifierStage);
 
-
 	if (TheMenu->iCharacterModifierMode == MODIFIER_FIGHT)
 	{
 		if (TheMenu->bPlayer1ModifierEnabled)
@@ -162,20 +166,54 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 			MK11::SetCharacterMKX(PLAYER2, TheMenu->szPlayer2ModifierCharacter);
 	}
 
+
+	if (TheMenu->bEnableTagAssistModifier)
+	{
+		TagAssistModifier tag(TheMenu->szPlayer1TagAssistCharacter);
+		tag.Activate(MK11::GetCharacterInfo(PLAYER1));
+
+		TagAssistModifierObject* obj = tag.CreateObject();
+
+		if (obj)
+			obj->Activate(MK11::GetCharacterObject(PLAYER1));
+
+		MK11::GetModifierManager()->ActivateModifier(&tag, MK11::GetCharacterObject(PLAYER1));
+		MK11::LoadModifierAssets();
+		printf("MK11Hook::Info() | P1 Tag Assist: %s\n", TheMenu->szPlayer1TagAssistCharacter);
+	}
+	if (TheMenu->bEnableTagAssistModifierPlayer2)
+	{
+		TagAssistModifier tag(TheMenu->szPlayer2TagAssistCharacter);
+		tag.Activate(MK11::GetCharacterInfo(PLAYER2));
+
+		TagAssistModifierObject* obj = tag.CreateObject();
+
+		if (obj)
+			obj->Activate(MK11::GetCharacterObject(PLAYER2));
+
+		MK11::GetModifierManager()->ActivateModifier(&tag, MK11::GetCharacterObject(PLAYER2));
+		MK11::LoadModifierAssets();
+		printf("MK11Hook::Info() | P2 Tag Assist: %s\n", TheMenu->szPlayer2TagAssistCharacter);
+	}
+
 	printf("MK11Hook::Info() | %s VS %s\n", MK11::GetCharacterName(PLAYER1), MK11::GetCharacterName(PLAYER2));
+
+
 
 
 	((void(__fastcall*)(int64,int64,int64,int64))_addr(0x141159BE0))(eventID,a2,a3,a4);
 
 }
 
-int64 MK11Hooks::PostLoadHook()
+void MK11Hooks::PostLoadHook()
 {
-	return ((int64(__fastcall*)())_addr(0x14056F120))();
+
+	((int64(__fastcall*)())_addr(0x14090F7A0))();
 }
 
 int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 {
+	printf("%x\n", (int64)&name[0]);
 	if (TheMenu->iCharacterModifierMode == MODIFIER_SCREEN)
 	{
 		if (name)
@@ -262,6 +300,51 @@ void MK11Hooks::HookDispatch(int64 ptr, int a2)
 
 }
 
+void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char * name, int level, int64 loadout, bool altPalette)
+{
+	if (plr <= 1 && teamNo <= 3)
+	{
+		int64 chr = 120 * ((int)teamNo + 4i64 * (int)plr) + ptr + 448;
+
+		if (TheMenu->iCharacterModifierMode == MODIFIER_SCREEN && (TheMenu->bPlayer1ModifierEnabled || TheMenu->bPlayer2ModifierEnabled))
+		{
+			if (name)
+			{
+
+				switch (plr)
+				{
+				case PLAYER1:
+					if (TheMenu->bPlayer1ModifierEnabled)
+						name = TheMenu->szPlayer1ModifierCharacter;
+					break;
+				case PLAYER2:
+					if (TheMenu->bPlayer2ModifierEnabled)
+						name = TheMenu->szPlayer2ModifierCharacter;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+
+		MK11::SetCharacter(chr, name, 0, 0);
+
+		MK11::SetCharacterLevel(chr, level);
+		MK11::SetCharacterAltPal(chr, altPalette);
+		if (loadout)
+			MK11::SetCharacterLoadout(chr, loadout);
+	}
+
+}
+
+void MK11Hooks::HookSetLadderScreen(int64 chr, char * name, int64 ptr, int64 unk)
+{
+	if (TheMenu->bPlayer1ModifierEnabled)
+		name = TheMenu->szPlayer1ModifierCharacter;
+	MK11::SetCharacter(chr, name, ptr, unk);
+}
+
 MKCharacter* MK11::GetCharacterObject(PLAYER_NUM plr)
 {
 	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F8B00))(plr);
@@ -315,6 +398,22 @@ void MK11::SetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
 {
 	((void(__fastcall*)(int64, const char*, int64, int64))_addr(0x1405982F0))(chr, name, ptr, unk);
 
+}
+
+void MK11::SetCharacterLevel(int64 chr, int level)
+{
+	((void(__fastcall*)(int64, int))_addr(0x1405997C0))(chr, level);
+}
+
+void MK11::SetCharacterAltPal(int64 chr, int value)
+{
+
+	((void(__fastcall*)(int64, int))_addr(0x14059DE20))(chr, value);
+}
+
+void MK11::SetCharacterLoadout(int64 chr, int64 loadout)
+{
+	((void(__fastcall*)(int64, int64))_addr(0x1405998F0))(chr, loadout);
 }
 
 
@@ -420,4 +519,16 @@ MKModifier* MK11::GetModifierManager()
 {
 	int64 info = ((int64(__fastcall*)())_addr(0x140679670))();
 	return ((MKModifier*(__fastcall*)(int64))_addr(0x14067B240))(info);
+}
+
+void MK11::LoadModifierAssets()
+{
+	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
+	((void(__fastcall*)(int64, bool))_addr(0x14057D590))(gameinfo, 1);
+
+}
+
+void MK11::mk_sleep(int64 duration)
+{
+	((void(__fastcall*)(int64))_addr(0x1411544D0))(duration);
 }

@@ -6,7 +6,7 @@
 #define GFG_GAME_INFO  0x14348ED10
 
 
-#define MK11HOOK_VERSION "0.4.2"
+#define MK11HOOK_VERSION "0.4.3"
 
 enum  PLAYER_NUM
 {
@@ -31,6 +31,7 @@ enum eCharacterClass {
 };
 
 
+
 namespace MK11 {
 	MKCharacter* GetCharacterObject(PLAYER_NUM plr);
 	int64 GetCharacterInfo(PLAYER_NUM plr);
@@ -49,7 +50,13 @@ namespace MK11 {
 	// mkx recreation
 	void SetCharacterMKX(PLAYER_NUM plr, char* name);
 	void SetStage(const char* stage);
+
+
+	// definition functions
 	void SetCharacter(int64 chr, char* name, int64 ptr, int64 unk);
+	void SetCharacterLevel(int64 chr, int level);
+	void SetCharacterAltPal(int64 chr, int value);
+	void SetCharacterLoadout(int64 chr, int64 loadout);
 
 	char* GetCharacterName(PLAYER_NUM plr);
 		
@@ -70,14 +77,19 @@ namespace MK11 {
 
 
 	MKModifier* GetModifierManager();
+	void		LoadModifierAssets();
+
+
+	void mk_sleep(int64 duration);
 
 }
 
 namespace MK11Hooks {
 	// hooks
 	void  HookProcessStuff();
+	void  PreLoadHook(int64 a1, int64 a2, int a3);
 	void  HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4);
-	int64 PostLoadHook();
+	void  PostLoadHook();
 
 	int64 HookLoadCharacter(int64 ptr, char* name);
 
@@ -87,6 +99,9 @@ namespace MK11Hooks {
 	int64  HookLoadouts(int64 ptr);
 
 	void   HookDispatch(int64 ptr, int a2);
+
+	void   HookSetSelectScreen(int64 ptr, PLAYER_NUM plr, int teamNo, char *name, int level, int64 loadout, bool altPalette);
+	void   HookSetLadderScreen(int64 chr, char* name, int64 ptr, int64 unk);
 
 
 }

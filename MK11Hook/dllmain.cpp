@@ -35,6 +35,7 @@ bool ValidateGameVersion()
 	}
 }
 
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -42,7 +43,6 @@ void OnInitializeHook()
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 		freopen("CONOUT$", "w", stderr);
-
 	}
 
 	printf("MK11Hook::OnInitializeHook() | Begin!\n");
@@ -52,7 +52,6 @@ void OnInitializeHook()
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
 	InjectHook(_addr(0x14092B853), tramp->Jump(MK11Hooks::HookProcessStuff));
 	InjectHook(_addr(0x14090CF53), tramp->Jump(MK11Hooks::HookStartupFightRecording));
-	InjectHook(_addr(0x14090D617), tramp->Jump(MK11Hooks::PostLoadHook));
 
 	
 	Nop(_addr(0x1419A9763), 7);
@@ -60,7 +59,15 @@ void OnInitializeHook()
 	InjectHook(_addr(0x1419A9781), tramp->Jump(&MKCamera::HookedSetPosition));
 	InjectHook(_addr(0x1419A978E), tramp->Jump(&MKCamera::HookedSetRotation));
 
-	InjectHook(_addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
+	if (SettingsMgr->bUseLegacyCharacterModifier)
+	{
+		InjectHook(_addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
+	}
+	else
+	{
+		InjectHook(_addr(0x14086D4A0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
+		InjectHook(_addr(0x140598AEE), tramp->Jump(MK11Hooks::HookSetLadderScreen));
+	}
 
 
 	InjectHook(_addr(0x140976DF4), tramp->Jump(MK11::SetKryptCharacter));
@@ -78,9 +85,6 @@ void OnInitializeHook()
 	InjectHook(_addr(0x14084B658), tramp->Jump(MK11Hooks::HookLoadouts));
 
 	InjectHook(_addr(0x141B45ED4), tramp->Jump(MK11Hooks::HookDispatch));
-
-
-    //InjectHook(_addr(0x14056A258), tramp->Jump(&MKCharacter::GetCharacterData));
 
 }
 

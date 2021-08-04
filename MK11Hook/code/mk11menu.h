@@ -133,6 +133,13 @@ public:
 	char szCurrentKryptCharacter[128];
 	char szCurrentKryptCharacterClass[128];
 
+
+	// modifiers
+	bool bEnableTagAssistModifier;
+	bool bEnableTagAssistModifierPlayer2;
+	char szPlayer1TagAssistCharacter[128] = {};
+	char szPlayer2TagAssistCharacter[128] = {};
+
 	// misc
 	bool bForceDisableHUD;
 	bool bAutoHideHUD;
@@ -145,6 +152,7 @@ public:
 	void Process();
 	void UpdateControls();
 	void UpdateMouse();
+
 	bool GetActiveState();
 };
 

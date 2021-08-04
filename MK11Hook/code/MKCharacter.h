@@ -56,3 +56,4 @@ public:
 
 	bool IsCrouching();
 };
+

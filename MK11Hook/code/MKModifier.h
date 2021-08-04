@@ -7,11 +7,19 @@ public:
 	char data[96] = {};
 };
 
-class TagModifier : public BaseModifier {
+class TagAssistModifierObject {
 public:
-	TagModifier(const char* character);
-	void Activate(int64 info);
+	void Activate(MKCharacter* obj);
 };
+
+class TagAssistModifier : public BaseModifier {
+public:
+	TagAssistModifier(const char* character);
+	void Activate(int64 info);
+	TagAssistModifierObject* CreateObject();
+};
+
+
 
 
 class MKModifier {

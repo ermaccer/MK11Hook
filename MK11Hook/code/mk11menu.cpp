@@ -9,6 +9,7 @@
 #include "eNotifManager.h"
 #include "MKCamera.h"
 
+
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
 char textBuffer[260] = {};
@@ -726,79 +727,78 @@ static void ShowHelpMarker(const char* desc)
 void MK11Menu::Initialize()
 {
 	bIsActive = false;
-
 	bPlayer1ModifierEnabled = false;
 	bPlayer2ModifierEnabled = false;
-
-	iCharacterModifierMode = MODIFIER_SCREEN;
-
+	bNoHealthPlayer1 = false;
+	bNoHealthPlayer2 = false;
+	b1HealthPlayer1 = false;
+	b1HealthPlayer2 = false;
 	bCustomCamera = false;
 	bCustomCameraRot = false;
 	bCustomFOV = false;
-	iCurrentTab = 0;
-	bSlowMotionEnabled = 0;
-	fSlowMotionSpeed = 0.5f;
-
 	bYObtained = false;
-	fFreeCameraSpeed = 5.25f;
-	iFreeCameraRotSpeed = 120;
 	bEnableCustomCameras = false;
-	iCurrentCustomCamera = -1;
-	fAdjustCamZ = 161.0f;
-	fAdjustCamX = -10.0f;
-	fAdjustCam3 = 0;
-	fAdjustCamX3 = 0;
-	fAdjustCamZ3 = 0;
-	fAdjustCamCrouch = 120.0f;
-	camFov = 0;
-	sprintf(szCurrentCameraOption, szCameraModes[0]);
-	sprintf(szCurrentModifier, szModifierModes[0]);
-	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
-	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
-	sprintf(szStageModifierStage, szStageNames[0]);
-	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
-	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
-	mouseSpeedX = 0;
-	mouseSpeedY = 0;
-	mouseScroll = 0;
-	mouseSens = 5;
 	bInvertMouseY = true;
 	bFreezeWorld = false;
 	bFocused = false;
 	bAboutWindow = false;
-
 	bChangePlayerSpeed = false;
-	fPlayer1Speed = 1.0f;
-	fPlayer2Speed = 1.0f;
-
-
 	bChangePlayerScale = false;
-	fPlayer1Scale = { 1.0f,1.0f,1.0f };
-	fPlayer2Scale = { 1.0f,1.0f,1.0f };
-
 	bInfiniteHealthPlayer1 = false;
 	bInfiniteHealthPlayer2 = false;
 	bInfiniteAttackBarPlayer1 = false;
 	bInfiniteDefendBarPlayer1 = false;
 	bInfiniteAttackBarPlayer2 = false;
 	bInfiniteDefendBarPlayer2 = false;
-
-	bNoHealthPlayer1 = false;
-	bNoHealthPlayer2 = false;
-	b1HealthPlayer1 = false;
-	b1HealthPlayer2 = false;
-
-
 	bChangeKryptCharacter = false;
-	sprintf(szCurrentKryptCharacter, szCharacters[0]);
-	sprintf(szCurrentKryptCharacterClass, szCharClasses[0]);
-
 	bRepositionCursor = false;
 	bAutoHideHUD = false;
 	bDisableGearLoadouts = false;
 	bForceDisableHUD = false;
 	bHookDispatch = false;
 	bForceMoveCamera = false;
+	bEnableTagAssistModifier = false;
+	bEnableTagAssistModifierPlayer2 = false;
+	bSlowMotionEnabled = false;
+
+	iCharacterModifierMode = MODIFIER_SCREEN;
+	iCurrentTab = 0;
+	iFreeCameraRotSpeed = 120;
+	iCurrentCustomCamera = -1;
+	mouseSpeedX = 0;
+	mouseSpeedY = 0;
+	mouseScroll = 0;
+	mouseSens = 5;
+	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
+	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
+
+	fSlowMotionSpeed = 0.5f;
+	fFreeCameraSpeed = 5.25f;
+	fAdjustCamZ = 161.0f;
+	fAdjustCamX = -10.0f;
+	fAdjustCam3 = 0;
+	fAdjustCamX3 = 0;
+	fAdjustCamZ3 = 0;
+	fAdjustCamCrouch = 120.0f;
+	fPlayer1Speed = 1.0f;
+	fPlayer2Speed = 1.0f;
+	fPlayer1Scale = { 1.0f,1.0f,1.0f };
+	fPlayer2Scale = { 1.0f,1.0f,1.0f };
+	camFov = 0;
+
+
+
+
+	sprintf(szCurrentCameraOption, szCameraModes[0]);
+	sprintf(szCurrentModifier, szModifierModes[0]);
+	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
+	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
+	sprintf(szStageModifierStage, szStageNames[0]);
+	sprintf(szCurrentKryptCharacter, szCharacters[0]);
+	sprintf(szCurrentKryptCharacterClass, szCharClasses[0]);
+	sprintf(szPlayer1TagAssistCharacter, szKryptCharacters[0]);
+	sprintf(szPlayer2TagAssistCharacter, szKryptCharacters[0]);
+
 }
 
 void MK11Menu::Draw()
@@ -840,7 +840,7 @@ void MK11Menu::Draw()
 			if (iCharacterModifierMode == MODIFIER_SCREEN)
 			{
 				ImGui::SameLine();
-				ShowHelpMarker("Should work in all game modes, to reset character cell (in case it gets stuck) please exit and enter game mode again, or just select original character from modifier list. You'll most likely need a gamepad for tower modes. NB: Doesn't work with DLC characters!");
+				ShowHelpMarker("Should work in all game modes. You'll most likely need a gamepad for tower modes when playing as NPCs.");
 			}
 				
 
@@ -897,6 +897,49 @@ void MK11Menu::Draw()
 			}
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("Modifiers"))
+		{
+
+			ImGui::Separator();
+			ImGui::Checkbox("Player 1 Tag Assist Modifier", &bEnableTagAssistModifier);
+
+
+			if (ImGui::BeginCombo("Player 1 Tag Assist Character", szPlayer1TagAssistCharacter))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				{
+					bool is_selected = (szPlayer1TagAssistCharacter == szKryptCharacters[n]);
+					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+						sprintf(szPlayer1TagAssistCharacter, szKryptCharacters[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::Separator();
+			ImGui::Checkbox("Player 2 Tag Assist Modifier", &bEnableTagAssistModifierPlayer2);
+
+
+			if (ImGui::BeginCombo("Player 2 Tag Assist Character", szPlayer2TagAssistCharacter))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				{
+					bool is_selected = (szPlayer2TagAssistCharacter == szKryptCharacters[n]);
+					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+						sprintf(szPlayer2TagAssistCharacter, szKryptCharacters[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::Separator();
+
+			ImGui::Text("NOTE: Scorpion will not work unless previously loaded (eg. P2).\nIf you get load crashes enable modifier in-game then restart or rematch (when online).");
+			ImGui::Text("Restart match when you toggle these in game!");
+			ImGui::EndTabItem();
+		}	
 		if (ImGui::BeginTabItem("Player Control"))
 		{
 			ImGui::Checkbox("Change Player Speed", &bChangePlayerSpeed);
@@ -1139,7 +1182,6 @@ void MK11Menu::Draw()
 			ImGui::SameLine();
 			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
-
 		}
 
 		ImGui::End();
