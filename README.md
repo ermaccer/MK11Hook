@@ -24,6 +24,21 @@ and is ready to use. By default **F1** will open or close in-game menu.
 ![Preview](https://raw.githubusercontent.com/ermaccer/ermaccer.github.io/gh-pages/assets/mods/mk11/mk11hook/menu.jpg)
 
 
+# Controller Support
+Any XInput compatible gamepad should work.
+
+## Gamepad Controls
+| Button | Effect |
+| --- | --- |
+| L3 + R3 | Open/Close menu|
+| X | Adjust menu|
+| A | Select |
+| B | Back |
+| D-Pad | Move/ Scale menu in adjust mode |
+| Left Stick | Move menu in adjust mode |
+
+Gamepad support can be disabled in the .ini file by setting **bEnableGamepadSupport** to false.
+
 ## Features
 | Feature | Description |
 | --- | --- |
