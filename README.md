@@ -16,13 +16,6 @@ Archive breakdown:
  - MK11Hook.asi 
  - MK11Hook.ini - configuration file
 
-# Usage
-
-If installed correctly, a notification will appear informing that the plugin was installed
-and is ready to use. By default **F1** will open or close in-game menu.
-
-![Preview](https://raw.githubusercontent.com/ermaccer/ermaccer.github.io/gh-pages/assets/mods/mk11/mk11hook/menu.jpg)
-
 
 # Controller Support
 Any XInput compatible gamepad should work.
@@ -38,6 +31,14 @@ Any XInput compatible gamepad should work.
 | Left Stick | Move menu in adjust mode |
 
 Gamepad support can be disabled in the .ini file by setting **bEnableGamepadSupport** to false.
+
+# Usage
+
+If installed correctly, a notification will appear informing that the plugin was installed
+and is ready to use. By default **F1** will open or close in-game menu.
+
+![Preview](https://raw.githubusercontent.com/ermaccer/ermaccer.github.io/gh-pages/assets/mods/mk11/mk11hook/menu.jpg)
+
 
 ## Features
 | Feature | Description |
@@ -58,6 +59,14 @@ Gamepad support can be disabled in the .ini file by setting **bEnableGamepadSupp
 ![Preview](https://raw.githubusercontent.com/ermaccer/ermaccer.github.io/gh-pages/assets/mods/mk11/mk11hook/1.jpg)
 ![Preview](https://raw.githubusercontent.com/ermaccer/ermaccer.github.io/gh-pages/assets/mods/mk11/mk11hook/2.jpg)
 
+## Online Compatibility
+Needless to say, any cheats will **NOT** work online.
+
+Playing as NPCs or using modifiers online is possible only if both players
+have the plugin installed and synchronize settings with each other on select
+screen before selecting anyone. In short, do everything on select screen
+and do it in private games only. You cannot use any menu stuff against
+random players.
 
 # Building
 

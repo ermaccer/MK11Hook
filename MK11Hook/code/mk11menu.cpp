@@ -1121,9 +1121,9 @@ void MK11Menu::Draw()
 
 			ImGui::Text("Infinite Defensive Bar\n");
 			ImGui::NextColumn();
-			ImGui::Checkbox("P1##atk", &m_bInfiniteDefendP1);
+			ImGui::Checkbox("P1##def", &m_bInfiniteDefendP1);
 			ImGui::SameLine();					  
-			ImGui::Checkbox("P2##atk", &m_bInfiniteDefendP2);
+			ImGui::Checkbox("P2##def", &m_bInfiniteDefendP2);
 			ImGui::NextColumn();
 
 

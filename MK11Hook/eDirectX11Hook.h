@@ -25,8 +25,6 @@ public:
 	static bool ms_bInit;
 	static bool ms_bFirstDraw;
 
-	static void	   HandleScaling();
-
 	static void	   Init();
 	static void    SetImGuiStyle();
 	static void    InitImGui();

@@ -38,8 +38,6 @@ void __stdcall SharedPresent()
 	}
 }
 
-
-
 inline bool ShouldHookDX(float timeout = 2.5f)
 {
 	auto start = std::chrono::system_clock::now();
@@ -56,19 +54,12 @@ inline bool ShouldHookDX(float timeout = 2.5f)
 }
 
 
-void eDirectX11Hook::HandleScaling()
-{
-	unsigned int dpiX = 0;
-	unsigned int dpiY = 0;
-
-}
-
 void eDirectX11Hook::Init()
 {
 	m_pPresent = 0;
 	pDevice = 0;
 	pContext = 0;
-	ms_bFirstDraw = false;
+	ms_bFirstDraw = true;
 	ms_bInit = false;
 	ms_hWindow = 0;
 }
@@ -139,7 +130,8 @@ void eDirectX11Hook::InitImGui()
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	ImGui_ImplWin32_Init(ms_hWindow);
 	ImGui_ImplDX11_Init(pDevice, pContext);
-	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), nullptr, 0, nullptr);
+	if (SettingsMgr->bEnableGamepadSupport)
+		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), nullptr, 0, nullptr);
 	SharedStyle();
 }
 
@@ -161,7 +153,6 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 			InitImGui();
 			ms_bInit = true;
 		}
-
 		else
 			return m_pPresent(pSwapChain, SyncInterval, Flags);
 	}
@@ -217,9 +208,6 @@ LRESULT __stdcall eDirectX11Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 
 	return CallWindowProc(ms_pWndProc, hWnd, uMsg, wParam, lParam);
 }
-
-
-
 
 DWORD __stdcall DirectXHookThread(LPVOID lpReserved)
 {
