@@ -39,9 +39,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\DelimStringReader.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\LateStaticInit.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -56,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="code\mk10utils.h">
       <Filter>Header Files\code</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\HookInit.hpp">
-      <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="code\mk11.h">
       <Filter>Header Files\code</Filter>
@@ -144,6 +138,12 @@
     <ClInclude Include="code\MKModifier.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="utils\DelimStringReader.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="code\eGamepadManager.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -154,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="code\mk10utils.cpp">
       <Filter>Header Files\code</Filter>
-    </ClCompile>
-    <ClCompile Include="HookInit.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="code\mk11.cpp">
       <Filter>Header Files\code</Filter>
@@ -223,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="code\MKModifier.cpp">
       <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\eGamepadManager.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>Header Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

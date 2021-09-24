@@ -13,6 +13,8 @@ public:
 	
 	bool bUseLegacyCharacterModifier;
 	bool bMakeAllAbilities1Slot;
+
+	bool bEnableGamepadSupport;
 	// free camera keys
 	int iFreeCameraKeyXPlus;
 	int iFreeCameraKeyXMinus;

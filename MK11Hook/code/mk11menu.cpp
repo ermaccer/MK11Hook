@@ -571,8 +571,6 @@ const char* szCharacters[] = {
 	"LIU_Tower_FireGod",
 
 };
-
-
 const char* szStageNames[]{
 	"BGND_BlackMarketAlley",
 	"BGND_CyberLinKueiAssembly",
@@ -609,10 +607,6 @@ const char* szStageNames[]{
 	"BGND_WuShiDragonGrotto",
 
 };
-
-
-
-
 const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 	"Third Person",
 	"Third Person #2",
@@ -624,16 +618,12 @@ const char* szModifierModes[TOTAL_MODES] = {
 	"Select Screen Swap",
 	"Fight Init",
 };
-
-
 const char* szCharClasses[TOTAL_CHARACTER_CLASSES] = {
 	"Base",
 	"TestCharacters",
 	"Generated",
 	"NPCs",
 };
-
-
 const char* szKryptCharacters[] = {
 	// place npcs first for easy access
 	"CHAR_Cyrax",
@@ -726,64 +716,60 @@ static void ShowHelpMarker(const char* desc)
 
 void MK11Menu::Initialize()
 {
-	bIsActive = false;
-	bPlayer1ModifierEnabled = false;
-	bPlayer2ModifierEnabled = false;
-	bNoHealthPlayer1 = false;
-	bNoHealthPlayer2 = false;
-	b1HealthPlayer1 = false;
-	b1HealthPlayer2 = false;
-	bCustomCamera = false;
-	bCustomCameraRot = false;
-	bCustomFOV = false;
-	bYObtained = false;
-	bEnableCustomCameras = false;
-	bInvertMouseY = true;
-	bFreezeWorld = false;
-	bFocused = false;
-	bAboutWindow = false;
-	bChangePlayerSpeed = false;
-	bChangePlayerScale = false;
-	bInfiniteHealthPlayer1 = false;
-	bInfiniteHealthPlayer2 = false;
-	bInfiniteAttackBarPlayer1 = false;
-	bInfiniteDefendBarPlayer1 = false;
-	bInfiniteAttackBarPlayer2 = false;
-	bInfiniteDefendBarPlayer2 = false;
-	bChangeKryptCharacter = false;
-	bRepositionCursor = false;
-	bAutoHideHUD = false;
-	bDisableGearLoadouts = false;
-	bForceDisableHUD = false;
-	bHookDispatch = false;
-	bForceMoveCamera = false;
-	bEnableTagAssistModifier = false;
-	bEnableTagAssistModifierPlayer2 = false;
-	bSlowMotionEnabled = false;
+	m_bIsActive = false;
+	m_bPlayer1Modifier = false;
+	m_bPlayer2Modifier = false;
+	m_bNoHealthP1 = false;
+	m_bNoHealthP1 = false;
+	m_bOneHealthP1 = false;
+	m_bOneHealthP2 = false;
+	m_bCustomCameraPos = false;
+	m_bCustomCameraRot = false;
+	m_bCustomCameraFOV = false;
+	m_bYObtained = false;
+	m_bCustomCameras = false;
+	m_bFreeCamMouseInvertY = true;
+	m_bFreezeWorld = false;
+	m_bIsFocused = false;
+	m_bChangePlayerSpeed = false;
+	m_bChangePlayerScale = false;
+	m_bInfiniteHealthP1 = false;
+	m_bInfiniteHealthP2 = false;
+	m_bInfiniteAttackP1 = false;
+	m_bInfiniteDefendP1 = false;
+	m_bInfiniteAttackP2 = false;
+	m_bInfiniteDefendP2 = false;
+	m_bKryptModifier = false;
+	m_bAutoHideHUD = false;
+	m_bDisableGearLoadouts = false;
+	m_bDisableHUD = false;
+	m_bHookDispatch = false;
+	m_bForceCameraUpdate = false;
+	m_bTagAssist = false;
+	m_bTagAssistP2 = false;
+	m_bSlowMotion = false;
 
-	iCharacterModifierMode = MODIFIER_SCREEN;
-	iCurrentTab = 0;
-	iFreeCameraRotSpeed = 120;
-	iCurrentCustomCamera = -1;
+	m_nCurrentCharModifier = MODIFIER_SCREEN;
+	m_nFreeCameraRotationSpeed = 120;
+	m_nCurrentCustomCamera = -1;
 	mouseSpeedX = 0;
 	mouseSpeedY = 0;
-	mouseScroll = 0;
 	mouseSens = 5;
 	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
 	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
 
-	fSlowMotionSpeed = 0.5f;
-	fFreeCameraSpeed = 5.25f;
-	fAdjustCamZ = 161.0f;
-	fAdjustCamX = -10.0f;
-	fAdjustCam3 = 0;
-	fAdjustCamX3 = 0;
-	fAdjustCamZ3 = 0;
-	fAdjustCamCrouch = 120.0f;
-	fPlayer1Speed = 1.0f;
-	fPlayer2Speed = 1.0f;
-	fPlayer1Scale = { 1.0f,1.0f,1.0f };
-	fPlayer2Scale = { 1.0f,1.0f,1.0f };
+	m_fSlowMotionSpeed = 0.5f;
+	m_fFreeCameraSpeed = 5.25f;
+	m_fAdjustCustomCameraZ = 161.0f;
+	m_fAdjustCustomCameraX = -10.0f;
+	m_fAdjustCustomCameraThirdPersonY = 0;
+	m_fAdjustCustomCameraThirdPersonX = 0;
+	m_fAdjustCustomCameraThirdPersonZ = 0;
+	m_fAdjustCustomCameraCrouch = 120.0f;
+	m_fP1Speed = 1.0f;
+	m_fP2Speed = 1.0f;
+	m_vP1Scale = { 1.0f,1.0f,1.0f };
+	m_vP2Scale = { 1.0f,1.0f,1.0f };
 	camFov = 0;
 
 
@@ -804,7 +790,7 @@ void MK11Menu::Initialize()
 void MK11Menu::Draw()
 {
 	ImGui::GetIO().MouseDrawCursor = true;
-	ImGui::Begin(GetMK11HookVersion());
+	ImGui::Begin(GetMK11HookVersion(),&m_bIsActive);
 	if (ImGui::BeginTabBar("##tabs"))
 	{
 
@@ -814,7 +800,7 @@ void MK11Menu::Draw()
 			ImGui::Text("Select a method for replacing characters.\nSelect Screen - replaces character during selection, works with normal gamemodes\n"
 				"Fight Init - Replaces character during game loading, allows to change characters\nin story mode, attract, practice.\n");
 
-			if (iCharacterModifierMode == MODIFIER_FIGHT)
+			if (m_nCurrentCharModifier == MODIFIER_FIGHT)
 				ImGui::Text("NOTE: Game modes with intros crash in fight init modifier!\n");
 			if (ImGui::BeginCombo("Modifier Mode", szCurrentModifier))
 			{
@@ -829,20 +815,20 @@ void MK11Menu::Draw()
 				}
 				ImGui::EndCombo();
 			}
-			iCharacterModifierMode = GetModifierMode(szCurrentModifier);
+			m_nCurrentCharModifier = GetModifierMode(szCurrentModifier);
 
 
 			ImGui::Separator();
 
 
-			ImGui::Checkbox("Enable Player 1 Modifier", &bPlayer1ModifierEnabled);
-		
-			if (iCharacterModifierMode == MODIFIER_SCREEN)
+			ImGui::Checkbox("Enable Player 1 Modifier", &m_bPlayer1Modifier);
+
+			if (m_nCurrentCharModifier == MODIFIER_SCREEN)
 			{
 				ImGui::SameLine();
 				ShowHelpMarker("Should work in all game modes. You'll most likely need a gamepad for tower modes when playing as NPCs.");
 			}
-				
+
 
 			if (ImGui::BeginCombo("Player 1 Character", szPlayer1ModifierCharacter))
 			{
@@ -858,7 +844,7 @@ void MK11Menu::Draw()
 				ImGui::EndCombo();
 			}
 			ImGui::Separator();
-			ImGui::Checkbox("Enable Player 2 Modifier", &bPlayer2ModifierEnabled);
+			ImGui::Checkbox("Enable Player 2 Modifier", &m_bPlayer2Modifier);
 
 			if (ImGui::BeginCombo("Player 2 Character", szPlayer2ModifierCharacter))
 			{
@@ -880,7 +866,7 @@ void MK11Menu::Draw()
 		{
 
 
-			ImGui::Checkbox("Enable Stage Modifier", &bStageModifier);
+			ImGui::Checkbox("Enable Stage Modifier", &m_bStageModifier);
 
 			if (ImGui::BeginCombo("Stage", szStageModifierStage))
 			{
@@ -899,9 +885,7 @@ void MK11Menu::Draw()
 		}
 		if (ImGui::BeginTabItem("Modifiers"))
 		{
-
-			ImGui::Separator();
-			ImGui::Checkbox("Player 1 Tag Assist Modifier", &bEnableTagAssistModifier);
+			ImGui::Checkbox("Player 1 Tag Assist Modifier", &m_bTagAssist);
 
 
 			if (ImGui::BeginCombo("Player 1 Tag Assist Character", szPlayer1TagAssistCharacter))
@@ -918,7 +902,7 @@ void MK11Menu::Draw()
 				ImGui::EndCombo();
 			}
 			ImGui::Separator();
-			ImGui::Checkbox("Player 2 Tag Assist Modifier", &bEnableTagAssistModifierPlayer2);
+			ImGui::Checkbox("Player 2 Tag Assist Modifier", &m_bTagAssistP2);
 
 
 			if (ImGui::BeginCombo("Player 2 Tag Assist Character", szPlayer2TagAssistCharacter))
@@ -939,75 +923,77 @@ void MK11Menu::Draw()
 			ImGui::Text("NOTE: Scorpion will not work unless previously loaded (eg. P2).\nIf you get load crashes enable modifier in-game then restart or rematch (when online).");
 			ImGui::Text("Restart match when you toggle these in game!");
 			ImGui::EndTabItem();
-		}	
+		}
 		if (ImGui::BeginTabItem("Player Control"))
 		{
-			ImGui::Checkbox("Change Player Speed", &bChangePlayerSpeed);
-			ImGui::SliderFloat("Player 1", &fPlayer1Speed, 0.0, 10.0f);
-			ImGui::SliderFloat("Player 2", &fPlayer2Speed, 0.0, 10.0f);
-
-			bool reset = ImGui::Button("Reset Speed");
-			if (reset)
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
 			{
-				fPlayer1Speed = 1.0f;
-				fPlayer2Speed = 1.0f;
-				if (MK11::GetCharacterObject(PLAYER1))
-					MK11::GetCharacterObject(PLAYER1)->SetSpeed(1.0f);
-				if (MK11::GetCharacterObject(PLAYER2))
-					MK11::GetCharacterObject(PLAYER2)->SetSpeed(1.0f);
-			}
+				ImGui::Checkbox("Change Player Speed", &m_bChangePlayerSpeed);
+				ImGui::SliderFloat("Player 1", &m_fP1Speed, 0.0, 10.0f);
+				ImGui::SliderFloat("Player 2", &m_fP2Speed, 0.0, 10.0f);
+				if (ImGui::Button("Reset Speed"))
+				{
+					m_fP1Speed = 1.0f;
+					m_fP2Speed = 1.0f;
+					if (GetObj(PLAYER1))
+						GetObj(PLAYER1)->SetSpeed(m_fP1Speed);
+					if (GetObj(PLAYER2))
+						GetObj(PLAYER2)->SetSpeed(m_fP1Speed);
+				}
 
-			ImGui::Separator();
-			ImGui::Checkbox("Change Player Scale", &bChangePlayerScale);
-			ImGui::InputFloat3("Player 1 ", &fPlayer1Scale.X);
-			ImGui::InputFloat3("Player 2 ", &fPlayer2Scale.X);
+				ImGui::Checkbox("Change Player Scale", &m_bChangePlayerScale);
+				ImGui::InputFloat3("Player 1 ", &m_vP1Scale.X);
+				ImGui::InputFloat3("Player 2 ", &m_vP2Scale.X);
 
-			bool scale_reset = ImGui::Button("Reset Scale");
-			if (scale_reset)
-			{
-				fPlayer1Scale = { 1.0f,1.0f,1.0f };
-				fPlayer2Scale = { 1.0f,1.0f,1.0f };
-				if (MK11::GetCharacterObject(PLAYER1))
-					MK11::GetCharacterObject(PLAYER1)->SetScale(&fPlayer1Scale);
-				if (MK11::GetCharacterObject(PLAYER2))
-					MK11::GetCharacterObject(PLAYER2)->SetScale(&fPlayer2Scale);
-			}
+				if (ImGui::Button("Reset Scale"))
+				{
+					m_vP1Scale = { 1.0f,1.0f,1.0f };
+					m_vP2Scale = { 1.0f,1.0f,1.0f };
+					if (GetObj(PLAYER1))
+						GetObj(PLAYER1)->SetScale(&m_vP1Scale);
+					if (GetObj(PLAYER2))
+						GetObj(PLAYER2)->SetScale(&m_vP2Scale);
+				}
 
-			ImGui::Separator();
-			ImGui::Text("Position");
-			ImGui::SameLine(); ShowHelpMarker("Preview only!");
-			if (MK11::GetCharacterObject(PLAYER1))
-			{
-				MK11::GetCharacterPosition(&plrPos, PLAYER1);
-				ImGui::InputFloat3("X | Y | Z", &plrPos.X);
+
+				ImGui::Separator();
+				ImGui::Text("Position");
+				ImGui::SameLine(); ShowHelpMarker("Read only!");
+				if (GetObj(PLAYER1))
+				{
+					GetCharacterPosition(&plrPos, PLAYER1);
+					ImGui::InputFloat3("X | Y | Z", &plrPos.X);
+				}
+				if (GetObj(PLAYER2))
+				{
+					GetCharacterPosition(&plrPos2, PLAYER2);
+					ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
+				}
 			}
-			if (MK11::GetCharacterObject(PLAYER2))
-			{
-				MK11::GetCharacterPosition(&plrPos2, PLAYER2);
-				ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
-			}
+			else
+				ImGui::Text("Player options are only available in-game!");
 
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Speed Modifier"))
 		{
 			ImGui::Text("Gamespeed Control");
-			ImGui::InputFloat("", &fSlowMotionSpeed, 0.1);
+			ImGui::InputFloat("", &m_fSlowMotionSpeed, 0.1);
 
-			if (fSlowMotionSpeed > 2.0f) fSlowMotionSpeed = 2.0f;
-			if (fSlowMotionSpeed < 0.0f) fSlowMotionSpeed = 0.0f;
-			ImGui::Checkbox("Enable", &bSlowMotionEnabled);
+			if (m_fSlowMotionSpeed > 2.0f) m_fSlowMotionSpeed = 2.0f;
+			if (m_fSlowMotionSpeed < 0.0f) m_fSlowMotionSpeed = 0.0f;
+			ImGui::Checkbox("Enable", &m_bSlowMotion);
 			ImGui::SameLine();
 			ShowHelpMarker("Hotkey - F5");
 
 
 			ImGui::Separator();
 			ImGui::Text("Tick this checkbox if you want to freeze game with a button, this might cause\nissues with pause menus and stuff so enable only when needed!");
-			ImGui::Checkbox("Hook Freeze World", &bHookDispatch);
+			ImGui::Checkbox("Hook Freeze World", &m_bHookDispatch);
 
-			if (bHookDispatch)
+			if (m_bHookDispatch)
 			{
-				ImGui::Checkbox("Freeze World", &bFreezeWorld);
+				ImGui::Checkbox("Freeze World", &m_bFreezeWorld);
 				ImGui::SameLine();
 				ShowHelpMarker("Hotkey - F2");
 			}
@@ -1018,39 +1004,48 @@ void MK11Menu::Draw()
 		}
 		if (ImGui::BeginTabItem("Camera Control"))
 		{
-			ImGui::Checkbox("Custom Camera Position", &bCustomCamera);
+			ImGui::Checkbox("Set Camera Position", &m_bCustomCameraPos);
 			ImGui::InputFloat3("X | Y | Z", &camPos.X);
-			ImGui::Checkbox("Custom Camera Rotation", &bCustomCameraRot);
+			ImGui::Checkbox("Set Camera Rotation", &m_bCustomCameraRot);
 			ImGui::InputInt3("Pitch | Yaw | Roll", &camRot.Pitch);
 
-			ImGui::Checkbox("Custom FOV", &bCustomFOV);
+			ImGui::Checkbox("Set FOV", &m_bCustomCameraFOV);
 			ImGui::InputFloat("FOV", &camFov);
 
 			ImGui::Separator();
-			ImGui::Checkbox("Enable Freecam", &bFreeCameraMovement);
-			ImGui::SameLine(); ShowHelpMarker("Requires all custom toggles enabled!\nYou can configure keys in .ini file.");
-			ImGui::InputFloat("Freecam Speed", &fFreeCameraSpeed);
-			ImGui::InputInt("Freecam Rotation Speed", &iFreeCameraRotSpeed);
+			ImGui::Checkbox("Enable Freecam", &m_bFreeCam);
+			ImGui::SameLine(); ShowHelpMarker("Allows to move camera with certain keys.\nRequires all toggles enabled!\nYou can configure keys in .ini file.");
 
-			ImGui::Separator();
-			ImGui::Text("Check this option if the game you can't move camera anymore after fatalities or win poses.");
-			ImGui::Checkbox("Force Camera To Move", &bForceMoveCamera);
-			
-
-			ImGui::Separator();
-			ImGui::Checkbox("Mouse Control", &bEnableMouseControl);
-
-			if (bEnableMouseControl)
+			if (m_bFreeCam)
 			{
-				ImGui::Checkbox("Invert Y", &bInvertMouseY);
-				ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
+				if (!m_bCustomCameraPos || !m_bCustomCameraRot || !m_bCustomCameraFOV)
+					ImGui::TextColored(ImVec4(1.f, 0.3f, 0.3f, 1.f), "Check rest of the Set Camera options!");
+
+				ImGui::InputFloat("Freecam Speed", &m_fFreeCameraSpeed);
+				ImGui::InputInt("Freecam Rotation Speed", &m_nFreeCameraRotationSpeed);
+
+				ImGui::Separator();
+				ImGui::Checkbox("Mouse Control", &m_bFreeCamMouseControl);
+
+				if (m_bFreeCamMouseControl)
+				{
+					ImGui::SameLine();  ImGui::TextColored(ImVec4(1.f, 0.3f, 0.3f, 1.f), "This feature is not yet finished!");
+					ImGui::Checkbox("Invert Y", &m_bFreeCamMouseInvertY);
+					ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
+				}
 			}
 
 
+
+
 			ImGui::Separator();
-			if (MK11::GetCharacterObject(PLAYER1) && MK11::GetCharacterObject(PLAYER2))
+			ImGui::Checkbox("Force Camera To Move", &m_bForceCameraUpdate);
+			ImGui::SameLine(); ShowHelpMarker("Check this option if the game you can't move camera anymore in win poses and some cinematics.");
+
+			ImGui::Separator();
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
 			{
-				ImGui::Checkbox("Custom Cameras", &bEnableCustomCameras);
+				ImGui::Checkbox("Custom Cameras", &m_bCustomCameras);
 
 				if (ImGui::BeginCombo("Mode", szCurrentCameraOption))
 				{
@@ -1065,58 +1060,93 @@ void MK11Menu::Draw()
 					}
 					ImGui::EndCombo();
 				}
-				iCurrentCustomCamera = GetCamMode(szCurrentCameraOption);
-				if (iCurrentCustomCamera == CAMERA_1STPERSON || iCurrentCustomCamera == CAMERA_1STPERSON_MID)
+				m_nCurrentCustomCamera = GetCamMode(szCurrentCameraOption);
+				if (m_nCurrentCustomCamera == CAMERA_1STPERSON || m_nCurrentCustomCamera == CAMERA_1STPERSON_MID)
 				{
-					ImGui::InputFloat("FPS Camera Offset", &fAdjustCam);
-					ImGui::InputFloat("FPS Up/Down Offset", &fAdjustCamZ);
-					ImGui::InputFloat("FPS Left/Right Offset", &fAdjustCamX);
-					ImGui::InputFloat("FPS Crouch Offset", &fAdjustCamCrouch);
+					ImGui::InputFloat("FPS Camera Offset", &m_fAdjustCustomCameraY);
+					ImGui::InputFloat("FPS Up/Down Offset", &m_fAdjustCustomCameraZ);
+					ImGui::InputFloat("FPS Left/Right Offset", &m_fAdjustCustomCameraX);
+					ImGui::InputFloat("FPS Crouch Offset", &m_fAdjustCustomCameraCrouch);
 				}
-				else if (iCurrentCustomCamera == CAMERA_3RDPERSON)
+				else if (m_nCurrentCustomCamera == CAMERA_3RDPERSON)
 				{
-					ImGui::InputFloat("TPP Camera Offset", &fAdjustCam3);
-					ImGui::InputFloat("TPP Up/Down Offset", &fAdjustCamZ3);
-					ImGui::InputFloat("TPP Left/Right Offset", &fAdjustCamX3);
+					ImGui::InputFloat("TPP Camera Offset", &m_fAdjustCustomCameraThirdPersonY);
+					ImGui::InputFloat("TPP Up/Down Offset", &m_fAdjustCustomCameraThirdPersonZ);
+					ImGui::InputFloat("TPP Left/Right Offset", &m_fAdjustCustomCameraThirdPersonX);
 				}
 			}
 			else
-				ImGui::Text("Custom cameras will appear once ingame!");
+				ImGui::Text("Custom cameras will appear once in-game!");
 
 			ImGui::EndTabItem();
 
 		}
 		if (ImGui::BeginTabItem("Cheats"))
 		{
-			ImGui::Text("Player 1");
-			ImGui::Separator();
-			ImGui::Checkbox("Infinite Health", &bInfiniteHealthPlayer1);
-			ImGui::Checkbox("Infinite Offensive Bar", &bInfiniteAttackBarPlayer1);
-			ImGui::Checkbox("Infinite Defensive Bar", &bInfiniteDefendBarPlayer1);
-			ImGui::Checkbox("Zero Health", &bNoHealthPlayer1);
-			ImGui::Checkbox("1 Health", &b1HealthPlayer1);
-			if (MK11::GetCharacterObject(PLAYER1))
-			{
-				if (ImGui::Button("Enable Easy Krushing Blows"))
-					MK11::GetCharacterObject(PLAYER1)->SetEasyKrushingBlows(true);
-				if (ImGui::Button("Disable Easy Krushing Blows"))
-					MK11::GetCharacterObject(PLAYER1)->SetEasyKrushingBlows(false);
-			}
-			ImGui::Separator();
 
-			ImGui::Text("Player 2");
 			ImGui::Separator();
-			ImGui::Checkbox("Infinite Health ", &bInfiniteHealthPlayer2);
-			ImGui::Checkbox("Infinite Offensive Bar ", &bInfiniteAttackBarPlayer2);
-			ImGui::Checkbox("Infinite Defensive Bar ", &bInfiniteDefendBarPlayer2);
-			ImGui::Checkbox("Zero Health ", &bNoHealthPlayer2);
-			ImGui::Checkbox("1 Health ", &b1HealthPlayer2);
-			if (MK11::GetCharacterObject(PLAYER1))
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, 220);
+
+			ImGui::Text("Infinite Health");
+			ImGui::NextColumn();
+			ImGui::Checkbox("P1##infhealth", &m_bInfiniteHealthP1);
+			ImGui::SameLine();
+			ImGui::Checkbox("P2##infhealth", &m_bInfiniteHealthP2);
+			ImGui::NextColumn();
+
+
+			ImGui::Text("Zero Health\n");
+			ImGui::NextColumn();
+			ImGui::Checkbox("P1##0health", &m_bNoHealthP1);
+			ImGui::SameLine();
+			ImGui::Checkbox("P2##0health", &m_bNoHealthP2);
+			ImGui::NextColumn();
+
+
+			ImGui::Text("1 Health\n");
+			ImGui::NextColumn();
+			ImGui::Checkbox("P1##1health", &m_bOneHealthP1);
+			ImGui::SameLine();
+			ImGui::Checkbox("P2##1health", &m_bOneHealthP2);
+			ImGui::NextColumn();
+
+
+			ImGui::Text("Infinite Offensive Bar\n");
+			ImGui::NextColumn();
+			ImGui::Checkbox("P1##atk", &m_bInfiniteAttackP1);
+			ImGui::SameLine();
+			ImGui::Checkbox("P2##atk", &m_bInfiniteAttackP2);
+			ImGui::NextColumn();
+
+			ImGui::Text("Infinite Defensive Bar\n");
+			ImGui::NextColumn();
+			ImGui::Checkbox("P1##atk", &m_bInfiniteDefendP1);
+			ImGui::SameLine();					  
+			ImGui::Checkbox("P2##atk", &m_bInfiniteDefendP2);
+			ImGui::NextColumn();
+
+
+			ImGui::Columns(1);
+			ImGui::Separator();
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+			ImGui::Text("Easy Krushing Blows");
+
+			if (GetObj(PLAYER1))
 			{
-				if (ImGui::Button("Enable Easy Krushing Blows "))
-					MK11::GetCharacterObject(PLAYER2)->SetEasyKrushingBlows(true);
-				if (ImGui::Button("Disable Easy Krushing Blows "))
-					MK11::GetCharacterObject(PLAYER2)->SetEasyKrushingBlows(false);
+				if (ImGui::Button("Enable  P1"))
+					GetObj(PLAYER1)->SetEasyKrushingBlows(true);
+				ImGui::SameLine();
+				if (ImGui::Button("Disable P1"))
+					GetObj(PLAYER1)->SetEasyKrushingBlows(false);
+			}
+			if (GetObj(PLAYER1))
+			{
+				if (ImGui::Button("Enable  P2"))
+					GetObj(PLAYER1)->SetEasyKrushingBlows(true);
+				ImGui::SameLine();
+				if (ImGui::Button("Disable P2"))
+					GetObj(PLAYER1)->SetEasyKrushingBlows(false);
 			}
 			ImGui::Separator();
 
@@ -1128,7 +1158,7 @@ void MK11Menu::Draw()
 			ImGui::Text("Make sure you match the character class! It's trial & error if a character doesn't work.");
 			ImGui::Text("Normal characters use Base class, while Sektor/Cyrax use NPCs. Some might not work at all.");
 			ImGui::Separator();
-			ImGui::Checkbox("Change Krypt Character",&bChangeKryptCharacter);
+			ImGui::Checkbox("Change Krypt Character", &m_bKryptModifier);
 
 			if (ImGui::BeginCombo("Character Class", szCurrentKryptCharacterClass))
 			{
@@ -1168,17 +1198,17 @@ void MK11Menu::Draw()
 		if (ImGui::BeginTabItem("Misc."))
 		{
 			if (ImGui::Button("Hide FightHUD"))
-				MK11::HideHUD();
+				HideHUD();
 			ImGui::SameLine();
 			if (ImGui::Button("Show FightHUD"))
-				MK11::ShowHUD();
+				ShowHUD();
 
-			ImGui::Checkbox("Hide FightHUD In Game", &bAutoHideHUD);
-			ImGui::Checkbox("Disable HUD Completely", &bForceDisableHUD);
+			ImGui::Checkbox("Hide FightHUD In Game", &m_bAutoHideHUD);
+			ImGui::Checkbox("Disable HUD Completely", &m_bDisableHUD);
 			ImGui::SameLine();
 			ShowHelpMarker("You'll need to go in-game/back to menu for this option to take effect.");
 
-			ImGui::Checkbox("Disable Nondefault Gear Loadouts",&bDisableGearLoadouts);
+			ImGui::Checkbox("Disable Nondefault Gear Loadouts", &m_bDisableGearLoadouts);
 			ImGui::SameLine();
 			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
@@ -1188,20 +1218,12 @@ void MK11Menu::Draw()
 	}
 
 
-
-
-
-
-
-
-
-
 }
 
 void MK11Menu::Process()
 {
 	UpdateControls();
-	if (bFocused && bEnableMouseControl)
+	if (m_bIsFocused && m_bFreeCamMouseControl)
 		UpdateMouse();
 
 }
@@ -1212,7 +1234,7 @@ void MK11Menu::UpdateControls()
 	{
 		if (GetTickCount64() - timer <= 150) return;
 		timer = GetTickCount64();
-		bIsActive ^= 1;
+		m_bIsActive ^= 1;
 	}
 
 
@@ -1220,33 +1242,33 @@ void MK11Menu::UpdateControls()
 	{
 		if (GetTickCount64() - timer <= 150) return;
 		timer = GetTickCount64();
-		bSlowMotionEnabled ^= 1;
+		m_bSlowMotion ^= 1;
 	}
 
 	if (GetAsyncKeyState(VK_F2))
 	{
-		if (bHookDispatch)
+		if (m_bHookDispatch)
 		{
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
-			bFreezeWorld ^= 1;
+			m_bFreezeWorld ^= 1;
 		}
 
 	}
 
-	if (bSlowMotionEnabled)
+	if (m_bSlowMotion)
 	{
 		if (GetAsyncKeyState(VK_F6))
 		{
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
-			fSlowMotionSpeed += 0.1f;
+			m_fSlowMotionSpeed += 0.1f;
 		}
 		if (GetAsyncKeyState(VK_F7))
 		{
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
-			fSlowMotionSpeed -= 0.1f;
+			m_fSlowMotionSpeed -= 0.1f;
 		}
 	}
 
@@ -1254,16 +1276,16 @@ void MK11Menu::UpdateControls()
 
 void MK11Menu::UpdateMouse()
 {
-	if (bIsActive) return;
+	if (m_bIsActive) return;
 
 	GetCursorPos(&curMouse);
 	mouseSpeedX = curMouse.x - orgMouse.x;
 	mouseSpeedY = curMouse.y - orgMouse.y;
 
 
-	if (bFocused)
+	if (m_bIsFocused)
 	{
-		if (TheMenu->bFreeCameraMovement)
+		if (TheMenu->m_bFreeCam)
 		{
 			int newVal = TheMenu->camRot.Yaw;
 			newVal += mouseSpeedX / mouseSens;
@@ -1272,7 +1294,7 @@ void MK11Menu::UpdateMouse()
 
 			int newValY = TheMenu->camRot.Pitch;
 
-			if (bInvertMouseY) mouseSpeedY *= -1;
+			if (m_bFreeCamMouseInvertY) mouseSpeedY *= -1;
 
 			newValY += mouseSpeedY / mouseSens;
 			TheMenu->camRot.Pitch = newValY;
@@ -1283,7 +1305,7 @@ void MK11Menu::UpdateMouse()
 
 bool MK11Menu::GetActiveState()
 {
-	return bIsActive;
+	return m_bIsActive;
 }
 
 char * GetMK11HookVersion()

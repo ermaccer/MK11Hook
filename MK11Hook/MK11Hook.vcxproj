@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClInclude Include="code\eNotifManager.h" />
     <ClInclude Include="code\eSettingsManager.h" />
+    <ClInclude Include="code\eGamepadManager.h" />
     <ClInclude Include="code\mk10utils.h" />
     <ClInclude Include="code\mk11.h" />
     <ClInclude Include="code\mk11menu.h" />
@@ -128,13 +129,13 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils\DelimStringReader.h" />
-    <ClInclude Include="utils\HookInit.hpp" />
     <ClInclude Include="utils\LateStaticInit.h" />
     <ClInclude Include="utils\MemoryMgr.h" />
     <ClInclude Include="utils\Patterns.h" />
     <ClInclude Include="utils\Trampoline.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="code\eGamepadManager.cpp" />
     <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
     <ClCompile Include="code\mk10utils.cpp" />
@@ -145,12 +146,12 @@
     <ClCompile Include="code\MKModifier.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="eDirectX11Hook.cpp" />
-    <ClCompile Include="HookInit.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="IniReader.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />

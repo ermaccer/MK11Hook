@@ -34,6 +34,16 @@ void MKCharacter::SetItem(int64 ptr, char * slot)
 	((void(__fastcall*)(MKCharacter*, int64, char*))_addr(0x140818380))(this, ptr, slot);
 }
 
+void MKCharacter::SetBreakersActive(bool enable)
+{
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C5C00))(this, enable, 1);
+}
+
+void MKCharacter::SetBreakers(int amount)
+{
+	((void(__fastcall*)(MKCharacter*, int))_addr(0x1404C8AE0))(this,amount);
+}
+
 CharacterInfo * MKCharacter::GetCharacterData(int unk)
 {
 	CharacterInfo* inf = ((CharacterInfo*(__fastcall*)(MKCharacter*,int))_addr(0x140C0DE60))(this, unk);

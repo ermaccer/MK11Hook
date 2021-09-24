@@ -2,7 +2,8 @@
 #include "code/mk11menu.h"
 #include "code/eNotifManager.h"
 #include "code/eSettingsManager.h"
-
+#include "code/eGamepadManager.h"
+#include <Windows.h>
 #include <chrono>
 
 Present eDirectX11Hook::m_pPresent;
@@ -55,6 +56,13 @@ inline bool ShouldHookDX(float timeout = 2.5f)
 }
 
 
+void eDirectX11Hook::HandleScaling()
+{
+	unsigned int dpiX = 0;
+	unsigned int dpiY = 0;
+
+}
+
 void eDirectX11Hook::Init()
 {
 	m_pPresent = 0;
@@ -68,6 +76,10 @@ void eDirectX11Hook::Init()
 void eDirectX11Hook::SetImGuiStyle()
 {
 	ImGuiStyle* style = &ImGui::GetStyle();
+	style->WindowRounding = 6.0f;
+	style->ItemSpacing = ImVec2(7, 5.5);
+	style->FrameRounding = 2.0f;
+	style->FramePadding = ImVec2(6, 4.25);
 	ImVec4* colors = style->Colors;
 
 	colors[ImGuiCol_Text] = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
@@ -124,9 +136,10 @@ void eDirectX11Hook::InitImGui()
 {
 	ImGui::CreateContext();
 	ImGui::GetIO().ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	ImGui_ImplWin32_Init(ms_hWindow);
 	ImGui_ImplDX11_Init(pDevice, pContext);
-
+	CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), nullptr, 0, nullptr);
 	SharedStyle();
 }
 
@@ -185,10 +198,10 @@ LRESULT __stdcall eDirectX11Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 	switch (uMsg)
 	{
 	case WM_KILLFOCUS:
-		TheMenu->bFocused = false;
+		TheMenu->m_bIsFocused = false;
 		break;
 	case WM_SETFOCUS:
-		TheMenu->bFocused = true;
+		TheMenu->m_bIsFocused = true;
 		break;
 	case WM_KEYDOWN:
 		break;

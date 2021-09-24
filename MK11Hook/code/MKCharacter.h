@@ -51,6 +51,8 @@ public:
 	void SetMeter(eMeterValues meter, float value);
 	void SetEasyKrushingBlows(bool enable);
 	void SetItem(int64 ptr, char* slot);
+	void SetBreakersActive(bool enable);
+	void SetBreakers(int amount);
 
 	CharacterInfo* GetCharacterData(int unk);
 

@@ -9,9 +9,9 @@
 #include "code/mk11.h"
 #include "code/mk11menu.h"
 #include "code/eNotifManager.h"
-
-
 #include "code/mkcamera.h"
+#include "code/eGamepadManager.h"
+
 
 #include <iostream>
 
@@ -20,21 +20,6 @@ using namespace Memory::VP;
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
-
-
-bool ValidateGameVersion()
-{
-	char* gameName = (char*)_addr(0x142600C68);
-
-	if (strcmp(gameName, "Mortal Kombat 11") == 0)
-		return true;
-	else
-	{
-		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest (or it needs to be updated) Steam executable, not DirectX12 one.", 0, MB_ICONINFORMATION);
-		return false;
-	}
-}
-
 
 void OnInitializeHook()
 {
@@ -53,7 +38,7 @@ void OnInitializeHook()
 	InjectHook(_addr(0x14092B853), tramp->Jump(MK11Hooks::HookProcessStuff));
 	InjectHook(_addr(0x14090CF53), tramp->Jump(MK11Hooks::HookStartupFightRecording));
 
-	
+
 	Nop(_addr(0x1419A9763), 7);
 	Nop(_addr(0x1419A9773), 8);
 	InjectHook(_addr(0x1419A9781), tramp->Jump(&MKCamera::HookedSetPosition));
@@ -70,9 +55,9 @@ void OnInitializeHook()
 	}
 
 
-	InjectHook(_addr(0x140976DF4), tramp->Jump(MK11::SetKryptCharacter));
-	InjectHook(_addr(0x140976E0B), tramp->Jump(MK11::SetKryptCharacterL));
-	InjectHook(_addr(0x140976E6A), tramp->Jump(MK11::SetKryptCharacterClass));
+	InjectHook(_addr(0x140976DF4), tramp->Jump(SetKryptCharacter));
+	InjectHook(_addr(0x140976E0B), tramp->Jump(SetKryptCharacterL));
+	InjectHook(_addr(0x140976E6A), tramp->Jump(SetKryptCharacterClass));
 
 
 	if (SettingsMgr->bMakeAllAbilities1Slot)
@@ -86,7 +71,26 @@ void OnInitializeHook()
 
 	InjectHook(_addr(0x141B45ED4), tramp->Jump(MK11Hooks::HookDispatch));
 
+	//gamepad
+	if (SettingsMgr->bEnableGamepadSupport)
+	InjectHook(_addr(0x14238AAB1), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+
 }
+
+bool ValidateGameVersion()
+{
+	char* gameName = (char*)_addr(0x142600C68);
+
+	if (strcmp(gameName, "Mortal Kombat 11") == 0)
+		return true;
+	else
+	{
+		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest (or it needs to be updated) Steam executable, not DirectX12 one.", 0, MB_ICONINFORMATION);
+		return false;
+	}
+}
+
+
 
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
@@ -100,6 +104,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 			SettingsMgr->Init();
 			DisableThreadLibraryCalls(hMod);
 			CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
+
 			OnInitializeHook();
 		}
 

@@ -25,9 +25,12 @@ public:
 	static bool ms_bInit;
 	static bool ms_bFirstDraw;
 
+	static void	   HandleScaling();
+
 	static void	   Init();
 	static void    SetImGuiStyle();
 	static void    InitImGui();
+
 	static HRESULT __stdcall Present(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 	static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

@@ -9,7 +9,7 @@ void eSettingsManager::Init()
 	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
 
 	iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);
-
+	bEnableGamepadSupport = ini.ReadBoolean("Settings", "bEnableGamepadSupport", true);
 	bUseLegacyCharacterModifier = ini.ReadBoolean("Settings", "bUseLegacyCharacterModifier", false);
 	bMakeAllAbilities1Slot = ini.ReadBoolean("Settings", "bMakeAllAbilities1Slot", false);
 	iFreeCameraKeyXPlus = ini.ReadInteger("Settings", "iFreeCameraKeyXPlus", 0);
