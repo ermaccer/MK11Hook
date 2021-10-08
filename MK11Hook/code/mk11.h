@@ -3,7 +3,7 @@
 #include "MKStructs.h"
 #include "MKCharacter.h"
 #include "MKModifier.h"
-#define GFG_GAME_INFO  0x14348ED10
+#define GFG_GAME_INFO  0x1434990A0
 
 
 #define MK11HOOK_VERSION "0.4.4"
@@ -58,7 +58,6 @@ char* GetCharacterName(PLAYER_NUM plr);
 	
 
 void SlowGameTimeForXTicks(float speed, int ticks);
-void SetSpeed(float speed);
 
 
 

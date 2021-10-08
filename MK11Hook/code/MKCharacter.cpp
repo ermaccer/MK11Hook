@@ -6,47 +6,28 @@
 
 void MKCharacter::SetLife(float life)
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C8070))(this, life);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C80A0))(this, life);
 }
 
 void MKCharacter::SetScale(FVector * scale)
 {
-	((void(__fastcall*)(MKCharacter*, FVector*))_addr(0x141161920))(this, scale);
+	((void(__fastcall*)(MKCharacter*, FVector*))_addr(0x1411619F0))(this, scale);
 }
 
 void MKCharacter::SetSpeed(float speed)
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C3D50))(this, speed);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C3D80))(this, speed);
 }
 
-void MKCharacter::SetMeter(eMeterValues meter, float value)
-{
-	((void(__fastcall*)(MKCharacter*, eMeterValues, float))_addr(0x1405FA670))(this, meter, value);
-}
 
 void MKCharacter::SetEasyKrushingBlows(bool enable)
 {
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C71B0))(this, enable, 1);
-}
-
-void MKCharacter::SetItem(int64 ptr, char * slot)
-{
-	((void(__fastcall*)(MKCharacter*, int64, char*))_addr(0x140818380))(this, ptr, slot);
-}
-
-void MKCharacter::SetBreakersActive(bool enable)
-{
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C5C00))(this, enable, 1);
-}
-
-void MKCharacter::SetBreakers(int amount)
-{
-	((void(__fastcall*)(MKCharacter*, int))_addr(0x1404C8AE0))(this,amount);
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C71E0))(this, enable, 1);
 }
 
 CharacterInfo * MKCharacter::GetCharacterData(int unk)
 {
-	CharacterInfo* inf = ((CharacterInfo*(__fastcall*)(MKCharacter*,int))_addr(0x140C0DE60))(this, unk);
+	CharacterInfo* inf = ((CharacterInfo*(__fastcall*)(MKCharacter*,int))_addr(0x140C0E130))(this, unk);
 
 	printf("========\n");
 	printf("PTR: %x\n", inf);

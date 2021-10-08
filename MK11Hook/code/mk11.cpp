@@ -36,8 +36,6 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 	if (GetObj(PLAYER1))
 	{
-		GetObj(PLAYER1)->SetBreakersActive(true);
-		GetObj(PLAYER1)->SetBreakers(1000);
 		if (TheMenu->m_bInfiniteHealthP1)
 			GetObj(PLAYER1)->SetLife(1000.0f);
 
@@ -65,8 +63,6 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 	if (GetObj(PLAYER2))
 	{
-		GetObj(PLAYER2)->SetBreakersActive(true);
-		GetObj(PLAYER2)->SetBreakers(1000);
 		if (TheMenu->m_bInfiniteHealthP2)
 			GetObj(PLAYER2)->SetLife(1000.0f);
 
@@ -143,7 +139,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 	}
 
-	((void(__fastcall*)())_addr(0x141153C50))();
+	((void(__fastcall*)())_addr(0x141153D20))();
 }
 
 void MK11Hooks::PreLoadHook(int64 a1, int64 a2, int a3)
@@ -205,7 +201,7 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 
 
 
-	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141159BE0))(eventID, a2, a3, a4);
+	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141159CB0))(eventID, a2, a3, a4);
 
 }
 
@@ -253,14 +249,14 @@ int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
 		}
 
 	}
-	return ((int64(__fastcall*)(int64, char*))_addr(0x1408F8830))(ptr, name);
+	return ((int64(__fastcall*)(int64, char*))_addr(0x1408F8500))(ptr, name);
 
 }
 
 int64 MK11Hooks::HookSetProperty(int64 ptr, char * name, int64 unk)
 {
 	hud_property = ptr;
-	return ((int64(__fastcall*)(int64, char*, int64))_addr(0x141A6B8B0))(ptr, name, unk);
+	return ((int64(__fastcall*)(int64, char*, int64))_addr(0x141A6BE90))(ptr, name, unk);
 }
 
 void MK11Hooks::HookReadPropertyValue(int64 ptr, int* unk, int* value)
@@ -281,7 +277,7 @@ int64 MK11Hooks::HookLoadouts(int64 ptr)
 	if (TheMenu->m_bDisableGearLoadouts)
 		return true;
 	else
-		return ((int64(__fastcall*)(int64))_addr(0x14086F930))(ptr);
+		return ((int64(__fastcall*)(int64))_addr(0x14086F670))(ptr);
 }
 
 void MK11Hooks::HookDispatch(int64 ptr, int a2)
@@ -300,7 +296,7 @@ void MK11Hooks::HookDispatch(int64 ptr, int a2)
 		((void(*)(int64, int))*(int64*)(arg + 0xD8))(ptr, a2);
 	}
 	else
-		((int64(__fastcall*)(int64, int))_addr(0x141172F20))(ptr, a2);
+		((int64(__fastcall*)(int64, int))_addr(0x141172FF0))(ptr, a2);
 
 }
 
@@ -351,13 +347,13 @@ void MK11Hooks::HookSetLadderScreen(int64 chr, char * name, int64 ptr, int64 unk
 
 MKCharacter* GetObj(PLAYER_NUM plr)
 {
-	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F8B00))(plr);
+	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F87D0))(plr);
 }
 
 int64 GetInfo(PLAYER_NUM plr)
 {
 	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	return ((int64(__fastcall*)(int64, PLAYER_NUM))_addr(0x14056F130))(gameinfo, plr);
+	return ((int64(__fastcall*)(int64, PLAYER_NUM))_addr(0x14056F160))(gameinfo, plr);
 }
 
 
@@ -372,12 +368,12 @@ void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 
 void HideHUD()
 {
-	((void(__fastcall*)(int, int))_addr(0x1408F5550))(8, 8);
+	((void(__fastcall*)(int, int))_addr(0x1408F5220))(8, 8);
 }
 
 void ShowHUD()
 {
-	((void(__fastcall*)(int, int))_addr(0x1408F5E90))(8, 8);
+	((void(__fastcall*)(int, int))_addr(0x1408F5B60))(8, 8);
 }
 
 void SetCharacterMKX(PLAYER_NUM plr, char * name)
@@ -389,24 +385,23 @@ void SetCharacterMKX(PLAYER_NUM plr, char * name)
 
 void SetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
 {
-	((void(__fastcall*)(int64, const char*, int64, int64))_addr(0x1405982F0))(chr, name, ptr, unk);
+	((void(__fastcall*)(int64, const char*, int64, int64))_addr(0x140598320))(chr, name, ptr, unk);
 
 }
 
 void SetCharacterLevel(int64 chr, int level)
 {
-	((void(__fastcall*)(int64, int))_addr(0x1405997C0))(chr, level);
+	((void(__fastcall*)(int64, int))_addr(0x1405997F0))(chr, level);
 }
 
 void SetCharacterAltPal(int64 chr, int value)
 {
-
-	((void(__fastcall*)(int64, int))_addr(0x14059DE20))(chr, value);
+	((void(__fastcall*)(int64, int))_addr(0x14059DE50))(chr, value);
 }
 
 void SetCharacterLoadout(int64 chr, int64 loadout)
 {
-	((void(__fastcall*)(int64, int64))_addr(0x1405998F0))(chr, loadout);
+	((void(__fastcall*)(int64, int64))_addr(0x140599920))(chr, loadout);
 }
 
 
@@ -422,25 +417,19 @@ char * GetCharacterName(PLAYER_NUM plr)
 
 void SlowGameTimeForXTicks(float speed, int ticks)
 {
-	((void(__fastcall*)(float, int, int))_addr(0x1405C04A0))(speed, ticks, 0);
-}
-
-void SetSpeed(float speed)
-{
-	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	((void(__fastcall*)(int64, float))_addr(0x140599510))(gameinfo, speed);
+	((void(__fastcall*)(float, int, int))_addr(0x1405C0280))(speed, ticks, 0);
 }
 
 void SetCharacterEnergy(int64 obj, int type, float energy)
 {
-	((void(__fastcall*)(int64, int, float))_addr(0x1405FA670))(obj, type, energy);
+	((void(__fastcall*)(int64, int, float))_addr(0x1405FA450))(obj, type, energy);
 }
 
 void SetStage(const char * stage)
 {
 	__int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
 
-	((void(__fastcall*)(int64, const char*))_addr(0x140599CA0))(gameinfo, stage);
+	((void(__fastcall*)(int64, const char*))_addr(0x140599CD0))(gameinfo, stage);
 }
 
 
@@ -491,32 +480,30 @@ void SetKryptCharacter(int64 ptr, char * name)
 
 	printf("MK11Hook::SetKryptCharacter() | Loading character %s\n", name);
 
-	((void(__fastcall*)(int64, char*))_addr(0x140821CD0))(ptr, name);
+	((void(__fastcall*)(int64, char*))_addr(0x140821A50))(ptr, name);
 }
 
 void SetKryptCharacterL(int64 ptr, char * name, int unk)
 {
-	//if (TheMenu->bChangeKryptCharacter)
-	//	name = 0;
-	((void(__fastcall*)(int64, char*, int))_addr(0x141A69CC0))(ptr, name, unk);
+	((void(__fastcall*)(int64, char*, int))_addr(0x141A6A2A0))(ptr, name, unk);
 }
 
 void SetKryptCharacterClass(int64 ptr, char * name, int unk)
 {
 	if (TheMenu->m_bKryptModifier)
 		name = TheMenu->szCurrentKryptCharacterClass;
-	((void(__fastcall*)(int64, char*, int))_addr(0x142395E20))(ptr, name, unk);
+	((void(__fastcall*)(int64, char*, int))_addr(0x142396240))(ptr, name, unk);
 }
 
 MKModifier* GetModifierManager()
 {
-	int64 info = ((int64(__fastcall*)())_addr(0x140679670))();
-	return ((MKModifier*(__fastcall*)(int64))_addr(0x14067B240))(info);
+	int64 info = ((int64(__fastcall*)())_addr(0x140679430))();
+	return ((MKModifier*(__fastcall*)(int64))_addr(0x14067B000))(info);
 }
 
 void LoadModifierAssets()
 {
 	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	((void(__fastcall*)(int64, bool))_addr(0x14057D590))(gameinfo, 1);
+	((void(__fastcall*)(int64, bool))_addr(0x14057D5C0))(gameinfo, 1);
 
 }

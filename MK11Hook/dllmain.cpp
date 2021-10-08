@@ -35,57 +35,59 @@ void OnInitializeHook()
 	Notifications->Init();
 
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
-	InjectHook(_addr(0x14092B853), tramp->Jump(MK11Hooks::HookProcessStuff));
-	InjectHook(_addr(0x14090CF53), tramp->Jump(MK11Hooks::HookStartupFightRecording));
+	InjectHook(_addr(0x14092B523), tramp->Jump(MK11Hooks::HookProcessStuff));
+	InjectHook(_addr(0x14090CC23), tramp->Jump(MK11Hooks::HookStartupFightRecording));
 
 
-	Nop(_addr(0x1419A9763), 7);
-	Nop(_addr(0x1419A9773), 8);
-	InjectHook(_addr(0x1419A9781), tramp->Jump(&MKCamera::HookedSetPosition));
-	InjectHook(_addr(0x1419A978E), tramp->Jump(&MKCamera::HookedSetRotation));
+	Nop(_addr(0x1419A99D3), 7);
+	Nop(_addr(0x1419A99E3), 8);
+	InjectHook(_addr(0x1419A99F1), tramp->Jump(&MKCamera::HookedSetPosition));
+	InjectHook(_addr(0x1419A99FE), tramp->Jump(&MKCamera::HookedSetRotation));
 
 	if (SettingsMgr->bUseLegacyCharacterModifier)
 	{
-		InjectHook(_addr(0x1408F881D), tramp->Jump(MK11Hooks::HookLoadCharacter));
+		InjectHook(_addr(0x1408F84ED), tramp->Jump(MK11Hooks::HookLoadCharacter));
 	}
 	else
 	{
-		InjectHook(_addr(0x14086D4A0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
+		InjectHook(_addr(0x14086D1E0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
 		InjectHook(_addr(0x140598AEE), tramp->Jump(MK11Hooks::HookSetLadderScreen));
 	}
 
 
-	InjectHook(_addr(0x140976DF4), tramp->Jump(SetKryptCharacter));
-	InjectHook(_addr(0x140976E0B), tramp->Jump(SetKryptCharacterL));
-	InjectHook(_addr(0x140976E6A), tramp->Jump(SetKryptCharacterClass));
+	InjectHook(_addr(0x140976AE4), tramp->Jump(SetKryptCharacter));
+	InjectHook(_addr(0x140976AFB), tramp->Jump(SetKryptCharacterL));
+	InjectHook(_addr(0x140976B5A), tramp->Jump(SetKryptCharacterClass));
 
 
 	if (SettingsMgr->bMakeAllAbilities1Slot)
-		InjectHook(_addr(0x140720E90), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
+		InjectHook(_addr(0x140720C10), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
 
 
-	InjectHook(_addr(0x141A806B0), tramp->Jump(MK11Hooks::HookReadPropertyValue), PATCH_JUMP);
-	InjectHook(_addr(0x14129FE98), tramp->Jump(MK11Hooks::HookSetProperty));
+	InjectHook(_addr(0x141A80C90), tramp->Jump(MK11Hooks::HookReadPropertyValue), PATCH_JUMP);
+	InjectHook(_addr(0x14129FF68), tramp->Jump(MK11Hooks::HookSetProperty));
+	
+	InjectHook(_addr(0x14084B3D8), tramp->Jump(MK11Hooks::HookLoadouts));
 
-	InjectHook(_addr(0x14084B658), tramp->Jump(MK11Hooks::HookLoadouts));
-
-	InjectHook(_addr(0x141B45ED4), tramp->Jump(MK11Hooks::HookDispatch));
+	InjectHook(_addr(0x141B462F4), tramp->Jump(MK11Hooks::HookDispatch));
 
 	//gamepad
 	if (SettingsMgr->bEnableGamepadSupport)
-	InjectHook(_addr(0x14238AAB1), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+		InjectHook(_addr(0x14238AED1), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+
 
 }
 
 bool ValidateGameVersion()
 {
-	char* gameName = (char*)_addr(0x142600C68);
+	char* gameName = (char*)_addr(0x142600D98);
 
 	if (strcmp(gameName, "Mortal Kombat 11") == 0)
 		return true;
 	else
 	{
-		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest (or it needs to be updated) Steam executable, not DirectX12 one.", 0, MB_ICONINFORMATION);
+		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest Steam executable, not DirectX12 one.\n\n"
+			"If you still cannot run the plugin and made sure that the game is updated, MK11Hook needs to be updated.", 0, MB_ICONINFORMATION);
 		return false;
 	}
 }
@@ -107,7 +109,6 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 
 			OnInitializeHook();
 		}
-
 		break;
 	case DLL_PROCESS_DETACH:
 		kiero::shutdown();
