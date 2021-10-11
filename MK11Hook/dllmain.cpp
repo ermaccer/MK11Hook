@@ -51,7 +51,7 @@ void OnInitializeHook()
 	else
 	{
 		InjectHook(_addr(0x14086D1E0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
-		InjectHook(_addr(0x140598AEE), tramp->Jump(MK11Hooks::HookSetLadderScreen));
+		InjectHook(_addr(0x140598B1E), tramp->Jump(MK11Hooks::HookSetLadderScreen));
 	}
 
 
