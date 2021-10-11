@@ -304,7 +304,7 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 {
 	if (plr <= 1 && teamNo <= 3)
 	{
-		int64 chr = 120 * ((int)teamNo + 4i64 * (int)plr) + ptr + 448;
+		int64 chr = 120 * ((int)teamNo + 4 * (int)plr) + ptr + 448;
 
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_SCREEN && (TheMenu->m_bPlayer1Modifier || TheMenu->m_bPlayer2Modifier))
 		{
@@ -363,7 +363,7 @@ void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
 	int64 object = GetInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
-	((int64(__fastcall*)(int64, FVector*))_addr(0x141150910))(ptr, vec);
+	((int64(__fastcall*)(int64, FVector*))_addr(0x1411509E0))(ptr, vec);
 }
 
 void HideHUD()
