@@ -50,8 +50,13 @@ public:
 	void SetSpeed(float speed);
 	void SetEasyKrushingBlows(bool enable);
 
+	int GetAbility();
+	void SetAbility(unsigned int id);
+	void ClearAbilities();
+
 	CharacterInfo* GetCharacterData(int unk);
 
 	bool IsCrouching();
 };
+
 

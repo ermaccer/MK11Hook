@@ -58,6 +58,20 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 		if (TheMenu->m_bAutoHideHUD)
 			HideHUD();
+		if (TheMenu->m_bP1CustomAbilities)
+		{
+			TheMenu->m_nP1Abilities = 0;
+			for (int i = 0; i < sizeof(TheMenu->m_P1Abilities) / sizeof(TheMenu->m_P1Abilities[0]); i++)
+			{
+				if (TheMenu->m_P1Abilities[i])
+				{
+					TheMenu->m_nP1Abilities += pow(2, i);
+				}
+			}
+			GetObj(PLAYER1)->SetAbility(TheMenu->m_nP1Abilities);
+		}
+
+
 	}
 
 
@@ -81,6 +95,19 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		{
 			if (GetInfo(PLAYER2))
 				SetCharacterEnergy(GetInfo(PLAYER2), BAR_Defensive, 1000.0f);
+		}
+
+		if (TheMenu->m_bP1CustomAbilities)
+		{
+			TheMenu->m_nP2Abilities = 0;
+			for (int i = 0; i < sizeof(TheMenu->m_P2Abilities) / sizeof(TheMenu->m_P2Abilities[0]); i++)
+			{
+				if (TheMenu->m_P2Abilities[i])
+				{
+					TheMenu->m_nP2Abilities += pow(2, i);
+				}
+			}
+			GetObj(PLAYER2)->SetAbility(TheMenu->m_nP2Abilities);
 		}
 	}
 
@@ -201,12 +228,14 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 
 
 
+
 	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141159CB0))(eventID, a2, a3, a4);
 
 }
 
 void MK11Hooks::PostLoadHook()
 {
+
 
 	((int64(__fastcall*)())_addr(0x14090F7A0))();
 }

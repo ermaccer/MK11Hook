@@ -8,6 +8,7 @@
 #include "..\utils\MemoryMgr.h"
 #include "eNotifManager.h"
 #include "MKCamera.h"
+#include <math.h>
 
 
 static int64 timer = GetTickCount64();
@@ -630,7 +631,6 @@ const char* szKryptCharacters[] = {
 	"CHAR_Sektor",
 	"CHAR_FireGod",
 	"CHAR_Kronika",
-
 	// rest of the cast
 	"CHAR_Baraka",
 	"CHAR_Cage",
@@ -748,10 +748,15 @@ void MK11Menu::Initialize()
 	m_bTagAssist = false;
 	m_bTagAssistP2 = false;
 	m_bSlowMotion = false;
+	m_bP1CustomAbilities = false;
+	m_bP2CustomAbilities = false;
+
 
 	m_nCurrentCharModifier = MODIFIER_SCREEN;
 	m_nFreeCameraRotationSpeed = 120;
 	m_nCurrentCustomCamera = -1;
+	m_nP1Abilities = 0;
+	m_nP2Abilities = 0;
 	mouseSpeedX = 0;
 	mouseSpeedY = 0;
 	mouseSens = 5;
@@ -885,43 +890,124 @@ void MK11Menu::Draw()
 		}
 		if (ImGui::BeginTabItem("Modifiers"))
 		{
-			ImGui::Checkbox("Player 1 Tag Assist Modifier", &m_bTagAssist);
-
-
-			if (ImGui::BeginCombo("Player 1 Tag Assist Character", szPlayer1TagAssistCharacter))
+			if (ImGui::BeginTabBar("##modifiers"))
 			{
-				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				if (ImGui::BeginTabItem("Tag Assists"))
 				{
-					bool is_selected = (szPlayer1TagAssistCharacter == szKryptCharacters[n]);
-					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
-						sprintf(szPlayer1TagAssistCharacter, szKryptCharacters[n]);
-					if (is_selected)
-						ImGui::SetItemDefaultFocus();
+					ImGui::Checkbox("Player 1 Tag Assist Modifier", &m_bTagAssist);
 
+
+					if (ImGui::BeginCombo("Player 1 Tag Assist Character", szPlayer1TagAssistCharacter))
+					{
+						for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+						{
+							bool is_selected = (szPlayer1TagAssistCharacter == szKryptCharacters[n]);
+							if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+								sprintf(szPlayer1TagAssistCharacter, szKryptCharacters[n]);
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+
+						}
+						ImGui::EndCombo();
+					}
+					ImGui::Separator();
+					ImGui::Checkbox("Player 2 Tag Assist Modifier", &m_bTagAssistP2);
+
+
+					if (ImGui::BeginCombo("Player 2 Tag Assist Character", szPlayer2TagAssistCharacter))
+					{
+						for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+						{
+							bool is_selected = (szPlayer2TagAssistCharacter == szKryptCharacters[n]);
+							if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+								sprintf(szPlayer2TagAssistCharacter, szKryptCharacters[n]);
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+
+						}
+						ImGui::EndCombo();
+					}
+					ImGui::Separator();
+
+					ImGui::Text("NOTE: Scorpion will not work unless previously loaded (eg. P2).\nIf you get load crashes enable modifier in-game then restart or rematch (when online).");
+					ImGui::Text("Restart match when you toggle these in game!");
+					ImGui::EndTabItem();
 				}
-				ImGui::EndCombo();
-			}
-			ImGui::Separator();
-			ImGui::Checkbox("Player 2 Tag Assist Modifier", &m_bTagAssistP2);
-
-
-			if (ImGui::BeginCombo("Player 2 Tag Assist Character", szPlayer2TagAssistCharacter))
-			{
-				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				if (ImGui::BeginTabItem("Abilities"))
 				{
-					bool is_selected = (szPlayer2TagAssistCharacter == szKryptCharacters[n]);
-					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
-						sprintf(szPlayer2TagAssistCharacter, szKryptCharacters[n]);
-					if (is_selected)
-						ImGui::SetItemDefaultFocus();
 
+					ImGui::Checkbox("Player 1 Custom Abilities", &m_bP1CustomAbilities);
+					ImGui::SameLine(); ShowHelpMarker("Set these on select screen! Changing these in game might make moves locked. Hold L SHIFT to view numeric value.");
+					ImGui::Separator();
+					
+					for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
+					{
+						int val = pow(2, i);
+						if (GetAsyncKeyState(VK_LSHIFT))
+							sprintf(textBuffer, "Ability %d (%d)", i + 1, val);
+						else
+							sprintf(textBuffer, "Ability %d", i + 1);
+
+						ImGui::Checkbox(textBuffer, &m_P1Abilities[i]);
+
+						if (i % 2 == 0)
+							ImGui::SameLine();
+					}
+
+
+					if (GetObj(PLAYER1))
+					{
+						if (ImGui::Button("Get##p1"))
+						{
+							int abilities = GetObj(PLAYER1)->GetAbility();
+
+							for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
+							{
+								int id = pow(2, i);
+								m_P1Abilities[i] = abilities & id;
+							}
+						}
+
+					}
+					ImGui::Separator();
+					ImGui::Checkbox("Player 2 Custom Abilities", &m_bP2CustomAbilities);
+					ImGui::Separator();
+
+					for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
+					{
+						int val = pow(2, i);
+						if (GetAsyncKeyState(VK_LSHIFT))
+							sprintf(textBuffer, "Ability %d (%d)##p2", i + 1, val);
+						else
+							sprintf(textBuffer, "Ability %d##p2", i + 1);
+
+						ImGui::Checkbox(textBuffer, &m_P2Abilities[i]);
+
+						if (i % 2 == 0)
+							ImGui::SameLine();
+					}
+
+
+					if (GetObj(PLAYER2))
+					{
+						if (ImGui::Button("Get##p2"))
+						{
+							int abilities = GetObj(PLAYER2)->GetAbility();
+
+							for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
+							{
+								int id = pow(2, i);
+								m_P2Abilities[i] = abilities & id;
+							}
+						}
+
+					}
+
+					ImGui::EndTabItem();
 				}
-				ImGui::EndCombo();
-			}
-			ImGui::Separator();
 
-			ImGui::Text("NOTE: Scorpion will not work unless previously loaded (eg. P2).\nIf you get load crashes enable modifier in-game then restart or rematch (when online).");
-			ImGui::Text("Restart match when you toggle these in game!");
+				ImGui::EndTabBar();
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Player Control"))
@@ -1212,8 +1298,9 @@ void MK11Menu::Draw()
 			ImGui::SameLine();
 			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
-		}
 
+		}
+		ImGui::EndTabBar();
 		ImGui::End();
 	}
 

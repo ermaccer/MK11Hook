@@ -25,6 +25,22 @@ void MKCharacter::SetEasyKrushingBlows(bool enable)
 	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C71E0))(this, enable, 1);
 }
 
+int MKCharacter::GetAbility()
+{
+	return *(int*)(this + 64304);
+}
+
+void MKCharacter::SetAbility(unsigned int id)
+{
+	*(int*)(this + 64304) = id;
+	//((void(__fastcall*)(MKCharacter*, unsigned int))_addr(0x1404C3340))(this, id);
+}
+
+void MKCharacter::ClearAbilities()
+{
+	((void(__fastcall*)(MKCharacter*))_addr(0x14048D8A0))(this);
+}
+
 CharacterInfo * MKCharacter::GetCharacterData(int unk)
 {
 	CharacterInfo* inf = ((CharacterInfo*(__fastcall*)(MKCharacter*,int))_addr(0x140C0E130))(this, unk);
