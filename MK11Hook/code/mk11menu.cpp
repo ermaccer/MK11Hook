@@ -1312,10 +1312,6 @@ void MK11Menu::Draw()
 			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
 
-			if (GetObj(PLAYER1))
-			{
-				ImGui::Text("P1 Scale: %f %f %f\n", GetObj(PLAYER1)->GetScale().X, GetObj(PLAYER1)->GetScale().Y, GetObj(PLAYER1)->GetScale().Z);
-			}
 
 		}
 		ImGui::EndTabBar();
