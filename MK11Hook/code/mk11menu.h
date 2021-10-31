@@ -56,6 +56,7 @@ public:
 
 	bool	m_bChangePlayerSpeed;
 	bool	m_bChangePlayerScale;
+	bool    m_bSmoothScaleChange;
 	bool	m_bPlayer1Modifier;
 	bool	m_bPlayer2Modifier;
 
@@ -75,6 +76,7 @@ public:
 	float	 m_fAdjustCustomCameraThirdPersonY;
 	float	 m_fAdjustCustomCameraThirdPersonZ;
 	float	 m_fFreeCameraSpeed;
+	float    m_fSmoothScalingUpdate;
 
 	int  m_nFreeCameraRotationSpeed;
 	int  m_nCurrentCustomCamera;

@@ -28,9 +28,78 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	if (TheMenu->m_bChangePlayerScale)
 	{
 		if (GetObj(PLAYER1))
-			GetObj(PLAYER1)->SetScale(&TheMenu->m_vP1Scale);
+		{
+			if (TheMenu->m_bSmoothScaleChange)
+			{
+				FVector src = GetObj(PLAYER1)->GetScale();
+				FVector scale = TheMenu->m_vP1Scale;
+
+				if (!(fabs(TheMenu->m_vP1Scale.X - src.X) < 0.01f))
+				{
+					if (src.X < scale.X)
+						src.X += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.X -= TheMenu->m_fSmoothScalingUpdate;
+				}
+
+				if (!(fabs(TheMenu->m_vP1Scale.Y - src.Y) < 0.01f))
+				{
+					if (src.Y < scale.Y)
+						src.Y += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.Y -= TheMenu->m_fSmoothScalingUpdate;
+				}
+
+				if (!(fabs(TheMenu->m_vP1Scale.Z - src.Z) < 0.01f))
+				{
+					if (src.Z < scale.Z)
+						src.Z += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.Z -= TheMenu->m_fSmoothScalingUpdate;
+				}
+			
+				GetObj(PLAYER1)->SetScale(&src);
+			}
+			else
+				GetObj(PLAYER1)->SetScale(&TheMenu->m_vP1Scale);
+		}
+
 		if (GetObj(PLAYER2))
-			GetObj(PLAYER2)->SetScale(&TheMenu->m_vP2Scale);
+		{
+			if (TheMenu->m_bSmoothScaleChange)
+			{
+				FVector src = GetObj(PLAYER2)->GetScale();
+				FVector scale = TheMenu->m_vP2Scale;
+
+				if (!(fabs(TheMenu->m_vP2Scale.X - src.X) < 0.01f))
+				{
+					if (src.X < scale.X)
+						src.X += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.X -= TheMenu->m_fSmoothScalingUpdate;
+				}
+
+				if (!(fabs(TheMenu->m_vP2Scale.Y - src.Y) < 0.01f))
+				{
+					if (src.Y < scale.Y)
+						src.Y += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.Y -= TheMenu->m_fSmoothScalingUpdate;
+				}
+
+				if (!(fabs(TheMenu->m_vP2Scale.Z - src.Z) < 0.01f))
+				{
+					if (src.Z < scale.Z)
+						src.Z += TheMenu->m_fSmoothScalingUpdate;
+					else
+						src.Z -= TheMenu->m_fSmoothScalingUpdate;
+				}
+
+				GetObj(PLAYER2)->SetScale(&src);
+			}
+			else
+				GetObj(PLAYER2)->SetScale(&TheMenu->m_vP2Scale);
+		}
 	}
 
 
@@ -80,7 +149,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bInfiniteHealthP2)
 			GetObj(PLAYER2)->SetLife(1000.0f);
 
-		if (TheMenu->m_bNoHealthP1)
+		if (TheMenu->m_bNoHealthP2)
 			GetObj(PLAYER2)->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP2)
 			GetObj(PLAYER2)->SetLife(0.01f);

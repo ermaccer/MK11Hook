@@ -31,10 +31,19 @@ void SharedStyle()
 
 void __stdcall SharedPresent()
 {
+	if (eDirectX11Hook::ms_bFirstDraw)
+	{
+		Notifications->SetNotificationTime(7500);
+		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if controller support enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
+		eDirectX11Hook::ms_bFirstDraw = false;
+	}
+
+
+	Notifications->Draw();
+
 	if (TheMenu->GetActiveState())
 	{
 		TheMenu->Draw();
-
 	}
 }
 
@@ -165,16 +174,14 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 	if (ms_bFirstDraw)
 	{
 		Notifications->SetNotificationTime(7500);
-		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
+		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if controller support enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
 		ms_bFirstDraw = false;
 	}
 
 	Notifications->Draw();
 
 	if (TheMenu->GetActiveState())
-	{
 		TheMenu->Draw();
-	}
 
 	ImGui::EndFrame();
 	ImGui::Render();

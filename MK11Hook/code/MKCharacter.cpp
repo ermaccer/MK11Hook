@@ -30,6 +30,12 @@ int MKCharacter::GetAbility()
 	return *(int*)(this + 64304);
 }
 
+FVector MKCharacter::GetScale()
+{
+	int64 obj = *(int64*)(this + 32);
+	return *(FVector*)(obj + 0x134);
+}
+
 void MKCharacter::SetAbility(unsigned int id)
 {
 	*(int*)(this + 64304) = id;

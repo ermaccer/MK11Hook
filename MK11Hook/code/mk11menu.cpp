@@ -750,6 +750,7 @@ void MK11Menu::Initialize()
 	m_bSlowMotion = false;
 	m_bP1CustomAbilities = false;
 	m_bP2CustomAbilities = false;
+	m_bSmoothScaleChange = false;
 
 
 	m_nCurrentCharModifier = MODIFIER_SCREEN;
@@ -775,6 +776,7 @@ void MK11Menu::Initialize()
 	m_fP2Speed = 1.0f;
 	m_vP1Scale = { 1.0f,1.0f,1.0f };
 	m_vP2Scale = { 1.0f,1.0f,1.0f };
+	m_fSmoothScalingUpdate = 0.01f;
 	camFov = 0;
 
 
@@ -1026,10 +1028,14 @@ void MK11Menu::Draw()
 					if (GetObj(PLAYER2))
 						GetObj(PLAYER2)->SetSpeed(m_fP1Speed);
 				}
-
+				ImGui::Separator();
 				ImGui::Checkbox("Change Player Scale", &m_bChangePlayerScale);
 				ImGui::InputFloat3("Player 1 ", &m_vP1Scale.X);
 				ImGui::InputFloat3("Player 2 ", &m_vP2Scale.X);
+
+				ImGui::Checkbox("Smooth Player Scale", &m_bSmoothScaleChange);
+				ImGui::InputFloat("Smooth Scale Value", &m_fSmoothScalingUpdate);
+
 
 				if (ImGui::Button("Reset Scale"))
 				{
@@ -1043,18 +1049,25 @@ void MK11Menu::Draw()
 
 
 				ImGui::Separator();
-				ImGui::Text("Position");
-				ImGui::SameLine(); ShowHelpMarker("Read only!");
-				if (GetObj(PLAYER1))
+
+
+
+
+
+				if (GetObj(PLAYER1) && GetObj(PLAYER2))
 				{
+
+					ImGui::Text("Position");
+					ImGui::SameLine(); ShowHelpMarker("Read only!");
 					GetCharacterPosition(&plrPos, PLAYER1);
 					ImGui::InputFloat3("X | Y | Z", &plrPos.X);
-				}
-				if (GetObj(PLAYER2))
-				{
 					GetCharacterPosition(&plrPos2, PLAYER2);
 					ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
 				}
+
+
+
+
 			}
 			else
 				ImGui::Text("Player options are only available in-game!");
@@ -1299,10 +1312,15 @@ void MK11Menu::Draw()
 			ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
 			ImGui::EndTabItem();
 
+			if (GetObj(PLAYER1))
+			{
+				ImGui::Text("P1 Scale: %f %f %f\n", GetObj(PLAYER1)->GetScale().X, GetObj(PLAYER1)->GetScale().Y, GetObj(PLAYER1)->GetScale().Z);
+			}
+
 		}
 		ImGui::EndTabBar();
-		ImGui::End();
 	}
+	ImGui::End();
 
 
 }
@@ -1397,7 +1415,7 @@ bool MK11Menu::GetActiveState()
 
 char * GetMK11HookVersion()
 {
-	char buffer[512];
+	static char buffer[512] = {};
 	sprintf(buffer, "MK11Hook by ermaccer (%s)", MK11HOOK_VERSION);
 	return buffer;
 }

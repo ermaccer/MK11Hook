@@ -49,9 +49,11 @@ public:
 	void SetScale(FVector* scale);
 	void SetSpeed(float speed);
 	void SetEasyKrushingBlows(bool enable);
+	void SetAbility(unsigned int id);
 
 	int GetAbility();
-	void SetAbility(unsigned int id);
+	FVector GetScale();
+
 	void ClearAbilities();
 
 	CharacterInfo* GetCharacterData(int unk);

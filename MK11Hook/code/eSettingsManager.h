@@ -1,6 +1,4 @@
 #pragma once
-#pragma once
-
 
 // as usual, pluginmh/mugenhook
 
