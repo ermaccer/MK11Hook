@@ -9,7 +9,8 @@
 #include "eNotifManager.h"
 #include "MKCamera.h"
 #include <math.h>
-
+#include "helper/eAbilityNames.h"
+#include "..\eDirectX11Hook.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -791,13 +792,31 @@ void MK11Menu::Initialize()
 	sprintf(szCurrentKryptCharacterClass, szCharClasses[0]);
 	sprintf(szPlayer1TagAssistCharacter, szKryptCharacters[0]);
 	sprintf(szPlayer2TagAssistCharacter, szKryptCharacters[0]);
-
+	sprintf(szAbilityReferenceChararacter, szKryptCharacters[0]);
 }
 
 void MK11Menu::Draw()
 {
 	ImGui::GetIO().MouseDrawCursor = true;
-	ImGui::Begin(GetMK11HookVersion(),&m_bIsActive);
+	ImGui::Begin(GetMK11HookVersion(), &m_bIsActive, ImGuiWindowFlags_MenuBar);
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Settings"))
+		{
+			m_bSubmenuActive[SUBMENU_SETTINGS] = true;
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Ability Reference"))
+				m_bSubmenuActive[SUBMENU_ABILITY_REFERENCE] = true;
+
+			ImGui::EndMenu();
+		}
+	}
+	ImGui::EndMenuBar();
+
 	if (ImGui::BeginTabBar("##tabs"))
 	{
 
@@ -937,11 +956,11 @@ void MK11Menu::Draw()
 				}
 				if (ImGui::BeginTabItem("Abilities"))
 				{
-
 					ImGui::Checkbox("Player 1 Custom Abilities", &m_bP1CustomAbilities);
 					ImGui::SameLine(); ShowHelpMarker("Set these on select screen! Changing these in game might make moves locked. Hold L SHIFT to view numeric value.");
 					ImGui::Separator();
 					
+
 					for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
 					{
 						int val = pow(2, i);
@@ -989,7 +1008,6 @@ void MK11Menu::Draw()
 							ImGui::SameLine();
 					}
 
-
 					if (GetObj(PLAYER2))
 					{
 						if (ImGui::Button("Get##p2"))
@@ -1007,7 +1025,6 @@ void MK11Menu::Draw()
 
 					ImGui::EndTabItem();
 				}
-
 				ImGui::EndTabBar();
 			}
 			ImGui::EndTabItem();
@@ -1050,10 +1067,6 @@ void MK11Menu::Draw()
 
 				ImGui::Separator();
 
-
-
-
-
 				if (GetObj(PLAYER1) && GetObj(PLAYER2))
 				{
 
@@ -1064,9 +1077,6 @@ void MK11Menu::Draw()
 					GetCharacterPosition(&plrPos2, PLAYER2);
 					ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
 				}
-
-
-
 
 			}
 			else
@@ -1276,7 +1286,7 @@ void MK11Menu::Draw()
 
 			if (ImGui::BeginCombo("Krypt Character", szCurrentKryptCharacter))
 			{
-				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+				for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
 				{
 					bool is_selected = (szCurrentKryptCharacter == szKryptCharacters[n]);
 					if (ImGui::Selectable(szKryptCharacters[n], is_selected))
@@ -1319,6 +1329,11 @@ void MK11Menu::Draw()
 	ImGui::End();
 
 
+	if (m_bSubmenuActive[SUBMENU_ABILITY_REFERENCE])
+		DrawAbilityReference();
+
+	if (m_bSubmenuActive[SUBMENU_SETTINGS])
+		DrawSettings();
 }
 
 void MK11Menu::Process()
@@ -1402,6 +1417,113 @@ void MK11Menu::UpdateMouse()
 		}
 	}
 
+}
+
+void MK11Menu::DrawSettings()
+{
+	ImGui::SetNextWindowPos({ ImGui::GetIO().DisplaySize.x / 2.0f, ImGui::GetIO().DisplaySize.y / 2.0f }, ImGuiCond_Once, { 0.5f, 0.5f });
+	ImGui::Begin("Settings", &m_bSubmenuActive[SUBMENU_SETTINGS]);
+
+	static int settingID = 0;
+	static const char* settingNames[] = {
+		"Menu",
+		"INI"
+	};
+
+	enum eSettings {
+		MENU,
+		INI,
+	};
+
+	ImGui::BeginChild("##settings", { 12 * ImGui::GetFontSize(), 0 }, true);
+
+	for (int n = 0; n < IM_ARRAYSIZE(settingNames); n++)
+	{
+		bool is_selected = (settingID == n);
+		if (ImGui::Selectable(settingNames[n], is_selected))
+			settingID = n;
+		if (is_selected)
+			ImGui::SetItemDefaultFocus();
+	}
+
+	ImGui::EndChild();
+
+	ImGui::SameLine();
+	ImGui::BeginChild("##content", { 0, -ImGui::GetFrameHeightWithSpacing() });
+
+	switch (settingID)
+	{
+	case MENU:
+		ImGui::TextWrapped("All user settings are saved to mk11hook_user.ini.");
+		ImGui::Text("Menu Scale");
+		ImGui::InputFloat("", &SettingsMgr->fMenuScale);
+		break;
+	case INI:            
+		ImGui::TextWrapped("These settings control MK11Hook.ini options. Any changes require game restart to take effect.");
+		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
+		ImGui::Checkbox("Gamepad Support", &SettingsMgr->bEnableGamepadSupport);
+		break;
+	default:
+		break;
+	}
+
+	if (ImGui::Button("Save", { -FLT_MIN, 0 }))
+	{
+		Notifications->SetNotificationTime(2500);
+		Notifications->PushNotification("Settings saved to MK11Hook.ini and mk11hook_user.ini!");
+		eDirectX11Hook::ms_bShouldReloadFonts = true;
+		SettingsMgr->SaveSettings();
+	}
+
+	ImGui::EndChild();
+
+	ImGui::End();
+
+
+	
+	ImGui::End();
+}
+
+void MK11Menu::DrawAbilityReference()
+{
+	ImGui::Begin("Ability Reference", &m_bSubmenuActive[SUBMENU_ABILITY_REFERENCE]);
+
+	static int charID = 0;
+	ImGui::BeginChild("##chars", { 12 * ImGui::GetFontSize(), 0 }, true);
+
+	for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
+	{
+		bool is_selected = (charID == n);
+		if (ImGui::Selectable(szKryptCharacters[n], is_selected))
+			charID = n;
+		if (is_selected)
+			ImGui::SetItemDefaultFocus();
+
+	}
+
+	ImGui::EndChild();
+
+	ImGui::SameLine();
+	ImGui::BeginChild("##movelist", { 0, -ImGui::GetFrameHeightWithSpacing() });
+
+	eAbilityNameEntry ab;
+	ab = eAbiltityNames::Get(szKryptCharacters[charID]);
+
+	ImGui::LabelText("ID", "Name");
+	ImGui::Separator();
+
+	for (unsigned int i = 0; i < TOTAL_ABILITIES; i++)
+	{
+		if (strlen(ab.abNames[i]) > 0)
+		{
+			sprintf(textBuffer, "%d", i + 1);
+			ImGui::LabelText(textBuffer, ab.abNames[i]);
+		}
+
+	}
+
+	ImGui::EndChild();
+	ImGui::End();
 }
 
 bool MK11Menu::GetActiveState()

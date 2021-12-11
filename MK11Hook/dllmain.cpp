@@ -11,7 +11,7 @@
 #include "code/eNotifManager.h"
 #include "code/mkcamera.h"
 #include "code/eGamepadManager.h"
-
+#include "code/helper/eAbilityNames.h"
 
 #include <iostream>
 
@@ -104,6 +104,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 		{
 			eDirectX11Hook::Init();
 			SettingsMgr->Init();
+			eAbiltityNames::Init();
 			DisableThreadLibraryCalls(hMod);
 			CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
 

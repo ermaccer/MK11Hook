@@ -3,7 +3,7 @@
 #include "code/eNotifManager.h"
 #include "code/eSettingsManager.h"
 #include "code/eGamepadManager.h"
-#include <Windows.h>
+#include "font.h"
 #include <chrono>
 
 Present eDirectX11Hook::m_pPresent;
@@ -14,7 +14,8 @@ ID3D11DeviceContext* eDirectX11Hook::pContext;
 ID3D11RenderTargetView* eDirectX11Hook::mainRenderTargetView;
 bool eDirectX11Hook::ms_bInit;
 bool eDirectX11Hook::ms_bFirstDraw;
-
+bool eDirectX11Hook::ms_bShouldReloadFonts;
+ImGuiStyle eDirectX11Hook::ms_localStyleCopy;
 
 // compat
 bool bInitShared= false;
@@ -29,7 +30,7 @@ void SharedStyle()
 	eDirectX11Hook::SetImGuiStyle();
 }
 
-void __stdcall SharedPresent()
+void SharedPresent()
 {
 	if (eDirectX11Hook::ms_bFirstDraw)
 	{
@@ -70,7 +71,9 @@ void eDirectX11Hook::Init()
 	pContext = 0;
 	ms_bFirstDraw = true;
 	ms_bInit = false;
+	ms_bShouldReloadFonts = false;
 	ms_hWindow = 0;
+
 }
 
 void eDirectX11Hook::SetImGuiStyle()
@@ -130,6 +133,11 @@ void eDirectX11Hook::SetImGuiStyle()
 	colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
 	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
+	ms_localStyleCopy = ImGui::GetStyle();
+
+
+	ReloadImGuiFont();
 }
 
 void eDirectX11Hook::InitImGui()
@@ -137,11 +145,57 @@ void eDirectX11Hook::InitImGui()
 	ImGui::CreateContext();
 	ImGui::GetIO().ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	ImGui_ImplWin32_Init(ms_hWindow);
 	ImGui_ImplDX11_Init(pDevice, pContext);
 	if (SettingsMgr->bEnableGamepadSupport)
 		CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), nullptr, 0, nullptr);
 	SharedStyle();
+}
+
+void eDirectX11Hook::ReloadImGuiFont()
+{
+	if (!(SettingsMgr->fMenuScale < 1.0f))
+	{
+		float fontSize = 13.0f;
+		ImGuiStyle * style = &ImGui::GetStyle();
+		ImGuiIO io = ImGui::GetIO();
+		io.Fonts->Clear();
+		io.Fonts->AddFontFromMemoryCompressedTTF(Font_compressed_data, Font_compressed_size, fontSize * SettingsMgr->fMenuScale);
+		io.Fonts->Build();
+
+		style->WindowPadding = ms_localStyleCopy.WindowPadding;
+		style->WindowRounding = ms_localStyleCopy.WindowRounding;
+		style->WindowMinSize = ms_localStyleCopy.WindowMinSize;
+		style->ChildRounding = ms_localStyleCopy.ChildRounding;
+		style->PopupRounding = ms_localStyleCopy.PopupRounding;
+		style->FramePadding = ms_localStyleCopy.FramePadding;
+		style->FrameRounding = ms_localStyleCopy.FrameRounding;
+		style->ItemSpacing = ms_localStyleCopy.ItemSpacing;
+		style->ItemInnerSpacing = ms_localStyleCopy.ItemInnerSpacing;
+		style->CellPadding = ms_localStyleCopy.CellPadding;
+		style->TouchExtraPadding = ms_localStyleCopy.TouchExtraPadding;
+		style->IndentSpacing = ms_localStyleCopy.IndentSpacing;
+		style->ColumnsMinSpacing = ms_localStyleCopy.ColumnsMinSpacing;
+		style->ScrollbarSize = ms_localStyleCopy.ScrollbarSize;
+		style->ScrollbarRounding = ms_localStyleCopy.ScrollbarRounding;
+		style->GrabMinSize = ms_localStyleCopy.GrabMinSize;
+		style->GrabRounding = ms_localStyleCopy.GrabRounding;
+		style->LogSliderDeadzone = ms_localStyleCopy.LogSliderDeadzone;
+		style->TabRounding = ms_localStyleCopy.TabRounding;
+		style->TabMinWidthForCloseButton = ms_localStyleCopy.TabMinWidthForCloseButton;
+		style->DisplayWindowPadding = ms_localStyleCopy.DisplayWindowPadding;
+		style->DisplaySafeAreaPadding = ms_localStyleCopy.DisplaySafeAreaPadding;
+		style->MouseCursorScale = ms_localStyleCopy.MouseCursorScale;
+
+		style->ScaleAllSizes(SettingsMgr->fMenuScale);
+		ImGui_ImplDX11_InvalidateDeviceObjects();
+
+		if (ms_bShouldReloadFonts)
+			ms_bShouldReloadFonts = false;
+
+
+	}
 }
 
 HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT SyncInterval, UINT Flags)
@@ -165,6 +219,9 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 		else
 			return m_pPresent(pSwapChain, SyncInterval, Flags);
 	}
+	
+	if (ms_bShouldReloadFonts)
+		ReloadImGuiFont();
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -188,6 +245,7 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 
 	pContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 	return m_pPresent(pSwapChain, SyncInterval, Flags);
 }
 

@@ -99,6 +99,7 @@
     <ClInclude Include="code\eNotifManager.h" />
     <ClInclude Include="code\eSettingsManager.h" />
     <ClInclude Include="code\eGamepadManager.h" />
+    <ClInclude Include="code\helper\eAbilityNames.h" />
     <ClInclude Include="code\mk10utils.h" />
     <ClInclude Include="code\mk11.h" />
     <ClInclude Include="code\mk11menu.h" />
@@ -107,6 +108,7 @@
     <ClInclude Include="code\MKModifier.h" />
     <ClInclude Include="code\MKStructs.h" />
     <ClInclude Include="eDirectX11Hook.h" />
+    <ClInclude Include="font.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -138,6 +140,7 @@
     <ClCompile Include="code\eGamepadManager.cpp" />
     <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
+    <ClCompile Include="code\helper\eAbilityNames.cpp" />
     <ClCompile Include="code\mk10utils.cpp" />
     <ClCompile Include="code\mk11.cpp" />
     <ClCompile Include="code\mk11menu.cpp" />

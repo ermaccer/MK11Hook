@@ -34,4 +34,19 @@ void eSettingsManager::Init()
 
 	iFreeCameraKeyFOVPlus = ini.ReadInteger("Settings", "iFreeCameraKeyFOVPlus", 0);
 	iFreeCameraKeyFOVMinus = ini.ReadInteger("Settings", "iFreeCameraKeyFOVMinus", 0);
+	CIniReader user("mk11hook_user.ini");
+	fMenuScale = user.ReadFloat("MenuSettings", "fMenuScale", 1.0f);
+
+	if (fMenuScale < 1.0f)
+		fMenuScale = 1.0f;
+}
+
+void eSettingsManager::SaveSettings()
+{
+	CIniReader user("mk11hook_user.ini");
+	user.WriteFloat("MenuSettings", "fMenuScale", fMenuScale);
+
+	CIniReader ini("");
+	ini.WriteBoolean("Settings", "bEnableGamepadSupport", bEnableGamepadSupport);
+	ini.WriteBoolean("Settings", "bEnableConsoleWindow", bEnableConsoleWindow);
 }

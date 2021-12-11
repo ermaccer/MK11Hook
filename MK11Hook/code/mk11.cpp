@@ -166,7 +166,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 				SetCharacterEnergy(GetInfo(PLAYER2), BAR_Defensive, 1000.0f);
 		}
 
-		if (TheMenu->m_bP1CustomAbilities)
+		if (TheMenu->m_bP2CustomAbilities)
 		{
 			TheMenu->m_nP2Abilities = 0;
 			for (int i = 0; i < sizeof(TheMenu->m_P2Abilities) / sizeof(TheMenu->m_P2Abilities[0]); i++)
@@ -178,13 +178,6 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			}
 			GetObj(PLAYER2)->SetAbility(TheMenu->m_nP2Abilities);
 		}
-	}
-
-
-	if (!(GetObj(PLAYER1)) || !(GetObj(PLAYER2)))
-	{
-		if (TheMenu->m_bCustomCameras)
-			TheMenu->m_bCustomCameras = false;
 	}
 
 	if (TheMenu->m_bFreeCam)
@@ -246,7 +239,6 @@ void MK11Hooks::PreLoadHook(int64 a1, int64 a2, int a3)
 void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4)
 {
 	printf("MK11Hook::Info() | Starting a new fight!\n");
-	TheMenu->m_bCustomCameras = false;
 	TheMenu->m_bCustomCameraPos = false;
 	TheMenu->m_bCustomCameraRot = false;
 	TheMenu->m_bYObtained = false;

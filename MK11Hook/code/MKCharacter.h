@@ -58,6 +58,9 @@ public:
 
 	CharacterInfo* GetCharacterData(int unk);
 
+
+	void SetT800Status(bool status);
+
 	bool IsCrouching();
 };
 

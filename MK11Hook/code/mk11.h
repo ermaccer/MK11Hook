@@ -6,7 +6,9 @@
 #define GFG_GAME_INFO  0x1434990A0
 
 
-#define MK11HOOK_VERSION "0.4.6"
+#define MK11HOOK_VERSION "0.4.7"
+
+#define TOTAL_ABILITIES 20
 
 enum  PLAYER_NUM
 {

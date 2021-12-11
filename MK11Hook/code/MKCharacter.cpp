@@ -70,6 +70,11 @@ CharacterInfo * MKCharacter::GetCharacterData(int unk)
 }
 
 
+void MKCharacter::SetT800Status(bool status)
+{
+	((bool(__fastcall*)(MKCharacter*, bool))_addr(0x140951BC0))(this, status);
+}
+
 bool MKCharacter::IsCrouching()
 {
 	return ((bool(__fastcall*)(MKCharacter*))_addr(0x14047ADB0))(this);

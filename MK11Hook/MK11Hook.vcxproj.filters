@@ -31,6 +31,9 @@
     <Filter Include="Source Files\dx">
       <UniqueIdentifier>{7187d197-8447-41c0-9f40-8dcab7f80186}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\code\helper">
+      <UniqueIdentifier>{bb5a43a5-8836-46b1-9a85-18be7a5c70a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -144,6 +147,12 @@
     <ClInclude Include="code\eGamepadManager.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="code\helper\eAbilityNames.h">
+      <Filter>Header Files\code\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -226,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
       <Filter>Header Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="code\helper\eAbilityNames.cpp">
+      <Filter>Header Files\code\helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,9 +8,6 @@ eGamepadManager* TheGamepad = new eGamepadManager();
 bool eGamepadManager::IsConnected()
 {
 	XINPUT_STATE p1 = {};
-	if (m_bEstablishedConnection)
-		return true;
-	else
 		return XInputGetState(0, &p1) == ERROR_SUCCESS;
 }
 

@@ -21,9 +21,17 @@ enum eCHRModifierModes {
 };
 
 
+enum eMenuSubMenus {
+	SUBMENU_ABILITY_REFERENCE,
+	SUBMENU_NPC_MOVELIST,
+	SUBMENU_SETTINGS,
+	TOTAL_SUBMENUS
+};
+
 class MK11Menu {
 public:
 	bool	 m_bIsActive;
+	bool	 m_bSubmenuActive[TOTAL_SUBMENUS] = {};
 	bool	 m_bSlowMotion;
 	bool     m_bFreezeWorld;
 	bool	 m_bIsFocused;
@@ -102,6 +110,7 @@ public:
 	char szCurrentKryptCharacterClass[128];
 	char szPlayer1TagAssistCharacter[128] = {};
 	char szPlayer2TagAssistCharacter[128] = {};
+	char szAbilityReferenceChararacter[128] = {};
 
 	// camera
 
@@ -126,6 +135,10 @@ public:
 	void Process();
 	void UpdateControls();
 	void UpdateMouse();
+
+	void DrawSettings();
+	void DrawAbilityReference();
+
 	bool GetActiveState();
 };
 
