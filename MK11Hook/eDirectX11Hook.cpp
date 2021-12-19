@@ -7,6 +7,7 @@
 #include <chrono>
 
 Present eDirectX11Hook::m_pPresent;
+ResizeBuffers eDirectX11Hook::m_pResizeBuffers;
 HWND eDirectX11Hook::ms_hWindow;
 WNDPROC eDirectX11Hook::ms_pWndProc;
 ID3D11Device* eDirectX11Hook::pDevice;
@@ -67,6 +68,7 @@ inline bool ShouldHookDX(float timeout = 2.5f)
 void eDirectX11Hook::Init()
 {
 	m_pPresent = 0;
+	m_pResizeBuffers = 0;
 	pDevice = 0;
 	pContext = 0;
 	ms_bFirstDraw = true;
@@ -230,7 +232,7 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 
 	if (ms_bFirstDraw)
 	{
-		Notifications->SetNotificationTime(7500);
+		Notifications->SetNotificationTime(4500);
 		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if controller support enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
 		ms_bFirstDraw = false;
 	}
@@ -274,6 +276,46 @@ LRESULT __stdcall eDirectX11Hook::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 	return CallWindowProc(ms_pWndProc, hWnd, uMsg, wParam, lParam);
 }
 
+HRESULT __stdcall eDirectX11Hook::ResizeBuffers(IDXGISwapChain * pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags)
+{
+	// somehow pdevice handle is missing in mk11 and i2? no idea
+	if (pDevice)
+	{
+		if (mainRenderTargetView)
+		{
+			pContext->OMSetRenderTargets(0, 0, 0);
+			mainRenderTargetView->Release();
+		}
+	}
+
+
+	HRESULT result = m_pResizeBuffers(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
+
+	if (pDevice)
+	{
+		ID3D11Texture2D* pBackBuffer;
+		pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pBackBuffer);
+		pDevice->CreateRenderTargetView(pBackBuffer, NULL, &mainRenderTargetView);
+		pBackBuffer->Release();
+
+		D3D11_VIEWPORT viewport;
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		viewport.Width = Width;
+		viewport.Height = Height;
+		
+		
+		
+		pContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
+		pContext->RSSetViewports(1, &viewport);
+
+	}
+
+	return  result;
+}
+
 DWORD __stdcall DirectXHookThread(LPVOID lpReserved)
 {
 	if (ShouldHookDX(2.5f))
@@ -285,6 +327,7 @@ DWORD __stdcall DirectXHookThread(LPVOID lpReserved)
 		if (kiero::init(kiero::RenderType::D3D11) == kiero::Status::Success)
 		{
 			kiero::bind(8, (void**)&eDirectX11Hook::m_pPresent, eDirectX11Hook::Present);
+			kiero::bind(13, (void**)&eDirectX11Hook::m_pResizeBuffers, eDirectX11Hook::ResizeBuffers);
 			init_hook = true;
 		}
 	} while (!init_hook);

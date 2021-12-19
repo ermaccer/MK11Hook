@@ -12,10 +12,12 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 
 typedef HRESULT(__stdcall* Present) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
+typedef HRESULT(__stdcall* ResizeBuffers) (IDXGISwapChain * pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags);
 
 class eDirectX11Hook {
 public:
 	static Present m_pPresent;
+	static ResizeBuffers m_pResizeBuffers;
 	static HWND ms_hWindow;
 	static WNDPROC ms_pWndProc;
 	static ID3D11Device* pDevice;
@@ -33,7 +35,7 @@ public:
 	static void	   ReloadImGuiFont();
 	static HRESULT __stdcall Present(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 	static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
+	static HRESULT __stdcall ResizeBuffers(IDXGISwapChain * pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags);
 };
 
 

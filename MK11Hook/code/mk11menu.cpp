@@ -1149,7 +1149,7 @@ void MK11Menu::Draw()
 
 			ImGui::Separator();
 			ImGui::Checkbox("Force Camera To Move", &m_bForceCameraUpdate);
-			ImGui::SameLine(); ShowHelpMarker("Check this option if the game you can't move camera anymore in win poses and some cinematics.");
+			ImGui::SameLine(); ShowHelpMarker("Check this option if you can't move camera anymore in win poses and some cinematics.");
 
 			ImGui::Separator();
 			if (GetObj(PLAYER1) && GetObj(PLAYER2))
@@ -1422,6 +1422,7 @@ void MK11Menu::UpdateMouse()
 void MK11Menu::DrawSettings()
 {
 	ImGui::SetNextWindowPos({ ImGui::GetIO().DisplaySize.x / 2.0f, ImGui::GetIO().DisplaySize.y / 2.0f }, ImGuiCond_Once, { 0.5f, 0.5f });
+	ImGui::SetNextWindowSize({ 54 * ImGui::GetFontSize(), 54 * ImGui::GetFontSize() }, ImGuiCond_Once);
 	ImGui::Begin("Settings", &m_bSubmenuActive[SUBMENU_SETTINGS]);
 
 	static int settingID = 0;
@@ -1477,10 +1478,6 @@ void MK11Menu::DrawSettings()
 
 	ImGui::EndChild();
 
-	ImGui::End();
-
-
-	
 	ImGui::End();
 }
 

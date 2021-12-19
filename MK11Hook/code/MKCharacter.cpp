@@ -77,5 +77,5 @@ void MKCharacter::SetT800Status(bool status)
 
 bool MKCharacter::IsCrouching()
 {
-	return ((bool(__fastcall*)(MKCharacter*))_addr(0x14047ADB0))(this);
+	return ((bool(__fastcall*)(MKCharacter*))_addr(0x14047ADE0))(this);
 }
