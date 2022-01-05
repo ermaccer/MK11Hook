@@ -26,3 +26,8 @@ void TagAssistModifierObject::Activate(MKCharacter* obj)
 {
 	((void(__fastcall*)(TagAssistModifierObject*, MKCharacter*))_addr(0x1405581D0))(this, obj);
 }
+
+void TagAssistModifierObject::AddHUDModifier(int plr, int unk, int unk2)
+{
+	((void(__fastcall*)(TagAssistModifierObject*,int, int, int))_addr(0x14055A4A0))(this, plr, unk, unk2);
+}

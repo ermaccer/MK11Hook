@@ -34,6 +34,9 @@
     <Filter Include="Header Files\code\helper">
       <UniqueIdentifier>{bb5a43a5-8836-46b1-9a85-18be7a5c70a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\code\unreal">
+      <UniqueIdentifier>{28f5b54e-93a3-4310-8370-b568866173c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -89,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="mk11hook.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="kiero\minhook\src\buffer.h">
       <Filter>Header Files\kiero\minhook</Filter>
@@ -152,6 +152,12 @@
     </ClInclude>
     <ClInclude Include="font.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MKInventory.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FName.h">
+      <Filter>Header Files\code\unreal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +244,12 @@
     </ClCompile>
     <ClCompile Include="code\helper\eAbilityNames.cpp">
       <Filter>Header Files\code\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="code\unreal\FName.cpp">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="code\MKInventory.cpp">
+      <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

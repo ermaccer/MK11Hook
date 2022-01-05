@@ -6,7 +6,7 @@
 #define GFG_GAME_INFO  0x1434990A0
 
 
-#define MK11HOOK_VERSION "0.4.7"
+#define MK11HOOK_VERSION "0.4.8"
 
 #define TOTAL_ABILITIES 20
 
@@ -39,6 +39,7 @@ int64 GetInfo(PLAYER_NUM plr);
 
 
 void GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
+void SetCharacterBoneSize(PLAYER_NUM plr, char* Name, float size);
 
 void HideHUD();
 void ShowHUD();

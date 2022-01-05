@@ -7,6 +7,8 @@
 #include "MKCharacter.h"
 #include "MKModifier.h"
 #include "mkcamera.h"
+#include "MKInventory.h"
+#include "unreal/FName.h"
 
 int64 hud_property = 0;
 
@@ -140,6 +142,26 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			GetObj(PLAYER1)->SetAbility(TheMenu->m_nP1Abilities);
 		}
 
+		if (TheMenu->m_nCurrentCustomCamera == CAMERA_HEAD_TRACKING && TheMenu->m_bCustomCameras)
+		{
+			if (TheMenu->m_bUsePlayerTwoAsTracker)
+				GetObj(PLAYER2)->SetBoneSize("Head", 0.1f);
+			else
+				GetObj(PLAYER1)->SetBoneSize("Head", 0.1f);
+
+			TheMenu->m_bDisableHeadTracking = true;
+		}
+
+		if (TheMenu->m_bDisableHeadTracking)
+		{
+			if (TheMenu->m_bUsePlayerTwoAsTracker)
+				GetObj(PLAYER2)->KillHeadTracking();
+			else
+				GetObj(PLAYER1)->KillHeadTracking();
+
+		}
+
+
 
 	}
 
@@ -246,6 +268,8 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	if (TheMenu->m_bStageModifier)
 		SetStage(TheMenu->szStageModifierStage);
 
+
+
 	if (TheMenu->m_nCurrentCharModifier == MODIFIER_FIGHT)
 	{
 		if (TheMenu->m_bPlayer1Modifier)
@@ -283,6 +307,9 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 		LoadModifierAssets();
 		printf("MK11Hook::Info() | P2 Tag Assist: %s\n", TheMenu->szPlayer2TagAssistCharacter);
 	}
+
+
+
 
 	printf("MK11Hook::Info() | %s VS %s\n", GetCharacterName(PLAYER1), GetCharacterName(PLAYER2));
 
@@ -424,6 +451,8 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 		SetCharacterAltPal(chr, altPalette);
 		if (loadout)
 			SetCharacterLoadout(chr, loadout);
+
+
 	}
 
 }
@@ -454,6 +483,14 @@ void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 	int64 object = GetInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
 	((int64(__fastcall*)(int64, FVector*))_addr(0x1411509E0))(ptr, vec);
+}
+
+void SetCharacterBoneSize(PLAYER_NUM plr, char * Name, float size)
+{
+	MKCharacter* p = GetObj(PLAYER1);
+	printf("%x\n", p);
+	FName fname(Name, FNAME_Add, 1);
+	((void(__fastcall*)(int64, FName*, int))_addr(0x1453EBB40))(*(int64*)((int64)p + 0x250), &fname, size);
 }
 
 void HideHUD()

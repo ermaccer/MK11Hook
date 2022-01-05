@@ -14,11 +14,6 @@ struct FRotator
 	int Roll;
 };
 
-
-struct FName {
-	//todo
-};
-
 struct FLinearColor
 {
 	float R;

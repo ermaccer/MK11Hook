@@ -12,7 +12,6 @@
 #include "code/mkcamera.h"
 #include "code/eGamepadManager.h"
 #include "code/helper/eAbilityNames.h"
-
 #include <iostream>
 
 using namespace Memory::VP;
@@ -20,6 +19,7 @@ using namespace Memory::VP;
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
+
 
 void OnInitializeHook()
 {
@@ -74,7 +74,6 @@ void OnInitializeHook()
 	//gamepad
 	if (SettingsMgr->bEnableGamepadSupport)
 		InjectHook(_addr(0x14238AED1), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
-
 
 }
 

@@ -10,6 +10,7 @@ enum eCustomCameras {
 	CAMERA_1STPERSON,
 	CAMERA_1STPERSON_MID,
 	CAMERA_INJUSTICE_2,
+	CAMERA_HEAD_TRACKING,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -44,6 +45,9 @@ public:
 	bool	 m_bFreeCamMouseInvertY;
 	bool	 m_bFreeCam;
 	bool	 m_bCustomCameras;
+	bool	 m_bDontFlipCamera;
+	bool	 m_bDisableHeadTracking;
+	bool	 m_bUsePlayerTwoAsTracker;
 	bool	 m_bYObtained;
 	bool	 m_bStageModifier;
 	bool	 m_bDisableHUD;
@@ -83,6 +87,9 @@ public:
 	float	 m_fAdjustCustomCameraThirdPersonX;
 	float	 m_fAdjustCustomCameraThirdPersonY;
 	float	 m_fAdjustCustomCameraThirdPersonZ;
+	float	 m_fAdjustCustomHeadCameraX;
+	float	 m_fAdjustCustomHeadCameraY;
+	float	 m_fAdjustCustomHeadCameraZ;
 	float	 m_fFreeCameraSpeed;
 	float    m_fSmoothScalingUpdate;
 
@@ -111,7 +118,8 @@ public:
 	char szPlayer1TagAssistCharacter[128] = {};
 	char szPlayer2TagAssistCharacter[128] = {};
 	char szAbilityReferenceChararacter[128] = {};
-
+	char szPlayer1Bone[128] = {};
+	char szPlayer2Bone[128] = {};
 	// camera
 
 	FVector  camPos;

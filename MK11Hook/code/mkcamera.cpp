@@ -2,6 +2,7 @@
 #include "mk11menu.h"
 #include <iostream>
 #include <Windows.h>
+#include "MKCharacter.h"
 
 MKCamera* TheCamera;
 
@@ -49,6 +50,7 @@ void MKCamera::HookedSetPosition(FVector * pos)
 		{
 			FVector plrPos;
 			FVector p2;
+			FVector headPos;
 			GetCharacterPosition(&plrPos, PLAYER1);
 			GetCharacterPosition(&p2, PLAYER2);
 			switch (TheMenu->m_nCurrentCustomCamera)
@@ -95,10 +97,7 @@ void MKCamera::HookedSetPosition(FVector * pos)
 				else
 					pos->Y += TheMenu->m_fAdjustCustomCameraY;
 
-				if (GetObj(PLAYER1)->IsCrouching())
-					pos->Z = TheMenu->m_fAdjustCustomCameraCrouch;
-				else
-					pos->Z = TheMenu->m_fAdjustCustomCameraZ + plrPos.Z;
+				pos->Z = TheMenu->m_fAdjustCustomCameraZ + plrPos.Z;
 
 
 				TheMenu->camPos = *pos;
@@ -113,6 +112,17 @@ void MKCamera::HookedSetPosition(FVector * pos)
 					pos->Y += 23.0f;
 				pos->Z = 124.0f + plrPos.Z;
 
+
+				TheMenu->camPos = *pos;
+				break;
+			case CAMERA_HEAD_TRACKING:
+				if (TheMenu->m_bUsePlayerTwoAsTracker)
+					GetObj(PLAYER2)->GetBonePos("Head", &headPos);
+				else
+					GetObj(PLAYER1)->GetBonePos("Head", &headPos);
+				pos->X = headPos.X + TheMenu->m_fAdjustCustomHeadCameraX;
+				pos->Y = headPos.Y;
+				pos->Z = headPos.Z + TheMenu->m_fAdjustCustomHeadCameraZ;
 
 				TheMenu->camPos = *pos;
 				break;
@@ -149,6 +159,7 @@ void MKCamera::HookedSetRotation(FRotator * rot)
 		if (GetObj(PLAYER1) && GetObj(PLAYER2))
 		{
 			FVector p1, p2;
+			FRotator headRot;
 			switch (TheMenu->m_nCurrentCustomCamera)
 			{
 			case CAMERA_3RDPERSON:
@@ -209,6 +220,35 @@ void MKCamera::HookedSetRotation(FRotator * rot)
 				if (p2.Y < p1.Y)
 				{
 					rot->Yaw = -16000;
+				}
+
+				TheMenu->camRot = *rot;
+				break;
+			case CAMERA_HEAD_TRACKING:
+				if (TheMenu->m_bUsePlayerTwoAsTracker)
+					GetObj(PLAYER2)->GetBoneRot("Head", &headRot);
+				else
+					GetObj(PLAYER1)->GetBoneRot("Head", &headRot);
+
+				rot->Pitch = headRot.Pitch + TheMenu->m_fAdjustCustomHeadCameraY;
+				rot->Yaw = 16000 + headRot.Yaw;
+				rot->Roll = headRot.Roll / 100;
+				TheMenu->camRot = *rot;
+				if (TheMenu->m_bUsePlayerTwoAsTracker)
+				{
+					GetCharacterPosition(&p2, PLAYER1);
+					GetCharacterPosition(&p1, PLAYER2);
+				}
+				else
+				{
+					GetCharacterPosition(&p1, PLAYER1);
+					GetCharacterPosition(&p2, PLAYER2);
+				}
+
+
+				if (p2.Y < p1.Y && !TheMenu->m_bDontFlipCamera)
+				{
+					rot->Yaw = -16000 - headRot.Yaw;
 				}
 
 				TheMenu->camRot = *rot;

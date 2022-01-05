@@ -3,6 +3,7 @@
 #include "mk11.h"
 #include <iostream>
 #include <Windows.h>
+#include "unreal/FName.h"
 
 void MKCharacter::SetLife(float life)
 {
@@ -69,13 +70,36 @@ CharacterInfo * MKCharacter::GetCharacterData(int unk)
 
 }
 
-
-void MKCharacter::SetT800Status(bool status)
+void MKCharacter::ActivateHeadTracking()
 {
-	((bool(__fastcall*)(MKCharacter*, bool))_addr(0x140951BC0))(this, status);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DC01F0))(this, 0.5);
 }
 
-bool MKCharacter::IsCrouching()
+void MKCharacter::KillHeadTracking()
 {
-	return ((bool(__fastcall*)(MKCharacter*))_addr(0x14047ADE0))(this);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DC01C0))(this, 0.5);
 }
+
+void MKCharacter::SetBoneSize(const char * name, float size)
+{
+	FName fname(name, FNAME_Add, 1);
+	((void(__fastcall*)(int64, FName*, float))_addr(0x1453EBB40))(*(int64*)((int64)this + 0x250), &fname,  size);
+}
+
+void MKCharacter::GetBonePos(const char * name, FVector * pos)
+{
+	FName fname(name, FNAME_Add, 1);
+	((void(__fastcall*)(MKCharacter*, FName, FVector*))_addr(0x140DB9820))(this, fname, pos);
+}
+
+void MKCharacter::GetBoneRot(const char * name, FRotator * rot)
+{
+	FName fname(name, FNAME_Add, 1);
+	((void(__fastcall*)(MKCharacter*, FName, FRotator*))_addr(0x1404A4DC0))(this, fname, rot);
+}
+
+int64 MKCharacter::GetSkeleton()
+{
+	return *(int64*)(this + 592);
+}
+

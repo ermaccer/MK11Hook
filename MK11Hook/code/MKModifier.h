@@ -10,6 +10,7 @@ public:
 class TagAssistModifierObject {
 public:
 	void Activate(MKCharacter* obj);
+	void AddHUDModifier(int plr, int unk, int unk2);
 };
 
 class TagAssistModifier : public BaseModifier {
