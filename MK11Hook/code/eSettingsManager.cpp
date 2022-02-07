@@ -97,6 +97,7 @@ void eSettingsManager::Init()
 	bEnableGamepadSupport = ini.ReadBoolean("Settings", "bEnableGamepadSupport", true);
 	bUseLegacyCharacterModifier = ini.ReadBoolean("Settings", "bUseLegacyCharacterModifier", false);
 	bMakeAllAbilities1Slot = ini.ReadBoolean("Settings", "bMakeAllAbilities1Slot", false);
+	bDisableComboDamageScaling = false;
 
 }
 
@@ -128,4 +129,27 @@ void eSettingsManager::SaveSettings()
 	CIniReader ini("");
 	ini.WriteBoolean("Settings", "bEnableGamepadSupport", bEnableGamepadSupport);
 	ini.WriteBoolean("Settings", "bEnableConsoleWindow", bEnableConsoleWindow);
+}
+
+void eSettingsManager::ResetKeys()
+{
+	iHookMenuOpenKey = VK_F1;
+	iToggleCustomCamKey = 255;
+	iToggleSlowMoKey = VK_F5;
+	iToggleFreezeWorldKey = VK_F2;
+	iResetStageInteractablesKey = 255;
+	iFreeCameraKeyXPlus = 104;
+	iFreeCameraKeyXMinus = 98;
+	iFreeCameraKeyYPlus = 102;
+	iFreeCameraKeyYMinus = 100;
+	iFreeCameraKeyZPlus = 103;
+	iFreeCameraKeyZMinus = 97;
+	iFreeCameraKeyYawPlus = 39;
+	iFreeCameraKeyYawMinus = 37;
+	iFreeCameraKeyPitchPlus = 38;
+	iFreeCameraKeyPitchMinus = 40;
+	iFreeCameraKeyRollMinus = 99;
+	iFreeCameraKeyRollPlus = 105;
+	iFreeCameraKeyFOVPlus = 107;
+	iFreeCameraKeyFOVMinus = 109;
 }

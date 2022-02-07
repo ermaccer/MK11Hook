@@ -6,10 +6,10 @@ TagAssistModifier::TagAssistModifier(const char * character)
 	((void(__fastcall*)(BaseModifier*,const char*, int))_addr(0x140545800))(this, character, 0);
 }
 
-void TagAssistModifier::Activate(int64 info)
+void TagAssistModifier::Activate(PlayerInfo* info)
 {
 	//140558320
-	((void(__fastcall*)(BaseModifier*, int64))_addr(0x140558350))(this, info);
+	((void(__fastcall*)(BaseModifier*, PlayerInfo*))_addr(0x140558350))(this, info);
 }
 
 TagAssistModifierObject * TagAssistModifier::CreateObject()

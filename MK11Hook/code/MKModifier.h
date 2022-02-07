@@ -1,6 +1,7 @@
 #pragma once
 #include "MKCharacter.h"
 #include "mk10utils.h"
+#include "PlayerInfo.h"
 
 class BaseModifier {
 public:
@@ -16,7 +17,7 @@ public:
 class TagAssistModifier : public BaseModifier {
 public:
 	TagAssistModifier(const char* character);
-	void Activate(int64 info);
+	void Activate(PlayerInfo* info);
 	TagAssistModifierObject* CreateObject();
 };
 

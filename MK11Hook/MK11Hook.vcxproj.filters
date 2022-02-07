@@ -165,6 +165,12 @@
     <ClInclude Include="code\GameInfo.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="code\CharacterDefinition.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\PlayerInfo.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -261,6 +267,12 @@
       <Filter>Header Files\code</Filter>
     </ClCompile>
     <ClCompile Include="code\GameInfo.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\CharacterDefinition.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\PlayerInfo.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,6 +12,7 @@
 #include "code/mkcamera.h"
 #include "code/eGamepadManager.h"
 #include "code/helper/eAbilityNames.h"
+#include "code/PlayerInfo.h"
 #include <iostream>
 
 using namespace Memory::VP;

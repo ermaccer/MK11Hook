@@ -8,8 +8,8 @@
 #include "MKModifier.h"
 #include "mkcamera.h"
 #include "MKInventory.h"
+#include "PlayerInfo.h"
 #include "unreal/FName.h"
-#include "GameInfo.h"
 
 int64 hud_property = 0;
 
@@ -20,6 +20,8 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 	MKCharacter* p1 = GetObj(PLAYER1);
 	MKCharacter* p2 = GetObj(PLAYER2);
+	PlayerInfo* p1_info = GetInfo(PLAYER1);
+	PlayerInfo* p2_info = GetInfo(PLAYER2);
 
 	if (TheMenu->m_bSlowMotion)
 		SlowGameTimeForXTicks(TheMenu->m_fSlowMotionSpeed, 10);
@@ -109,19 +111,25 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	if (p1)
 	{
 		if (TheMenu->m_bInfiniteHealthP1)	p1->SetLife(1000.0f);
-		if (TheMenu->m_bNoHealthP1)	p1->SetLife(0.0f);
-		if (TheMenu->m_bOneHealthP1)p1->SetLife(0.01f);
+		if (TheMenu->m_bNoHealthP1)		p1->SetLife(0.0f);
+		if (TheMenu->m_bOneHealthP1)	p1->SetLife(0.01f);
+
+		if (TheMenu->m_bDisableComboScaling)
+		{
+			if (p1_info)
+				p1_info->SetDamageMult(1.0f);
+		}
 
 		if (TheMenu->m_bInfiniteAttackP1)
 		{
-			if (GetInfo(PLAYER1))
-				SetCharacterEnergy(GetInfo(PLAYER1), BAR_Offensive, 1000.0f);
+			if (p1_info)
+				p1_info->SetMeter(BAR_Offensive, 1000.0f);
 		}
 
 		if (TheMenu->m_bInfiniteDefendP1)
 		{
-			if (GetInfo(PLAYER1))
-				SetCharacterEnergy(GetInfo(PLAYER1), BAR_Defensive, 1000.0f);
+			if (p1_info)
+				p1_info->SetMeter(BAR_Defensive, 1000.0f);
 		}
 
 		if (TheMenu->m_bAutoHideHUD)
@@ -164,16 +172,22 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bNoHealthP2)	p2->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP2)	p2->SetLife(0.01f);
 
+		if (TheMenu->m_bDisableComboScaling)
+		{
+			if (p2_info)
+				p2_info->SetDamageMult(1.0f);
+		}
+
 		if (TheMenu->m_bInfiniteAttackP2)
 		{
-			if (GetInfo(PLAYER2))
-				SetCharacterEnergy(GetInfo(PLAYER2), BAR_Offensive, 1000.0f);
+			if (p2_info)
+				p2_info->SetMeter(BAR_Offensive, 1000.0f);
 		}
 
 		if (TheMenu->m_bInfiniteDefendP2)
 		{
-			if (GetInfo(PLAYER2))
-				SetCharacterEnergy(GetInfo(PLAYER2), BAR_Defensive, 1000.0f);
+			if (p2_info)
+				p2_info->SetMeter(BAR_Defensive, 1000.0f);
 		}
 
 		if (TheMenu->m_bP2CustomAbilities)
@@ -343,7 +357,7 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 {
 	if (plr <= 1 && teamNo <= 3)
 	{
-		int64 chr = (120 * (teamNo + 4 * plr)) + ptr + 448;
+		CharacterDefinition* chr = (CharacterDefinition*)((120 * (teamNo + 4 * plr)) + ptr + 448);
 
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_SCREEN && (TheMenu->m_bPlayer1Modifier || TheMenu->m_bPlayer2Modifier))
 		{
@@ -365,20 +379,20 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 			}
 		}
 
-		SetCharacter(chr, name, 0, 0);
-		SetCharacterLevel(chr, level);
-		SetCharacterAltPal(chr, altPalette);
+		chr->Set(name, 0, 0);
+		chr->SetLevel(level);
+		chr->SetAlternatePalette(altPalette);
 		if (loadout)
-			SetCharacterLoadout(chr, loadout);
+			chr->SetLoadout(loadout);
 	}
 
 }
 
-void MK11Hooks::HookSetLadderScreen(int64 chr, char * name, int64 ptr, int64 unk)
+void MK11Hooks::HookSetLadderScreen(CharacterDefinition* chr, char * name, int64 ptr, int64 unk)
 {
 	if (TheMenu->m_bPlayer1Modifier)
 		name = TheMenu->szPlayer1ModifierCharacter;
-	SetCharacter(chr, name, ptr, unk);
+	chr->Set(name, ptr, unk);
 }
 
 MKCharacter* GetObj(PLAYER_NUM plr)
@@ -386,16 +400,14 @@ MKCharacter* GetObj(PLAYER_NUM plr)
 	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F87D0))(plr);
 }
 
-int64 GetInfo(PLAYER_NUM plr)
+PlayerInfo* GetInfo(PLAYER_NUM plr)
 {
-	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	return ((int64(__fastcall*)(int64, PLAYER_NUM))_addr(0x14056F160))(gameinfo, plr);
+	return GetGameInfo()->GetInfo(plr);
 }
-
 
 void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
-	int64 object = GetInfo(plr);
+	int64 object = (int64)GetInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
 	((int64(__fastcall*)(int64, FVector*))_addr(0x1411509E0))(ptr, vec);
 }
@@ -412,36 +424,14 @@ void ShowHUD()
 
 void SetCharacterMKX(PLAYER_NUM plr, char * name)
 {
-	int64 ptr = GetInfo(plr);
-	int64 chr = (ptr + 216);
-	SetCharacter(chr, name, 0, 0);
+	int64 ptr = (int64)GetInfo(plr);
+	CharacterDefinition* chr = (CharacterDefinition * )(ptr + 216);
+	chr->Set(name, 0, 0);
 }
-
-void SetCharacter(int64 chr, char * name, int64 ptr, int64 unk)
-{
-	((void(__fastcall*)(int64, const char*, int64, int64))_addr(0x140598320))(chr, name, ptr, unk);
-
-}
-
-void SetCharacterLevel(int64 chr, int level)
-{
-	((void(__fastcall*)(int64, int))_addr(0x1405997F0))(chr, level);
-}
-
-void SetCharacterAltPal(int64 chr, int value)
-{
-	((void(__fastcall*)(int64, int))_addr(0x14059DE50))(chr, value);
-}
-
-void SetCharacterLoadout(int64 chr, int64 loadout)
-{
-	((void(__fastcall*)(int64, int64))_addr(0x140599920))(chr, loadout);
-}
-
 
 char * GetCharacterName(PLAYER_NUM plr)
 {
-	int64 info = GetInfo(plr);
+	int64 info = (int64)GetInfo(plr);
 	character_info* chr = *(character_info**)(info + 216);
 	if (chr)
 		return chr->name;
@@ -449,16 +439,9 @@ char * GetCharacterName(PLAYER_NUM plr)
 		return "null";
 }
 
-
-
 void SlowGameTimeForXTicks(float speed, int ticks)
 {
 	((void(__fastcall*)(float, int, int))_addr(0x1405C0280))(speed, ticks, 0);
-}
-
-void SetCharacterEnergy(int64 obj, int type, float energy)
-{
-	((void(__fastcall*)(int64, int, float))_addr(0x1405FA450))(obj, type, energy);
 }
 
 

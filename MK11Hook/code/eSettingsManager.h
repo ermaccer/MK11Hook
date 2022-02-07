@@ -8,12 +8,13 @@ public:
 	void Init();
 
 	bool bEnableConsoleWindow;
-
+	bool bDisableComboDamageScaling;
 	
 	bool bUseLegacyCharacterModifier;
 	bool bMakeAllAbilities1Slot;
 
 	bool bEnableGamepadSupport;
+
 	// generic
 	int iHookMenuOpenKey;
 	int iToggleCustomCamKey;
@@ -46,6 +47,7 @@ public:
 	float fMenuScale;
 
 	void SaveSettings();
+	void ResetKeys();
 };
 
 extern eSettingsManager* SettingsMgr;

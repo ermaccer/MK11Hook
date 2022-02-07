@@ -1,10 +1,7 @@
 #pragma once
 #include "MKStructs.h"
 #include "mk10utils.h"
-enum eMeterValues {
-	BAR_Offensive,
-	BAR_Defensive
-};
+
 
 struct CharacterCAP {
 	char* Name;

@@ -77,6 +77,7 @@ public:
 	bool	m_bTagAssist = false;
 	bool	m_bTagAssistP2 = false;
 	bool	m_bDisableGearLoadouts = false;
+	bool    m_bDisableComboScaling = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;

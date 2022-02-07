@@ -32,7 +32,7 @@ ItemDefinition GearItem::GetGUID()
 
 void EquipItem(PLAYER_NUM plr, GearItem * item)
 {
-	int64 ptr = GetInfo(plr);
+	int64 ptr = (int64)GetInfo(plr);
 	int64 chr = (ptr + 216);
 	int64 loadout = (chr + 96);
 	((void(__fastcall*)(int64, GearItem*))_addr(0x1406CD1F0))(loadout, item);

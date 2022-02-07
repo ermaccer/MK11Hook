@@ -1538,13 +1538,11 @@ void MK11Menu::DrawMiscTab()
 	ImGui::SameLine();
 	ShowHelpMarker("You'll need to go in-game/back to menu for this option to take effect.");
 
-	ImGui::Checkbox("Disable Nondefault Gear Loadouts", &m_bDisableGearLoadouts);
-	ImGui::SameLine();
-	ShowHelpMarker("Only default loadouts will be used. Do not toggle this option when models are on screen.");
-
 	ImGui::Checkbox("Disable Head Tracking", &m_bDisableHeadTracking);
 	ImGui::SameLine();
 	ShowHelpMarker("Disables P1 head looking at P2. Automatically enabled with 'Head Perspective' custom camera.");
+
+	ImGui::Checkbox("Disable Combo Scaling", &m_bDisableComboScaling);
 }
 
 void MK11Menu::DrawSettings()
@@ -1597,6 +1595,14 @@ void MK11Menu::DrawSettings()
 	case KEYS:
 		if (m_bPressingKey)
 			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key!");
+
+		if (ImGui::Button("Reset Keys", { -FLT_MIN, 0 }))
+		{
+			SettingsMgr->ResetKeys();
+			Notifications->SetNotificationTime(2500);
+			Notifications->PushNotification("Keys reset! Remember to save.");
+
+		}
 		ImGui::Separator();
 		ImGui::LabelText("", "Core");
 		ImGui::Separator();
@@ -1634,7 +1640,6 @@ void MK11Menu::DrawSettings()
 
 		if (m_bPressingKey)
 		{
-			ImGui::Text("%x", m_pCurrentVarToChange);
 			eVKKeyCode result = eKeyboardMan::GetLastKey();
 
 			if (result >= VK_BACKSPACE && result < VK_KEY_NONE)
@@ -1644,6 +1649,7 @@ void MK11Menu::DrawSettings()
 			}
 
 		}
+
 	default:
 		break;
 	}

@@ -20,3 +20,8 @@ void FGGameInfo::ResetStageInteractables()
 	((void(__fastcall*)(int64))_addr(0x14045C370))(bgnd_info);
 	((void(__fastcall*)(int64))_addr(0x14045BDA0))(bgnd_info);
 }
+
+PlayerInfo* FGGameInfo::GetInfo(PLAYER_NUM plr)
+{
+	return ((PlayerInfo*(__fastcall*)(FGGameInfo*, PLAYER_NUM))_addr(0x14056F160))(this, plr);
+}

@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="code\CharacterDefinition.h" />
     <ClInclude Include="code\eNotifManager.h" />
     <ClInclude Include="code\eSettingsManager.h" />
     <ClInclude Include="code\eGamepadManager.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="code\MKInventory.h" />
     <ClInclude Include="code\MKModifier.h" />
     <ClInclude Include="code\MKStructs.h" />
+    <ClInclude Include="code\PlayerInfo.h" />
     <ClInclude Include="code\unreal\FName.h" />
     <ClInclude Include="eDirectX11Hook.h" />
     <ClInclude Include="font.h" />
@@ -140,6 +142,7 @@
     <ClInclude Include="utils\Trampoline.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="code\CharacterDefinition.cpp" />
     <ClCompile Include="code\eGamepadManager.cpp" />
     <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
@@ -153,6 +156,7 @@
     <ClCompile Include="code\MKCharacter.cpp" />
     <ClCompile Include="code\MKInventory.cpp" />
     <ClCompile Include="code\MKModifier.cpp" />
+    <ClCompile Include="code\PlayerInfo.cpp" />
     <ClCompile Include="code\unreal\FName.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="eDirectX11Hook.cpp" />
