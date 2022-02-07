@@ -45,15 +45,10 @@ void OnInitializeHook()
 	InjectHook(_addr(0x1419A99F1), tramp->Jump(&MKCamera::HookedSetPosition));
 	InjectHook(_addr(0x1419A99FE), tramp->Jump(&MKCamera::HookedSetRotation));
 
-	if (SettingsMgr->bUseLegacyCharacterModifier)
-	{
-		InjectHook(_addr(0x1408F84ED), tramp->Jump(MK11Hooks::HookLoadCharacter));
-	}
-	else
-	{
-		InjectHook(_addr(0x14086D1E0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
-		InjectHook(_addr(0x140598B1E), tramp->Jump(MK11Hooks::HookSetLadderScreen));
-	}
+
+	InjectHook(_addr(0x14086D1E0), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
+	InjectHook(_addr(0x140598B1E), tramp->Jump(MK11Hooks::HookSetLadderScreen));
+
 
 
 	InjectHook(_addr(0x140976AE4), tramp->Jump(SetKryptCharacter));

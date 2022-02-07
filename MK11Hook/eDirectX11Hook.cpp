@@ -313,8 +313,8 @@ HRESULT __stdcall eDirectX11Hook::ResizeBuffers(IDXGISwapChain * pSwapChain, UIN
 		viewport.MaxDepth = 1.0f;
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.Width = Width;
-		viewport.Height = Height;
+		viewport.Width = (float)Width;
+		viewport.Height = (float)Height;
 		
 		
 		

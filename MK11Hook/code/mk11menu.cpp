@@ -12,6 +12,7 @@
 #include "helper/eAbilityNames.h"
 #include "helper/eKeyboardMan.h"
 #include "..\eDirectX11Hook.h"
+#include "GameInfo.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -878,7 +879,7 @@ void MK11Menu::UpdateControls()
 		if (GetTickCount64() - timer <= 150) return;
 		timer = GetTickCount64();
 		if (GetObj(PLAYER1) && GetObj(PLAYER2))
-			ResetStageInteractables();
+			GetGameInfo()->ResetStageInteractables();
 		else
 		{
 			Notifications->SetNotificationTime(2500);
@@ -1021,7 +1022,7 @@ void MK11Menu::DrawStageTab()
 	}
 
 	if (ImGui::Button("Reset Stage Objects"))
-		ResetStageInteractables();
+		GetGameInfo()->ResetStageInteractables();
 }
 
 void MK11Menu::DrawModifiersTab()
@@ -1078,7 +1079,7 @@ void MK11Menu::DrawModifiersTab()
 
 			for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
 			{
-				int val = pow(2, i);
+				int val = (int)pow(2, i);
 				if (GetAsyncKeyState(VK_LSHIFT))
 					sprintf(textBuffer, "Ability %d (%d)", i + 1, val);
 				else
@@ -1099,7 +1100,7 @@ void MK11Menu::DrawModifiersTab()
 
 					for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
 					{
-						int id = pow(2, i);
+						int id = (int)pow(2, i);
 						m_P1Abilities[i] = abilities & id;
 					}
 				}
@@ -1111,7 +1112,7 @@ void MK11Menu::DrawModifiersTab()
 
 			for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
 			{
-				int val = pow(2, i);
+				int val = (int)pow(2, i);
 				if (GetAsyncKeyState(VK_LSHIFT))
 					sprintf(textBuffer, "Ability %d (%d)##p2", i + 1, val);
 				else
@@ -1131,7 +1132,7 @@ void MK11Menu::DrawModifiersTab()
 
 					for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
 					{
-						int id = pow(2, i);
+						int id = (int)pow(2, i);
 						m_P2Abilities[i] = abilities & id;
 					}
 				}
@@ -1298,7 +1299,7 @@ void MK11Menu::DrawPlayerTab()
 void MK11Menu::DrawSpeedTab()
 {
 	ImGui::Text("Gamespeed Control");
-	ImGui::InputFloat("", &m_fSlowMotionSpeed, 0.1);
+	ImGui::InputFloat("", &m_fSlowMotionSpeed, 0.1f);
 
 	if (m_fSlowMotionSpeed > 2.0f) m_fSlowMotionSpeed = 2.0f;
 	if (m_fSlowMotionSpeed < 0.0f) m_fSlowMotionSpeed = 0.0f;
@@ -1719,7 +1720,7 @@ void MK11Menu::DrawKeyBind(char* name, int* var)
 #ifdef _DEBUG
 void MK11Menu::DrawDebug()
 {
-	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.95);
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.95f);
 	ImGui::SetNextWindowPos(ImVec2(10, 5));
 	ImGui::Begin("devtext", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoInputs |ImGuiWindowFlags_NoSavedSettings |ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize);
@@ -1732,8 +1733,6 @@ void MK11Menu::DrawDebug()
 	ImGui::Text("P1: %s", GetCharacterName(PLAYER1));
 	ImGui::Text("P2: %s", GetCharacterName(PLAYER2));
 	ImGui::End();
-
-
 }
 #endif
 
@@ -1753,9 +1752,4 @@ char * GetMK11HookVersion()
 	static char buffer[512] = {};
 	sprintf(buffer, "MK11Hook by ermaccer (%s)", MK11HOOK_VERSION);
 	return buffer;
-}
-
-
-void PushNotification()
-{
 }

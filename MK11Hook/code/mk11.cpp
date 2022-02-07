@@ -9,6 +9,7 @@
 #include "mkcamera.h"
 #include "MKInventory.h"
 #include "unreal/FName.h"
+#include "GameInfo.h"
 
 int64 hud_property = 0;
 
@@ -17,23 +18,24 @@ void __fastcall MK11Hooks::HookProcessStuff()
 	TheMenu->Process();
 	Notifications->Update();
 
+	MKCharacter* p1 = GetObj(PLAYER1);
+	MKCharacter* p2 = GetObj(PLAYER2);
+
 	if (TheMenu->m_bSlowMotion)
 		SlowGameTimeForXTicks(TheMenu->m_fSlowMotionSpeed, 10);
 
 	if (TheMenu->m_bChangePlayerSpeed)
 	{
-		if (GetObj(PLAYER1))
-			GetObj(PLAYER1)->SetSpeed(TheMenu->m_fP1Speed);
-		if (GetObj(PLAYER2))
-			GetObj(PLAYER2)->SetSpeed(TheMenu->m_fP2Speed);
+		if (p1)	p1->SetSpeed(TheMenu->m_fP1Speed);
+		if (p2)	p2->SetSpeed(TheMenu->m_fP2Speed);
 	}
 	if (TheMenu->m_bChangePlayerScale)
 	{
-		if (GetObj(PLAYER1))
+		if (p1)
 		{
 			if (TheMenu->m_bSmoothScaleChange)
 			{
-				FVector src = GetObj(PLAYER1)->GetScale();
+				FVector src = p1->GetScale();
 				FVector scale = TheMenu->m_vP1Scale;
 
 				if (!(fabs(TheMenu->m_vP1Scale.X - src.X) < 0.01f))
@@ -60,17 +62,17 @@ void __fastcall MK11Hooks::HookProcessStuff()
 						src.Z -= TheMenu->m_fSmoothScalingUpdate;
 				}
 			
-				GetObj(PLAYER1)->SetScale(&src);
+				p1->SetScale(&src);
 			}
 			else
-				GetObj(PLAYER1)->SetScale(&TheMenu->m_vP1Scale);
+				p1->SetScale(&TheMenu->m_vP1Scale);
 		}
 
-		if (GetObj(PLAYER2))
+		if (p2)
 		{
 			if (TheMenu->m_bSmoothScaleChange)
 			{
-				FVector src = GetObj(PLAYER2)->GetScale();
+				FVector src = p2->GetScale();
 				FVector scale = TheMenu->m_vP2Scale;
 
 				if (!(fabs(TheMenu->m_vP2Scale.X - src.X) < 0.01f))
@@ -97,22 +99,18 @@ void __fastcall MK11Hooks::HookProcessStuff()
 						src.Z -= TheMenu->m_fSmoothScalingUpdate;
 				}
 
-				GetObj(PLAYER2)->SetScale(&src);
+				p2->SetScale(&src);
 			}
 			else
-				GetObj(PLAYER2)->SetScale(&TheMenu->m_vP2Scale);
+				p2->SetScale(&TheMenu->m_vP2Scale);
 		}
 	}
 
-	if (GetObj(PLAYER1))
+	if (p1)
 	{
-		if (TheMenu->m_bInfiniteHealthP1)
-			GetObj(PLAYER1)->SetLife(1000.0f);
-
-		if (TheMenu->m_bNoHealthP1)
-			GetObj(PLAYER1)->SetLife(0.0f);
-		if (TheMenu->m_bOneHealthP1)
-			GetObj(PLAYER1)->SetLife(0.01f);
+		if (TheMenu->m_bInfiniteHealthP1)	p1->SetLife(1000.0f);
+		if (TheMenu->m_bNoHealthP1)	p1->SetLife(0.0f);
+		if (TheMenu->m_bOneHealthP1)p1->SetLife(0.01f);
 
 		if (TheMenu->m_bInfiniteAttackP1)
 		{
@@ -134,19 +132,17 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			for (int i = 0; i < sizeof(TheMenu->m_P1Abilities) / sizeof(TheMenu->m_P1Abilities[0]); i++)
 			{
 				if (TheMenu->m_P1Abilities[i])
-				{
-					TheMenu->m_nP1Abilities += pow(2, i);
-				}
+					TheMenu->m_nP1Abilities += (int)pow(2, i);
 			}
-			GetObj(PLAYER1)->SetAbility(TheMenu->m_nP1Abilities);
+			p1->SetAbility(TheMenu->m_nP1Abilities);
 		}
 
 		if (TheMenu->m_nCurrentCustomCamera == CAMERA_HEAD_TRACKING && TheMenu->m_bCustomCameras)
 		{
 			if (TheMenu->m_bUsePlayerTwoAsTracker)
-				GetObj(PLAYER2)->SetBoneSize("Head", 0.1f);
+				p2->SetBoneSize("Head", 0.1f);
 			else
-				GetObj(PLAYER1)->SetBoneSize("Head", 0.1f);
+				p1->SetBoneSize("Head", 0.1f);
 
 			TheMenu->m_bDisableHeadTracking = true;
 		}
@@ -154,26 +150,19 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bDisableHeadTracking)
 		{
 			if (TheMenu->m_bUsePlayerTwoAsTracker)
-				GetObj(PLAYER2)->KillHeadTracking();
+				p2->KillHeadTracking();
 			else
-				GetObj(PLAYER1)->KillHeadTracking();
+				p1->KillHeadTracking();
 
 		}
-
-
-
 	}
 
 
-	if (GetObj(PLAYER2))
+	if (p2)
 	{
-		if (TheMenu->m_bInfiniteHealthP2)
-			GetObj(PLAYER2)->SetLife(1000.0f);
-
-		if (TheMenu->m_bNoHealthP2)
-			GetObj(PLAYER2)->SetLife(0.0f);
-		if (TheMenu->m_bOneHealthP2)
-			GetObj(PLAYER2)->SetLife(0.01f);
+		if (TheMenu->m_bInfiniteHealthP2)	p2->SetLife(1000.0f);
+		if (TheMenu->m_bNoHealthP2)	p2->SetLife(0.0f);
+		if (TheMenu->m_bOneHealthP2)	p2->SetLife(0.01f);
 
 		if (TheMenu->m_bInfiniteAttackP2)
 		{
@@ -193,11 +182,9 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			for (int i = 0; i < sizeof(TheMenu->m_P2Abilities) / sizeof(TheMenu->m_P2Abilities[0]); i++)
 			{
 				if (TheMenu->m_P2Abilities[i])
-				{
-					TheMenu->m_nP2Abilities += pow(2, i);
-				}
+					TheMenu->m_nP2Abilities += (int)pow(2, i);
 			}
-			GetObj(PLAYER2)->SetAbility(TheMenu->m_nP2Abilities);
+			p2->SetAbility(TheMenu->m_nP2Abilities);
 		}
 	}
 
@@ -248,13 +235,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		}
 
 	}
-
 	((void(__fastcall*)())_addr(0x141153D20))();
-}
-
-void MK11Hooks::PreLoadHook(int64 a1, int64 a2, int a3)
-{
-	((void(__fastcall*)(int64, int64, int))_addr(0x1408FCDB0))(a1, a2, a3);
 }
 
 void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4)
@@ -265,9 +246,7 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->m_bYObtained = false;
 
 	if (TheMenu->m_bStageModifier)
-		SetStage(TheMenu->szStageModifierStage);
-
-
+		GetGameInfo()->SetStage(TheMenu->szStageModifierStage);
 
 	if (TheMenu->m_nCurrentCharModifier == MODIFIER_FIGHT)
 	{
@@ -307,67 +286,12 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 		printf("MK11Hook::Info() | P2 Tag Assist: %s\n", TheMenu->szPlayer2TagAssistCharacter);
 	}
 
-
-
-
 	printf("MK11Hook::Info() | %s VS %s\n", GetCharacterName(PLAYER1), GetCharacterName(PLAYER2));
-
-
-
-
 
 	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141159CB0))(eventID, a2, a3, a4);
 
 }
 
-void MK11Hooks::PostLoadHook()
-{
-
-
-	((int64(__fastcall*)())_addr(0x14090F7A0))();
-}
-
-int64 __fastcall MK11Hooks::HookLoadCharacter(int64 ptr, char * name)
-{
-	printf("%x\n", (int64)&name[0]);
-	if (TheMenu->m_nCurrentCharModifier == MODIFIER_SCREEN)
-	{
-		if (name)
-		{
-			if (!IsDLC(name))
-			{
-				if (TheMenu->m_bPlayer1Modifier)
-				{
-					if (ptr == GetInfo(PLAYER1))
-					{
-
-						char* original_name = name;
-						printf("MK11Hook::Info() | Setting Player %s\n", TheMenu->szPlayer1ModifierCharacter);
-						strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer1ModifierCharacter);
-						strcpy((char*)(int64)&original_name[0], original_name);
-
-						// crash fix
-						TheMenu->m_bPlayer1Modifier = false;
-					}
-				}
-				if (TheMenu->m_bPlayer2Modifier)
-				{
-					if (ptr == GetInfo(PLAYER2))
-					{
-						char* original_name = name;
-						printf("MK11Hook::Info() | Setting Player %s\n", TheMenu->szPlayer2ModifierCharacter);
-						strcpy((char*)(int64)&original_name[0], TheMenu->szPlayer2ModifierCharacter);
-						strcpy((char*)(int64)&original_name[0], original_name);
-						TheMenu->m_bPlayer2Modifier = false;
-					}
-				}
-			}
-		}
-
-	}
-	return ((int64(__fastcall*)(int64, char*))_addr(0x1408F8500))(ptr, name);
-
-}
 
 int64 MK11Hooks::HookSetProperty(int64 ptr, char * name, int64 unk)
 {
@@ -383,7 +307,6 @@ void MK11Hooks::HookReadPropertyValue(int64 ptr, int* unk, int* value)
 		if (TheMenu->m_bDisableHUD)
 			input ^= 1;
 	}
-
 
 	*unk = *(int*)(ptr + 408) & input | *unk & ~*(int*)(ptr + 408);
 }
@@ -420,13 +343,12 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 {
 	if (plr <= 1 && teamNo <= 3)
 	{
-		int64 chr = 120 * ((int)teamNo + 4 * (int)plr) + ptr + 448;
+		int64 chr = (120 * (teamNo + 4 * plr)) + ptr + 448;
 
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_SCREEN && (TheMenu->m_bPlayer1Modifier || TheMenu->m_bPlayer2Modifier))
 		{
 			if (name)
 			{
-
 				switch (plr)
 				{
 				case PLAYER1:
@@ -443,15 +365,11 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 			}
 		}
 
-
 		SetCharacter(chr, name, 0, 0);
-
 		SetCharacterLevel(chr, level);
 		SetCharacterAltPal(chr, altPalette);
 		if (loadout)
 			SetCharacterLoadout(chr, loadout);
-
-
 	}
 
 }
@@ -475,21 +393,11 @@ int64 GetInfo(PLAYER_NUM plr)
 }
 
 
-
-
 void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
 	int64 object = GetInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
 	((int64(__fastcall*)(int64, FVector*))_addr(0x1411509E0))(ptr, vec);
-}
-
-void SetCharacterBoneSize(PLAYER_NUM plr, char * Name, float size)
-{
-	MKCharacter* p = GetObj(PLAYER1);
-	printf("%x\n", p);
-	FName fname(Name, FNAME_Add, 1);
-	((void(__fastcall*)(int64, FName*, int))_addr(0x1453EBB40))(*(int64*)((int64)p + 0x250), &fname, size);
 }
 
 void HideHUD()
@@ -548,69 +456,11 @@ void SlowGameTimeForXTicks(float speed, int ticks)
 	((void(__fastcall*)(float, int, int))_addr(0x1405C0280))(speed, ticks, 0);
 }
 
-void ResetStageInteractables()
-{
-	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	int64 bgndinfo = *(int64*)(gameinfo + 0x50);
-
-	((void(__fastcall*)(int64))_addr(0x14045BE30))(bgndinfo);
-	((void(__fastcall*)(int64))_addr(0x14045C370))(bgndinfo);
-	((void(__fastcall*)(int64))_addr(0x14045BDA0))(bgndinfo);
-
-}
-
 void SetCharacterEnergy(int64 obj, int type, float energy)
 {
 	((void(__fastcall*)(int64, int, float))_addr(0x1405FA450))(obj, type, energy);
 }
 
-void SetStage(const char * stage)
-{
-	__int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-
-	((void(__fastcall*)(int64, const char*))_addr(0x140599CD0))(gameinfo, stage);
-}
-
-
-const char* szCharactersDLC[] = {
-	"CHAR_Terminator",
-	"CHAR_Spawn",
-	"CHAR_Sindel",
-	"CHAR_ShaoKahn",
-	"CHAR_Rambo",
-	"CHAR_Robocop",
-	"CHAR_Rain",
-	"CHAR_ShangTsung",
-	"CHAR_Joker",
-	"CHAR_Fujin",
-	"CHAR_Sheeva",
-	"CHAR_CyberFrost",
-	"CHAR_Nightwolf",
-	"CHAR_Mileena",
-};
-
-bool IsDLC(const char * name)
-{
-	if (name)
-	{
-		for (int i = 0; i < sizeof(szCharactersDLC) / sizeof(szCharactersDLC[0]); i++)
-		{
-			if (strcmp(name, szCharactersDLC[i]) == 0)
-			{
-				if (TheMenu->m_bPlayer1Modifier)
-				{
-					printf("MK11Hook::Info() | Cannot swap DLC characters!\n");
-					Notifications->SetNotificationTime(5500);
-					Notifications->PushNotification("Cannot swap DLC characters!");
-				}
-
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
 
 void SetKryptCharacter(int64 ptr, char * name)
 {

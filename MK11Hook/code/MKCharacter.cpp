@@ -49,24 +49,7 @@ void MKCharacter::ClearAbilities()
 
 CharacterInfo * MKCharacter::GetCharacterData(int unk)
 {
-	CharacterInfo* inf = ((CharacterInfo*(__fastcall*)(MKCharacter*,int))_addr(0x140C0E130))(this, unk);
-
-	printf("========\n");
-	printf("PTR: %x\n", inf);
-	printf("Character: %s\n", inf->Name);
-	printf("Class: %s\n", inf->CharacterClass);
-	printf("CAP: %s %d %d 2: %s %d %d\n", inf->CAPs->cap[0].Name, inf->CAPs->cap[0].unk1, inf->CAPs->cap[0].unk2,
-		inf->CAPs->cap[1].Name, inf->CAPs->cap[1].unk1, inf->CAPs->cap[1].unk2);
-	printf("Model: %s\n", inf->CAPPath);
-	printf("Asset: %s\n", inf->CharacterAssetPath);
-	printf("Script: %s\n", inf->ScriptName);
-	printf("ScriptAssets: %s\n", inf->CommonScriptAssets);
-	printf("Root: %s\n", inf->RootPath);
-	printf("============\n");
-
-
-	return inf;
-
+	return ((CharacterInfo*(__fastcall*)(MKCharacter*, int))_addr(0x140C0E130))(this, unk);
 }
 
 void MKCharacter::ActivateHeadTracking()

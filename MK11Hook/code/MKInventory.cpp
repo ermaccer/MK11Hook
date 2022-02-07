@@ -19,7 +19,7 @@ int64 GearItem::GetCharacterKey()
 
 char * GearItem::GetName()
 {
-	char buff[256] = { };
+	static char buff[256] = { };
 	((void(__fastcall*)(GearItem*, char*))_addr(0x14071C650))(this, buff);
 	return buff;
 }

@@ -162,6 +162,9 @@
     <ClInclude Include="code\MKCamera.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="code\GameInfo.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -255,6 +258,9 @@
       <Filter>Header Files\code\helper</Filter>
     </ClCompile>
     <ClCompile Include="code\MKCamera.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\GameInfo.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>
