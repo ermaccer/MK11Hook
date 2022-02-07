@@ -26,11 +26,9 @@ void eNotificationManager::UpdateAlpha()
 	if (eDirectX11Hook::ms_bInit)
 		delta = 1.0f / ImGui::GetIO().Framerate;
 
-
 	float alphaSpeed = 0.8f;
 
 	m_fNotifAlpha = max(m_fNotifAlpha - delta * alphaSpeed, 0.0f);
-
 
 	if (m_fNotifAlpha <= 0)
 		m_bIsNotificationActive = false;

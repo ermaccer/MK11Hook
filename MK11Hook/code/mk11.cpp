@@ -104,7 +104,6 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		}
 	}
 
-
 	if (GetObj(PLAYER1))
 	{
 		if (TheMenu->m_bInfiniteHealthP1)
@@ -536,8 +535,10 @@ char * GetCharacterName(PLAYER_NUM plr)
 {
 	int64 info = GetInfo(plr);
 	character_info* chr = *(character_info**)(info + 216);
-
-	return chr->name;
+	if (chr)
+		return chr->name;
+	else
+		return "null";
 }
 
 
@@ -545,6 +546,17 @@ char * GetCharacterName(PLAYER_NUM plr)
 void SlowGameTimeForXTicks(float speed, int ticks)
 {
 	((void(__fastcall*)(float, int, int))_addr(0x1405C0280))(speed, ticks, 0);
+}
+
+void ResetStageInteractables()
+{
+	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
+	int64 bgndinfo = *(int64*)(gameinfo + 0x50);
+
+	((void(__fastcall*)(int64))_addr(0x14045BE30))(bgndinfo);
+	((void(__fastcall*)(int64))_addr(0x14045C370))(bgndinfo);
+	((void(__fastcall*)(int64))_addr(0x14045BDA0))(bgndinfo);
+
 }
 
 void SetCharacterEnergy(int64 obj, int type, float energy)

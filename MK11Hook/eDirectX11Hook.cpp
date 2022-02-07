@@ -147,7 +147,7 @@ void eDirectX11Hook::InitImGui()
 	ImGui::CreateContext();
 	ImGui::GetIO().ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
 	ImGui_ImplWin32_Init(ms_hWindow);
 	ImGui_ImplDX11_Init(pDevice, pContext);
 	if (SettingsMgr->bEnableGamepadSupport)
@@ -162,9 +162,13 @@ void eDirectX11Hook::ReloadImGuiFont()
 		float fontSize = 13.0f;
 		ImGuiStyle * style = &ImGui::GetStyle();
 		ImGuiIO io = ImGui::GetIO();
-		io.Fonts->Clear();
-		io.Fonts->AddFontFromMemoryCompressedTTF(Font_compressed_data, Font_compressed_size, fontSize * SettingsMgr->fMenuScale);
-		io.Fonts->Build();
+
+		if (!io.Fonts->Locked && !bInitShared)
+		{
+			io.Fonts->Clear();
+			io.Fonts->AddFontFromMemoryCompressedTTF(Font_compressed_data, Font_compressed_size, fontSize * SettingsMgr->fMenuScale);
+			io.Fonts->Build();
+		}
 
 		style->WindowPadding = ms_localStyleCopy.WindowPadding;
 		style->WindowRounding = ms_localStyleCopy.WindowRounding;
@@ -241,6 +245,12 @@ HRESULT __stdcall eDirectX11Hook::Present(IDXGISwapChain * pSwapChain, UINT Sync
 
 	if (TheMenu->GetActiveState())
 		TheMenu->Draw();
+
+
+#ifdef _DEBUG
+	MK11Menu::DrawDebug();
+#endif // _DEBUG
+
 
 	ImGui::EndFrame();
 	ImGui::Render();

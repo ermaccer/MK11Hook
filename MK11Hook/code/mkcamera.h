@@ -1,6 +1,7 @@
 #pragma once
 #include "mk11.h"
 // generic layer for other plugins too
+
 class MKCamera {
 private:
 	char pad[0x6BC];

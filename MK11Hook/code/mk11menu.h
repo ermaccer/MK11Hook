@@ -1,6 +1,7 @@
 #pragma once
 #include "mk11.h"
 #include <Windows.h>
+#include "helper/eKeyboardMan.h"
 // as usual, based on mh2 debug menu
 
 
@@ -21,7 +22,6 @@ enum eCHRModifierModes {
 	TOTAL_MODES
 };
 
-
 enum eMenuSubMenus {
 	SUBMENU_ABILITY_REFERENCE,
 	SUBMENU_NPC_MOVELIST,
@@ -31,81 +31,84 @@ enum eMenuSubMenus {
 
 class MK11Menu {
 public:
-	bool	 m_bIsActive;
+	bool	 m_bIsActive = false;
 	bool	 m_bSubmenuActive[TOTAL_SUBMENUS] = {};
-	bool	 m_bSlowMotion;
-	bool     m_bFreezeWorld;
-	bool	 m_bIsFocused;
-	bool	 m_bHookDispatch;
-	bool	 m_bForceCameraUpdate;
-	bool	 m_bCustomCameraPos;
-	bool	 m_bCustomCameraRot;
-	bool	 m_bCustomCameraFOV;
-	bool	 m_bFreeCamMouseControl;
-	bool	 m_bFreeCamMouseInvertY;
-	bool	 m_bFreeCam;
-	bool	 m_bCustomCameras;
-	bool	 m_bDontFlipCamera;
-	bool	 m_bDisableHeadTracking;
-	bool	 m_bUsePlayerTwoAsTracker;
-	bool	 m_bYObtained;
-	bool	 m_bStageModifier;
-	bool	 m_bDisableHUD;
-	bool	 m_bAutoHideHUD;
+	bool     m_bPressingKey = false;
+	bool	 m_bSlowMotion = false;
+	bool     m_bFreezeWorld = false;
+	bool	 m_bIsFocused = false;
+	bool	 m_bHookDispatch = false;
+	bool	 m_bForceCameraUpdate = false;
+	bool	 m_bCustomCameraPos = false;
+	bool	 m_bCustomCameraRot = false;
+	bool	 m_bCustomCameraFOV = false;
+	bool	 m_bFreeCamMouseControl = false;
+	bool	 m_bFreeCamMouseInvertY = false;
+	bool	 m_bFreeCam = false;
+	bool	 m_bCustomCameras = false;
+	bool	 m_bDontFlipCamera = false;
+	bool	 m_bDisableHeadTracking = false;
+	bool	 m_bUsePlayerTwoAsTracker = false;
+	bool	 m_bYObtained = false;
+	bool	 m_bStageModifier = false;
+	bool	 m_bDisableHUD = false;
+	bool	 m_bAutoHideHUD = false;
 	// cheats
-	bool	m_bInfiniteHealthP1;
-	bool	m_bInfiniteHealthP2;
-	bool	m_bNoHealthP1;
-	bool	m_bNoHealthP2;
-	bool	m_bZeroMeterP1;
-	bool	m_bZeroMeterP2;
-	bool	m_bInfiniteAttackP1;
-	bool	m_bInfiniteAttackP2;
-	bool	m_bInfiniteDefendP1;
-	bool	m_bInfiniteDefendP2;
-	bool	m_bOneHealthP1;
-	bool	m_bOneHealthP2;
+	bool	m_bInfiniteHealthP1 = false;
+	bool	m_bInfiniteHealthP2 = false;
+	bool	m_bNoHealthP1 = false;
+	bool	m_bNoHealthP2 = false;
+	bool	m_bZeroMeterP1 = false;
+	bool	m_bZeroMeterP2 = false;
+	bool	m_bInfiniteAttackP1 = false;
+	bool	m_bInfiniteAttackP2 = false;
+	bool	m_bInfiniteDefendP1 = false;
+	bool	m_bInfiniteDefendP2 = false;
+	bool	m_bOneHealthP1 = false;
+	bool	m_bOneHealthP2 = false;
 
-	bool	m_bChangePlayerSpeed;
-	bool	m_bChangePlayerScale;
-	bool    m_bSmoothScaleChange;
-	bool	m_bPlayer1Modifier;
-	bool	m_bPlayer2Modifier;
+	bool	m_bChangePlayerSpeed = false;
+	bool	m_bChangePlayerScale = false;
+	bool    m_bSmoothScaleChange = false;
+	bool	m_bPlayer1Modifier = false;
+	bool	m_bPlayer2Modifier = false;
 
-	bool	m_bKryptModifier;
-	bool	m_bTagAssist;
-	bool	m_bTagAssistP2;
-	bool	m_bDisableGearLoadouts;
+	bool	m_bKryptModifier = false;
+	bool	m_bTagAssist = false;
+	bool	m_bTagAssistP2 = false;
+	bool	m_bDisableGearLoadouts = false;
 
-	float	 m_fSlowMotionSpeed;
-	float	 m_fP1Speed;
-	float	 m_fP2Speed;
-	float	 m_fAdjustCustomCameraX;
-	float	 m_fAdjustCustomCameraY;
-	float	 m_fAdjustCustomCameraZ;
-	float	 m_fAdjustCustomCameraCrouch;
-	float	 m_fAdjustCustomCameraThirdPersonX;
-	float	 m_fAdjustCustomCameraThirdPersonY;
-	float	 m_fAdjustCustomCameraThirdPersonZ;
-	float	 m_fAdjustCustomHeadCameraX;
-	float	 m_fAdjustCustomHeadCameraY;
-	float	 m_fAdjustCustomHeadCameraZ;
-	float	 m_fFreeCameraSpeed;
-	float    m_fSmoothScalingUpdate;
+	float	 m_fSlowMotionSpeed = 0.5f;
+	float	 m_fP1Speed = 1.0f;
+	float	 m_fP2Speed = 1.0f;
+	float	 m_fAdjustCustomCameraX = -10.0f;
+	float	 m_fAdjustCustomCameraY = 0.0f;
+	float	 m_fAdjustCustomCameraZ = 161.0f;
+	float	 m_fAdjustCustomCameraCrouch = 120.0f;
+	float	 m_fAdjustCustomCameraThirdPersonX = 0.0f;
+	float	 m_fAdjustCustomCameraThirdPersonY = 0.0f;
+	float	 m_fAdjustCustomCameraThirdPersonZ = 0.0f;
+	float	 m_fAdjustCustomHeadCameraX = 0.0f;
+	float	 m_fAdjustCustomHeadCameraY = 1600.0f;
+	float	 m_fAdjustCustomHeadCameraZ = 0.0f;
+	float	 m_fFreeCameraSpeed = 5.25f;
+	float    m_fSmoothScalingUpdate = 0.01f;
 
-	int  m_nFreeCameraRotationSpeed;
-	int  m_nCurrentCustomCamera;
-	int  m_nCurrentCharModifier;
-	int  m_nP1Abilities;
-	int  m_nP2Abilities;
+	int  m_nFreeCameraRotationSpeed = 120;
+	int  m_nCurrentCustomCamera = CAMERA_3RDPERSON;
+	int  m_nCurrentCharModifier = MODIFIER_SCREEN;
+	int  m_nP1Abilities = 0;
+	int  m_nP2Abilities = 0;
 
-	bool m_bP1CustomAbilities;
+	int* m_pCurrentVarToChange = nullptr;
+
+	bool m_bP1CustomAbilities = false;
 	bool m_P1Abilities[20] = {};
-	bool m_bP2CustomAbilities;
+	bool m_bP2CustomAbilities = false ;
 	bool m_P2Abilities[20] = {};
 
-	FVector	 m_vP1Scale;
-	FVector	 m_vP2Scale;
+	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
+	FVector	 m_vP2Scale = { 1.0f, 1.0f, 1.0f };
 
 
 	char szCurrentModifier[128] = {};
@@ -122,9 +125,9 @@ public:
 	char szPlayer2Bone[128] = {};
 	// camera
 
-	FVector  camPos;
-	FRotator camRot;
-	float	 camFov;
+	FVector  camPos = {};
+	FRotator camRot = {};
+	float	 camFov = 0;
 
 	// player 
 	FVector plrPos;
@@ -134,9 +137,9 @@ public:
 
 	POINT	orgMouse;
 	POINT	curMouse;
-	int     mouseSpeedX;
-	int     mouseSpeedY;
-	int     mouseSens;
+	int     mouseSpeedX = 0;
+	int     mouseSpeedY = 0;
+	int     mouseSens = 5;
 
 	void Initialize();
 	void Draw();
@@ -144,12 +147,31 @@ public:
 	void UpdateControls();
 	void UpdateMouse();
 
+
+	void DrawCharacterTab();
+	void DrawStageTab();
+	void DrawModifiersTab();
+	void DrawPlayerTab();
+	void DrawSpeedTab();
+	void DrawCameraTab();
+	void DrawCheatsTab();
+	void DrawKryptTab();
+	void DrawMiscTab();
+
 	void DrawSettings();
 	void DrawAbilityReference();
 
+	void DrawKeyBind(char* name, int* var);
+
+#ifdef _DEBUG
+	static void DrawDebug();
+#endif
+
+	void KeyBind(int* var, char* bindName, char* name);
 	bool GetActiveState();
 };
 
 char* GetMK11HookVersion();
 extern MK11Menu* TheMenu;
+
 

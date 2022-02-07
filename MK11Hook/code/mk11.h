@@ -6,7 +6,7 @@
 #define GFG_GAME_INFO  0x1434990A0
 
 
-#define MK11HOOK_VERSION "0.4.8"
+#define MK11HOOK_VERSION "0.4.9"
 
 #define TOTAL_ABILITIES 20
 
@@ -62,6 +62,7 @@ char* GetCharacterName(PLAYER_NUM plr);
 
 void SlowGameTimeForXTicks(float speed, int ticks);
 
+void ResetStageInteractables();
 
 
 void  SetCharacterEnergy(int64 obj,int type, float energy);

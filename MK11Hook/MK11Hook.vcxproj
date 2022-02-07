@@ -100,10 +100,11 @@
     <ClInclude Include="code\eSettingsManager.h" />
     <ClInclude Include="code\eGamepadManager.h" />
     <ClInclude Include="code\helper\eAbilityNames.h" />
+    <ClInclude Include="code\helper\eKeyboardMan.h" />
     <ClInclude Include="code\mk10utils.h" />
     <ClInclude Include="code\mk11.h" />
     <ClInclude Include="code\mk11menu.h" />
-    <ClInclude Include="code\mkcamera.h" />
+    <ClInclude Include="code\MKCamera.h" />
     <ClInclude Include="code\MKCharacter.h" />
     <ClInclude Include="code\MKInventory.h" />
     <ClInclude Include="code\MKModifier.h" />
@@ -142,10 +143,11 @@
     <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
     <ClCompile Include="code\helper\eAbilityNames.cpp" />
+    <ClCompile Include="code\helper\eKeyboardMan.cpp" />
     <ClCompile Include="code\mk10utils.cpp" />
     <ClCompile Include="code\mk11.cpp" />
     <ClCompile Include="code\mk11menu.cpp" />
-    <ClCompile Include="code\mkcamera.cpp" />
+    <ClCompile Include="code\MKCamera.cpp" />
     <ClCompile Include="code\MKCharacter.cpp" />
     <ClCompile Include="code\MKInventory.cpp" />
     <ClCompile Include="code\MKModifier.cpp" />

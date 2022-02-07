@@ -40,7 +40,6 @@ FVector MKCharacter::GetScale()
 void MKCharacter::SetAbility(unsigned int id)
 {
 	*(int*)(this + 64304) = id;
-	//((void(__fastcall*)(MKCharacter*, unsigned int))_addr(0x1404C3340))(this, id);
 }
 
 void MKCharacter::ClearAbilities()

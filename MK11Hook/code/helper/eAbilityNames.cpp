@@ -381,6 +381,7 @@ void eAbiltityNames::Init()
 	ent.abNames[6] = "Lightning Storm";
 	ent.abNames[7] = "Electric Current";
 	ent.abNames[8] = "Lightning Rod";
+	ent.abNames[9] = "Sparkport";
 
 	m_aAbilityNames.push_back(ent);
 	ent = {};
@@ -565,11 +566,12 @@ void eAbiltityNames::Init()
 	ent.abNames[1] = "Ground Ice";
 	ent.abNames[2] = "Cold Shoulder";
 	ent.abNames[3] = "Rising Ice";
-	ent.abNames[4] = "Frigid Storm";
-	ent.abNames[5] = "Death-Cicle Barrage";
-	ent.abNames[6] = "Air Polar Axe";
-	ent.abNames[7] = "Arctic Trap";
-	ent.abNames[8] = "Deep Freeze";
+	ent.abNames[4] = "Unused";
+	ent.abNames[5] = "Frigid Storm";
+	ent.abNames[6] = "Death-Cicle Barrage";
+	ent.abNames[7] = "Air Polar Axe";
+	ent.abNames[8] = "Arctic Trap";
+	ent.abNames[9] = "Deep Freeze";
 
 	m_aAbilityNames.push_back(ent);
 	ent = {};
