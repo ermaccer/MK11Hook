@@ -11,6 +11,7 @@ void eSettingsManager::Init()
 
 	// user first
 	iToggleCustomCamKey = user.ReadInteger("Settings", "iToggleCustomCamKey", 0);
+	iExecuteLastScriptSetting = user.ReadInteger("Settings", "iExecuteLastScriptSetting", 0);
 	
 	iHookMenuOpenKey = user.ReadInteger("Settings", "iHookMenuOpenKey", 0xFF);
 
@@ -125,6 +126,7 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVPlus", iFreeCameraKeyFOVPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVMinus", iFreeCameraKeyFOVMinus);
 	user.WriteInteger("Settings", "iResetStageInteractablesKey", iResetStageInteractablesKey);
+	user.WriteInteger("Settings", "iExecuteLastScriptSetting", iExecuteLastScriptSetting);
 
 	CIniReader ini("");
 	ini.WriteBoolean("Settings", "bEnableGamepadSupport", bEnableGamepadSupport);

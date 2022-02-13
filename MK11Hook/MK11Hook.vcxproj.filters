@@ -171,6 +171,12 @@
     <ClInclude Include="code\PlayerInfo.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
+    <ClInclude Include="code\MKObject.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Krypt.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -273,6 +279,12 @@
       <Filter>Header Files\code</Filter>
     </ClCompile>
     <ClCompile Include="code\PlayerInfo.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\MKObject.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\Krypt.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>

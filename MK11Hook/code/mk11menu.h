@@ -2,6 +2,8 @@
 #include "mk11.h"
 #include <Windows.h>
 #include "helper/eKeyboardMan.h"
+#include "GameInfo.h"
+#include <vector>
 // as usual, based on mh2 debug menu
 
 
@@ -26,7 +28,21 @@ enum eMenuSubMenus {
 	SUBMENU_ABILITY_REFERENCE,
 	SUBMENU_NPC_MOVELIST,
 	SUBMENU_SETTINGS,
+	SUBMENU_SCRIPT,
 	TOTAL_SUBMENUS
+};
+
+enum eScriptExecuteType {
+	SCRIPT_P1,
+	SCRIPT_P2,
+	SCRIPT_GLOBAL
+};
+
+struct eScriptKeyBind {
+	eScriptExecuteType type;
+	eVKKeyCode key;
+	char scriptName[128];
+	unsigned int functionHash;
 };
 
 class MK11Menu {
@@ -78,6 +94,7 @@ public:
 	bool	m_bTagAssistP2 = false;
 	bool	m_bDisableGearLoadouts = false;
 	bool    m_bDisableComboScaling = false;
+	bool	m_bKryptAirbreak = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -108,6 +125,10 @@ public:
 	bool m_bP2CustomAbilities = false ;
 	bool m_P2Abilities[20] = {};
 
+	int  m_nScriptExecuteType = 0;
+	unsigned int m_nHash = 0;
+	MKScript* m_pScript;
+
 	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
 	FVector	 m_vP2Scale = { 1.0f, 1.0f, 1.0f };
 
@@ -134,6 +155,8 @@ public:
 	FVector plrPos;
 	FVector plrPos2;
 
+	FVector kryptPos;
+
 	// cam mouse
 
 	POINT	orgMouse;
@@ -158,9 +181,11 @@ public:
 	void DrawCheatsTab();
 	void DrawKryptTab();
 	void DrawMiscTab();
+	void DrawScriptTab();
 
 	void DrawSettings();
 	void DrawAbilityReference();
+	void DrawScriptReference();
 
 	void DrawKeyBind(char* name, int* var);
 
@@ -170,6 +195,8 @@ public:
 
 	void KeyBind(int* var, char* bindName, char* name);
 	bool GetActiveState();
+
+	void RunLastScript();
 };
 
 char* GetMK11HookVersion();

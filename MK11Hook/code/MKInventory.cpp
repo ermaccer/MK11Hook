@@ -1,9 +1,9 @@
 #include "MKInventory.h"
 #include "mk10utils.h"
 
-GearItem::GearItem(unsigned char version, ItemDefinition* item, unsigned short unk, unsigned char unk2, int level, short unk3)
+GearItem::GearItem(int64 guid1, int64 guid2, int unk)
 {
-	((void(__fastcall*)(GearItem*, unsigned char,ItemDefinition*, unsigned short, unsigned char,int, short))_addr(0x1406A39C0))(this,version,item,unk,unk2,level,unk3);
+	((void(__fastcall*)(GearItem*, int64, int64, int))_addr(0x1406A3B60))(this, guid1, guid2, unk);
 }
 
 
@@ -20,7 +20,7 @@ int64 GearItem::GetCharacterKey()
 char * GearItem::GetName()
 {
 	static char buff[256] = { };
-	((void(__fastcall*)(GearItem*, char*))_addr(0x14071C650))(this, buff);
+	((void(__fastcall*)(GearItem*, char*))_addr(0x14071F970))(this, buff);
 	return buff;
 }
 

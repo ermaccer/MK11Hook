@@ -10,6 +10,8 @@
 #include "MKInventory.h"
 #include "PlayerInfo.h"
 #include "unreal/FName.h"
+#include "MKObject.h"
+#include "Krypt.h"
 
 int64 hud_property = 0;
 
@@ -382,8 +384,10 @@ void MK11Hooks::HookSetSelectScreen(int64 ptr, PLAYER_NUM  plr, int teamNo, char
 		chr->Set(name, 0, 0);
 		chr->SetLevel(level);
 		chr->SetAlternatePalette(altPalette);
+
 		if (loadout)
 			chr->SetLoadout(loadout);
+
 	}
 
 }
@@ -478,4 +482,26 @@ void LoadModifierAssets()
 	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
 	((void(__fastcall*)(int64, bool))_addr(0x14057D5C0))(gameinfo, 1);
 
+}
+
+unsigned int HashString(const char* input)
+{
+	unsigned int result; 
+	int stringLength; 
+	int character; 
+
+	if (!input)
+		return 0;
+	stringLength = -1;
+
+	do
+		++stringLength;
+	while (input[stringLength]);
+
+	for (result = 0x811C9DC5; stringLength; --stringLength)
+	{
+		character = *(unsigned char*)input++;
+		result = character ^ (unsigned int)(0x1000193 * result);
+	}
+	return result;
 }

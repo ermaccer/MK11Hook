@@ -13,6 +13,8 @@
 #include "helper/eKeyboardMan.h"
 #include "..\eDirectX11Hook.h"
 #include "GameInfo.h"
+#include "Krypt.h"
+#include "MKObject.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -779,7 +781,8 @@ void MK11Menu::Draw()
 		{
 			if (ImGui::MenuItem("Ability Reference"))
 				m_bSubmenuActive[SUBMENU_ABILITY_REFERENCE] = true;
-
+			if (ImGui::MenuItem("Script Reference"))
+				m_bSubmenuActive[SUBMENU_SCRIPT] = true;
 			ImGui::EndMenu();
 		}
 	}
@@ -822,6 +825,11 @@ void MK11Menu::Draw()
 			DrawCheatsTab();
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("Script"))
+		{
+			DrawScriptTab();
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Krypt Modifier"))
 		{
 			DrawKryptTab();
@@ -840,8 +848,13 @@ void MK11Menu::Draw()
 	if (m_bSubmenuActive[SUBMENU_ABILITY_REFERENCE])
 		DrawAbilityReference();
 
+	if (m_bSubmenuActive[SUBMENU_SCRIPT])
+		DrawScriptReference();
+
 	if (m_bSubmenuActive[SUBMENU_SETTINGS])
 		DrawSettings();
+
+
 }
 
 void MK11Menu::Process()
@@ -862,48 +875,60 @@ void MK11Menu::UpdateControls()
 		m_bIsActive ^= 1;
 	}
 
-	if (GetAsyncKeyState(SettingsMgr->iToggleCustomCamKey))
+	if (!m_bIsActive)
 	{
-		if (GetTickCount64() - timer <= 150) return;
-		timer = GetTickCount64();
-		if (GetObj(PLAYER1) && GetObj(PLAYER2))
-			m_bCustomCameras ^= 1;
-		else
-		{
-			Notifications->SetNotificationTime(2500);
-			Notifications->PushNotification("Custom cameras can only be activated in game!");
-		}
-	}
-	if (GetAsyncKeyState(SettingsMgr->iResetStageInteractablesKey))
-	{
-		if (GetTickCount64() - timer <= 150) return;
-		timer = GetTickCount64();
-		if (GetObj(PLAYER1) && GetObj(PLAYER2))
-			GetGameInfo()->ResetStageInteractables();
-		else
-		{
-			Notifications->SetNotificationTime(2500);
-			Notifications->PushNotification("Stage objects can only be reset in game!");
-		}
-	}
-
-	if (GetAsyncKeyState(SettingsMgr->iToggleSlowMoKey))
-	{
-		if (GetTickCount64() - timer <= 150) return;
-		timer = GetTickCount64();
-		m_bSlowMotion ^= 1;
-	}
-
-	if (GetAsyncKeyState(SettingsMgr->iToggleFreezeWorldKey))
-	{
-		if (m_bHookDispatch)
+		if (GetAsyncKeyState(SettingsMgr->iToggleCustomCamKey))
 		{
 			if (GetTickCount64() - timer <= 150) return;
 			timer = GetTickCount64();
-			m_bFreezeWorld ^= 1;
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+				m_bCustomCameras ^= 1;
+			else
+			{
+				Notifications->SetNotificationTime(2500);
+				Notifications->PushNotification("Custom cameras can only be activated in game!");
+			}
+		}
+		if (GetAsyncKeyState(SettingsMgr->iResetStageInteractablesKey))
+		{
+			if (GetTickCount64() - timer <= 150) return;
+			timer = GetTickCount64();
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+				GetGameInfo()->ResetStageInteractables();
+			else
+			{
+				Notifications->SetNotificationTime(2500);
+				Notifications->PushNotification("Stage objects can only be reset in game!");
+			}
 		}
 
-	}
+		if (GetAsyncKeyState(SettingsMgr->iToggleSlowMoKey))
+		{
+			if (GetTickCount64() - timer <= 150) return;
+			timer = GetTickCount64();
+			m_bSlowMotion ^= 1;
+		}
+
+
+		if (GetAsyncKeyState(SettingsMgr->iExecuteLastScriptSetting))
+		{
+			if (GetTickCount64() - timer <= 150) return;
+			timer = GetTickCount64();
+			if (m_pScript)
+				RunLastScript();
+		}
+
+		if (GetAsyncKeyState(SettingsMgr->iToggleFreezeWorldKey))
+		{
+			if (m_bHookDispatch)
+			{
+				if (GetTickCount64() - timer <= 150) return;
+				timer = GetTickCount64();
+				m_bFreezeWorld ^= 1;
+			}
+
+		}
+	}	
 
 }
 
@@ -1519,7 +1544,6 @@ void MK11Menu::DrawKryptTab()
 		ImGui::EndCombo();
 	}
 
-
 	ImGui::Separator();
 	ImGui::Text("NOTE: This only changes character during krypt load!");
 
@@ -1543,6 +1567,45 @@ void MK11Menu::DrawMiscTab()
 	ShowHelpMarker("Disables P1 head looking at P2. Automatically enabled with 'Head Perspective' custom camera.");
 
 	ImGui::Checkbox("Disable Combo Scaling", &m_bDisableComboScaling);
+}
+
+void MK11Menu::DrawScriptTab()
+{
+	ImGui::RadioButton("On Player1", &m_nScriptExecuteType, SCRIPT_P1); ImGui::SameLine();
+	ImGui::RadioButton("On Player2", &m_nScriptExecuteType, SCRIPT_P2); ImGui::SameLine();
+	ImGui::RadioButton("On Global", &m_nScriptExecuteType, SCRIPT_GLOBAL);
+
+	static char szScriptSource[256] = {};
+	ImGui::InputText("Script Source", szScriptSource, sizeof(szScriptSource));
+	ImGui::Separator();
+
+	m_pScript = GetScript(szScriptSource);
+	if (m_pScript)
+	{
+		static int functionIndex = 0;
+		static char szFunction[256] = {};
+
+		static int hash = 0;
+		ImGui::TextWrapped("Functions with params are not supported!");
+
+		ImGui::InputText("Function Name", szFunction, sizeof(szFunction));
+		ImGui::InputInt("Function Index", &functionIndex,1,100, ImGuiInputTextFlags_ReadOnly); 
+		ImGui::SameLine(); ShowHelpMarker("Read only.");
+
+
+		if (ImGui::Button("Run"))
+		{
+			m_nHash = HashString(szFunction);
+			functionIndex = m_pScript->GetFunctionID(m_nHash);
+			
+			RunLastScript();
+		}
+
+
+	}
+	else
+		ImGui::TextWrapped("%s not available!",szScriptSource);
+
 }
 
 void MK11Menu::DrawSettings()
@@ -1636,6 +1699,7 @@ void MK11Menu::DrawSettings()
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleCustomCamKey, "Toggle Custom Cameras", "ccam");
 		KeyBind(&SettingsMgr->iResetStageInteractablesKey, "Reset Stage Objects", "r_stage");
+		KeyBind(&SettingsMgr->iExecuteLastScriptSetting, "Execute Script", "x_script");
 		ImGui::Separator();
 
 		if (m_bPressingKey)
@@ -1649,7 +1713,7 @@ void MK11Menu::DrawSettings()
 			}
 
 		}
-
+		break;
 	default:
 		break;
 	}
@@ -1709,6 +1773,70 @@ void MK11Menu::DrawAbilityReference()
 	ImGui::End();
 }
 
+void MK11Menu::DrawScriptReference()
+{
+	ImGui::SetNextWindowPos({ ImGui::GetIO().DisplaySize.x / 2.0f, ImGui::GetIO().DisplaySize.y / 2.0f }, ImGuiCond_Once, { 0.5f, 0.5f });
+	ImGui::SetNextWindowSize({ 54 * ImGui::GetFontSize(), 54 * ImGui::GetFontSize() }, ImGuiCond_Once);
+	ImGui::Begin("Script Reference", &m_bSubmenuActive[SUBMENU_SCRIPT]);
+
+	static int secID = 0;
+	static const char* scriptSections[] = {
+		"General",
+		"Usage",
+	};
+
+	enum eScriptRef {
+		GEN,
+		USG,
+	};
+
+	ImGui::BeginChild("##settings", { 12 * ImGui::GetFontSize(), 0 }, true);
+
+	for (int n = 0; n < IM_ARRAYSIZE(scriptSections); n++)
+	{
+		bool is_selected = (secID == n);
+		if (ImGui::Selectable(scriptSections[n], is_selected))
+			secID = n;
+		if (is_selected)
+			ImGui::SetItemDefaultFocus();
+	}
+
+	ImGui::EndChild();
+
+	ImGui::SameLine();
+	ImGui::BeginChild("##content", { 0, -ImGui::GetFrameHeightWithSpacing() });
+
+	switch (secID)
+	{
+	case GEN:
+		ImGui::TextWrapped("You can find script functions in the MKScript folder. Open .mko file of interest with notepad or"
+			" any hex editor. To find functions that can be executed look for strings starting with 'Rx', 'pFunc','p'.");
+		break;
+	case USG:
+		ImGui::BulletText("On Player1 - selected function will execute on Player 1 object.\nUse with character scripts or FightEngine");
+		ImGui::BulletText("On Player2 - selected function will execute on Player 2 object.\nUse with character scripts or FightEngine");
+		ImGui::BulletText("On Global - selected function will execute without a specified object.\nUse this with utils or functions that change hud etc.");
+
+		ImGui::TextWrapped("Some common player functions:");
+		ImGui::BulletText("BrutalityVictory1");
+		ImGui::BulletText("BrutalityVictory2");
+		ImGui::BulletText("EndOfRound_Winner_Taunt_1/2/3/4/5");
+		ImGui::BulletText("RxMotherBug (CHAR_DVorah)");
+		ImGui::BulletText("RxT800 (CHAR_Terminator)");
+
+		ImGui::TextWrapped("Some common FightEngine.mko functions:");
+		ImGui::BulletText("RxBrutalitySharedUppercut");
+		ImGui::BulletText("RxIceBall");
+		break;
+	default:
+		break;
+	}
+
+	ImGui::EndChild();
+
+	ImGui::End();
+}
+
 void MK11Menu::DrawKeyBind(char* name, int* var)
 {
 	ImGui::SameLine();
@@ -1751,6 +1879,35 @@ void MK11Menu::KeyBind(int* var, char * bindName, char * name)
 bool MK11Menu::GetActiveState()
 {
 	return m_bIsActive;
+}
+
+void MK11Menu::RunLastScript()
+{
+	MKScriptVM vm(0);
+	if (m_pScript->GetFunctionID(m_nHash))
+	{
+		switch (m_nScriptExecuteType)
+		{
+		case SCRIPT_P1:
+			GetObj(PLAYER1)->ExecuteScript(m_pScript, m_nHash);
+			break;
+		case SCRIPT_P2:
+			GetObj(PLAYER2)->ExecuteScript(m_pScript, m_nHash);
+			break;
+		case SCRIPT_GLOBAL:
+			vm.BeginVar();
+			vm.Set(m_pScript, m_nHash);
+			vm.Run();
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		Notifications->SetNotificationTime(3500);
+		Notifications->PushNotification("Function %x does not exist!", m_nHash);
+	}
 }
 
 char * GetMK11HookVersion()

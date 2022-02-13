@@ -4,13 +4,13 @@
 #include "MKStructs.h"
 #include "MKCharacter.h"
 #include "MKModifier.h"
-#include "CharacterDefinition.h"
 #include "PlayerInfo.h"
+#include "CharacterDefinition.h"
 
 #define GFG_GAME_INFO  0x1434990A0
 
 
-#define MK11HOOK_VERSION "0.5.0"
+#define MK11HOOK_VERSION "0.5.1"
 
 #define TOTAL_ABILITIES 20
 
@@ -50,6 +50,8 @@ void SetKryptCharacterClass(int64 ptr, char* name, int unk);
 MKModifier* GetModifierManager();
 void		LoadModifierAssets();
 
+
+unsigned int HashString(const char* input);
 
 namespace MK11Hooks {
 	// hooks

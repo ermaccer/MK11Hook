@@ -1,6 +1,7 @@
 #pragma once
 #include "MKStructs.h"
 #include "mk10utils.h"
+#include "GameInfo.h"
 
 
 struct CharacterCAP {
@@ -66,6 +67,9 @@ public:
 	void GetBoneRot(const char* name, FRotator* rot);
 
 	int64 GetSkeleton();
+
+	MKScriptVM* GetScriptVM();
+	void ExecuteScript(MKScript* script, int function);
 };
 
 

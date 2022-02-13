@@ -1,5 +1,10 @@
 #include "CharacterDefinition.h"
 
+//CharacterLoadout* CharacterDefinition::GetLoadout()
+//{
+	//return (CharacterLoadout*)(this + 96);
+//}
+
 void CharacterDefinition::Set(const char* name, int64 loadout, int64 unk)
 {
 	((void(__fastcall*)(CharacterDefinition*, const char*, int64, int64))_addr(0x140598320))(this, name, loadout, unk);
@@ -19,3 +24,8 @@ void CharacterDefinition::SetLoadout(int64 loadout)
 {
 	((void(__fastcall*)(CharacterDefinition*, int64))_addr(0x140599920))(this, loadout);
 }
+
+//void CharacterLoadout::EquipItem(GearItem* item)
+//{
+//	((void(__fastcall*)(CharacterLoadout*, GearItem*))_addr(0x1406CD1F0))(this, item);
+//}

@@ -85,3 +85,13 @@ int64 MKCharacter::GetSkeleton()
 	return *(int64*)(this + 592);
 }
 
+MKScriptVM* MKCharacter::GetScriptVM()
+{
+	return *(MKScriptVM**)((int)this + 0x10D0);
+}
+
+void MKCharacter::ExecuteScript(MKScript* script, int function)
+{
+	((void(__thiscall*)(MKCharacter*, MKScript*, int, int))_addr(0x1404D1530))(this, script, function, 1);
+}
+

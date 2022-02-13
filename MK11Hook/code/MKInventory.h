@@ -13,10 +13,9 @@ class GearItem {
 private:
 	char pad[24];
 	ItemDefinition def;
-	char data[150] = {};
+	char data[650] = {};
 public:
-	GearItem(unsigned char version, ItemDefinition* item ,unsigned short  unk, unsigned char unk2, int level, short unk3);
-
+	GearItem(int64 guid1, int64 guid2, int unk);
 	bool Valid();
 	int64 GetCharacterKey();
 	char* GetName();

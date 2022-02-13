@@ -14,4 +14,5 @@ private:
 	int Number;
 public:
 	FName(const char* Name, EFindName FindType, int formal);
+	__int64 ToString();
 };
