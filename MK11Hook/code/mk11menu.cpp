@@ -1612,7 +1612,7 @@ void MK11Menu::DrawScriptTab()
 		ImGui::SameLine(); ShowHelpMarker("Read only.");
 
 		static eScriptKeyBind bind;
-		if (ImGui::Button("Add Hotkey Hotkey"))
+		if (ImGui::Button("Add Hotkey"))
 		{
 			m_nHash = HashString(szFunction);
 			functionIndex = m_pScript->GetFunctionID(m_nHash);
