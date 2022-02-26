@@ -251,6 +251,13 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		}
 
 	}
+
+	if (p1 && p2)
+	{
+		if (TheMenu->m_bBrutalityWatcher)
+			TheMenu->RunBrutalityWatcher();
+	}
+
 	((void(__fastcall*)())_addr(0x141153D20))();
 }
 

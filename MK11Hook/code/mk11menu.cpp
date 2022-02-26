@@ -859,9 +859,13 @@ void MK11Menu::Draw()
 
 void MK11Menu::Process()
 {
-	UpdateControls();
-	if (m_bIsFocused && m_bFreeCamMouseControl)
-		UpdateMouse();
+	if (m_bIsFocused)
+	{
+		UpdateControls();
+		if (m_bFreeCamMouseControl)
+			UpdateMouse();
+	}
+
 
 }
 
@@ -909,15 +913,6 @@ void MK11Menu::UpdateControls()
 			m_bSlowMotion ^= 1;
 		}
 
-
-		if (GetAsyncKeyState(SettingsMgr->iExecuteLastScriptSetting))
-		{
-			if (GetTickCount64() - timer <= 150) return;
-			timer = GetTickCount64();
-			if (m_pScript)
-				RunLastScript();
-		}
-
 		if (GetAsyncKeyState(SettingsMgr->iToggleFreezeWorldKey))
 		{
 			if (m_bHookDispatch)
@@ -928,7 +923,8 @@ void MK11Menu::UpdateControls()
 			}
 
 		}
-	}	
+		ProcessScriptHotkeys();
+	}
 
 }
 
@@ -1199,7 +1195,7 @@ void MK11Menu::DrawModifiersTab()
 				ImGui::TextWrapped("Player 2");
 				ImGui::Separator();
 
-				if (ImGui::BeginCombo("Bone##p1", szPlayer1Bone))
+				if (ImGui::BeginCombo("Bone##p2", szPlayer2Bone))
 				{
 					for (int n = 0; n < IM_ARRAYSIZE(szBones); n++)
 					{
@@ -1266,6 +1262,29 @@ void MK11Menu::DrawModifiersTab()
 			}
 			else
 				ImGui::TextWrapped("Skeleton options are only available in-game!");
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Custom Brutalities"))
+		{
+			ImGui::Checkbox("Custom Brutalities", &m_bBrutalityWatcher);
+			ImGui::Separator();
+
+			ImGui::InputFloat("Min. Health Required", &m_fBrutalityWatcherHealth);
+
+			ImGui::Separator();
+			ImGui::InputText("P1 Source", szPlayer1BrutalityCharacter, sizeof(szPlayer1BrutalityCharacter));
+			ImGui::InputText("P1 Function", szPlayer1BrutalityFunc, sizeof(szPlayer1BrutalityFunc));
+			ImGui::Separator();
+
+			ImGui::Separator();
+			ImGui::InputText("P2 Source", szPlayer2BrutalityCharacter, sizeof(szPlayer2BrutalityCharacter));
+			ImGui::InputText("P2 Function", szPlayer2BrutalityFunc, sizeof(szPlayer2BrutalityFunc));
+			ImGui::Separator();
+
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+				ImGui::Text("P1 Life: %f P2 Life: %f\n", GetObj(PLAYER1)->GetLife(), GetObj(PLAYER2)->GetLife());
+			
 
 			ImGui::EndTabItem();
 		}
@@ -1592,7 +1611,33 @@ void MK11Menu::DrawScriptTab()
 		ImGui::InputInt("Function Index", &functionIndex,1,100, ImGuiInputTextFlags_ReadOnly); 
 		ImGui::SameLine(); ShowHelpMarker("Read only.");
 
+		static eScriptKeyBind bind;
+		if (ImGui::Button("Add Hotkey Hotkey"))
+		{
+			m_nHash = HashString(szFunction);
+			functionIndex = m_pScript->GetFunctionID(m_nHash);
 
+			bind.functionHash = m_nHash;
+			sprintf(bind.scriptName,"%s", szScriptSource);
+			bind.type = (eScriptExecuteType)m_nScriptExecuteType;
+			
+			m_bPressingKey = true;
+		}
+
+		if (m_bPressingKey)
+		{
+			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key!");
+			eVKKeyCode result = eKeyboardMan::GetLastKey();
+
+			if (result >= VK_BACKSPACE && result < VK_KEY_NONE)
+			{
+				bind.key = result;
+				m_vKeyBinds.push_back(bind);
+				m_bPressingKey = false;
+			}
+
+		}
+		ImGui::SameLine();
 		if (ImGui::Button("Run"))
 		{
 			m_nHash = HashString(szFunction);
@@ -1601,10 +1646,23 @@ void MK11Menu::DrawScriptTab()
 			RunLastScript();
 		}
 
-
 	}
 	else
-		ImGui::TextWrapped("%s not available!",szScriptSource);
+	{
+		if (strlen(szScriptSource) > 0)
+		ImGui::TextWrapped("%s not available!", szScriptSource);
+	}
+		
+
+	ImGui::Separator();
+	ImGui::TextWrapped("Registered hotkeys:");
+	for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
+	{
+		ImGui::TextWrapped("%s - Run [0x%X] from %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), m_vKeyBinds[i].functionHash, m_vKeyBinds[i].scriptName);
+	}
+
+	if (ImGui::Button("Clear All"))
+		m_vKeyBinds.clear();
 
 }
 
@@ -1699,7 +1757,6 @@ void MK11Menu::DrawSettings()
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleCustomCamKey, "Toggle Custom Cameras", "ccam");
 		KeyBind(&SettingsMgr->iResetStageInteractablesKey, "Reset Stage Objects", "r_stage");
-		KeyBind(&SettingsMgr->iExecuteLastScriptSetting, "Execute Script", "x_script");
 		ImGui::Separator();
 
 		if (m_bPressingKey)
@@ -1907,6 +1964,102 @@ void MK11Menu::RunLastScript()
 	{
 		Notifications->SetNotificationTime(3500);
 		Notifications->PushNotification("Function %x does not exist!", m_nHash);
+	}
+}
+
+void MK11Menu::RunBrutalityWatcher()
+{
+	MKCharacter* p1 = GetObj(PLAYER1);
+	MKCharacter* p2 = GetObj(PLAYER2);
+
+	MKScript* genericCommands = GetScript("GenericCommands.mko");
+
+	if (!genericCommands)
+		return;
+
+	if (p2)
+	{
+		float life = p2->GetLife();
+
+		if (life <= m_fBrutalityWatcherHealth)
+		{
+			if (!m_bBrutalityDoneP1)
+			{
+				MKScript* script = GetScript(szPlayer1BrutalityCharacter);
+				if (script)
+				{
+					p2->ExecuteScript(genericCommands, HashString("ForceBackToStance"));
+					p2->ExecuteScript(script, HashString(szPlayer1BrutalityFunc));
+				}
+				
+				m_bBrutalityDoneP1 = true;
+			}
+
+		}
+		else
+		{
+			m_bBrutalityDoneP1 = false;
+		}
+	}
+
+	if (p1)
+	{
+		float life = p1->GetLife();
+
+		if (life <= m_fBrutalityWatcherHealth)
+		{
+			if (!m_bBrutalityDoneP2)
+			{
+				MKScript* script = GetScript(szPlayer2BrutalityCharacter);
+				if (script)
+				{
+					p1->ExecuteScript(genericCommands, HashString("ForceBackToStance"));
+					p1->ExecuteScript(script, HashString(szPlayer2BrutalityFunc));
+				}
+				m_bBrutalityDoneP2 = true;
+			}
+		}
+		else
+		{
+			m_bBrutalityDoneP2 = false;
+		}
+	}
+}
+
+void MK11Menu::ProcessScriptHotkeys()
+{
+	for (int i = 0; i < m_vKeyBinds.size(); i++)
+	{
+		if (GetAsyncKeyState(m_vKeyBinds[i].key) & 0x1)
+		{
+			MKScriptVM vm(0);
+
+			MKScript* script = GetScript(m_vKeyBinds[i].scriptName);
+			if (script->GetFunctionID(m_vKeyBinds[i].functionHash))
+			{
+				switch (m_vKeyBinds[i].type)
+				{
+				case SCRIPT_P1:
+					GetObj(PLAYER1)->ExecuteScript(script, m_vKeyBinds[i].functionHash);
+					break;
+				case SCRIPT_P2:
+					GetObj(PLAYER2)->ExecuteScript(script, m_vKeyBinds[i].functionHash);
+					break;
+				case SCRIPT_GLOBAL:
+					vm.BeginVar();
+					vm.Set(script, m_vKeyBinds[i].functionHash);
+					vm.Run();
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				Notifications->SetNotificationTime(3500);
+				Notifications->PushNotification("Function %x does not exist!", m_vKeyBinds[i].functionHash);
+			}
+		}
 	}
 }
 

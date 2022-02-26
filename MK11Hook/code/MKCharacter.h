@@ -49,13 +49,14 @@ public:
 	void SetEasyKrushingBlows(bool enable);
 	void SetAbility(unsigned int id);
 
+	float GetLife();
+
 	int GetAbility();
 	FVector GetScale();
 
 	void ClearAbilities();
 
 	CharacterInfo* GetCharacterData(int unk);
-
 
 
 	void ActivateHeadTracking();
@@ -66,9 +67,7 @@ public:
 	void GetBonePos(const char* name, FVector* pos);
 	void GetBoneRot(const char* name, FRotator* rot);
 
-	int64 GetSkeleton();
 
-	MKScriptVM* GetScriptVM();
 	void ExecuteScript(MKScript* script, int function);
 };
 

@@ -41,7 +41,7 @@ enum eScriptExecuteType {
 struct eScriptKeyBind {
 	eScriptExecuteType type;
 	eVKKeyCode key;
-	char scriptName[128];
+	char scriptName[128] = {};
 	unsigned int functionHash;
 };
 
@@ -95,6 +95,9 @@ public:
 	bool	m_bDisableGearLoadouts = false;
 	bool    m_bDisableComboScaling = false;
 	bool	m_bKryptAirbreak = false;
+	bool	m_bBrutalityWatcher = false;
+	bool	m_bBrutalityDoneP1 = false;
+	bool	m_bBrutalityDoneP2 = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -111,6 +114,8 @@ public:
 	float	 m_fAdjustCustomHeadCameraZ = 0.0f;
 	float	 m_fFreeCameraSpeed = 5.25f;
 	float    m_fSmoothScalingUpdate = 0.01f;
+
+	float	 m_fBrutalityWatcherHealth = 0.5f;
 
 	int  m_nFreeCameraRotationSpeed = 120;
 	int  m_nCurrentCustomCamera = CAMERA_3RDPERSON;
@@ -143,6 +148,13 @@ public:
 	char szPlayer1TagAssistCharacter[128] = {};
 	char szPlayer2TagAssistCharacter[128] = {};
 	char szAbilityReferenceChararacter[128] = {};
+
+	char szPlayer1BrutalityCharacter[128] = {};
+	char szPlayer2BrutalityCharacter[128] = {};
+
+	char szPlayer1BrutalityFunc[128] = {};
+	char szPlayer2BrutalityFunc[128] = {};
+
 	char szPlayer1Bone[128] = {};
 	char szPlayer2Bone[128] = {};
 	// camera
@@ -164,6 +176,8 @@ public:
 	int     mouseSpeedX = 0;
 	int     mouseSpeedY = 0;
 	int     mouseSens = 5;
+
+	std::vector<eScriptKeyBind> m_vKeyBinds;
 
 	void Initialize();
 	void Draw();
@@ -197,6 +211,10 @@ public:
 	bool GetActiveState();
 
 	void RunLastScript();
+
+	void RunBrutalityWatcher();
+
+	void ProcessScriptHotkeys();
 };
 
 char* GetMK11HookVersion();

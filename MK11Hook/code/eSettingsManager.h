@@ -21,7 +21,6 @@ public:
 	int iToggleSlowMoKey = VK_F5;
 	int iToggleFreezeWorldKey = VK_F2;
 	int iResetStageInteractablesKey;
-	int iExecuteLastScriptSetting;
 	// free camera keys
 	int iFreeCameraKeyXPlus;
 	int iFreeCameraKeyXMinus;

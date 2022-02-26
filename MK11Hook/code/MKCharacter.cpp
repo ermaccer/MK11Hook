@@ -42,6 +42,11 @@ void MKCharacter::SetAbility(unsigned int id)
 	*(int*)(this + 64304) = id;
 }
 
+float MKCharacter::GetLife()
+{
+	return 	*(float*)(this + 3104);
+}
+
 void MKCharacter::ClearAbilities()
 {
 	((void(__fastcall*)(MKCharacter*))_addr(0x14048D8A0))(this);
@@ -78,16 +83,6 @@ void MKCharacter::GetBoneRot(const char * name, FRotator * rot)
 {
 	FName fname(name, FNAME_Add, 1);
 	((void(__fastcall*)(MKCharacter*, FName, FRotator*))_addr(0x1404A4DC0))(this, fname, rot);
-}
-
-int64 MKCharacter::GetSkeleton()
-{
-	return *(int64*)(this + 592);
-}
-
-MKScriptVM* MKCharacter::GetScriptVM()
-{
-	return *(MKScriptVM**)((int)this + 0x10D0);
 }
 
 void MKCharacter::ExecuteScript(MKScript* script, int function)
