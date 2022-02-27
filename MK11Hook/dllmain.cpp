@@ -10,7 +10,7 @@
 #include "code/mk11menu.h"
 #include "code/eNotifManager.h"
 #include "code/mkcamera.h"
-#include "code/eGamepadManager.h"
+#include "code/helper/eGamepadManager.h"
 #include "code/helper/eAbilityNames.h"
 #include "code/MKObject.h"
 #include <iostream>

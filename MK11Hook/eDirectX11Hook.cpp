@@ -2,7 +2,7 @@
 #include "code/mk11menu.h"
 #include "code/eNotifManager.h"
 #include "code/eSettingsManager.h"
-#include "code/eGamepadManager.h"
+#include "code/helper/eGamepadManager.h"
 #include "font.h"
 #include <chrono>
 

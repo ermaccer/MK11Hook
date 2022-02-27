@@ -141,9 +141,6 @@
     <ClInclude Include="utils\DelimStringReader.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="code\eGamepadManager.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
     <ClInclude Include="code\helper\eAbilityNames.h">
       <Filter>Header Files\code\helper</Filter>
     </ClInclude>
@@ -176,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="code\Krypt.h">
       <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\helper\eGamepadManager.h">
+      <Filter>Header Files\code\helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +251,6 @@
     <ClCompile Include="code\MKModifier.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
-    <ClCompile Include="code\eGamepadManager.cpp">
-      <Filter>Header Files\code</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
       <Filter>Header Files\imgui</Filter>
     </ClCompile>
@@ -286,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="code\Krypt.cpp">
       <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="code\helper\eGamepadManager.cpp">
+      <Filter>Header Files\code\helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

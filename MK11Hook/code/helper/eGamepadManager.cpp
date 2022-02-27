@@ -1,6 +1,6 @@
 #include "eGamepadManager.h"
-#include "..\imgui\imgui.h"
-#include "mk11menu.h"
+#include "..\..\imgui\imgui.h"
+#include "..\mk11menu.h"
 #include <iostream>
 bool eGamepadManager::m_bEstablishedConnection = false;
 static int64 gamepad_timer = GetTickCount64();
