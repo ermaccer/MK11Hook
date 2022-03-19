@@ -830,7 +830,7 @@ void MK11Menu::Draw()
 			DrawScriptTab();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Krypt Modifier"))
+		if (ImGui::BeginTabItem("Krypt"))
 		{
 			DrawKryptTab();
 			ImGui::EndTabItem();
@@ -859,14 +859,9 @@ void MK11Menu::Draw()
 
 void MK11Menu::Process()
 {
-	if (m_bIsFocused)
-	{
-		UpdateControls();
-		if (m_bFreeCamMouseControl)
-			UpdateMouse();
-	}
-
-
+	UpdateControls();
+	if (m_bFreeCamMouseControl)
+		UpdateMouse();
 }
 
 void MK11Menu::UpdateControls()
