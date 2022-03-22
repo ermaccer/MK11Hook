@@ -3,5 +3,5 @@
 
 FName::FName(const char * Name, EFindName FindType, int formal)
 {
-	((void(__fastcall*)(FName*, const char*, EFindName, int))_addr(0x141A6A2A0))(this, Name, FindType, formal);
+	((void(__fastcall*)(FName*, const char*, EFindName, int))_addr(0x141A696E0))(this, Name, FindType, formal);
 }

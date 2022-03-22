@@ -10,14 +10,14 @@ void MKCamera::SetPosition(FVector * pos)
 {
 	TheCamera = this;
 	camPos = *pos;
-	((void(__fastcall*)(MKCamera*, FVector*))_addr(0x141A12830))(this, pos);
+	((void(__fastcall*)(MKCamera*, FVector*))_addr(0x141A11870))(this, pos);
 }
 
 void MKCamera::SetRotation(FRotator * rot)
 {
 	TheCamera = this;
 	camRot = *rot;
-	((void(__fastcall*)(MKCamera*, FRotator*))_addr(0x141A13210))(this, rot);
+	((void(__fastcall*)(MKCamera*, FRotator*))_addr(0x141A12250))(this, rot);
 }
 
 void MKCamera::SetFOV(float FOV)

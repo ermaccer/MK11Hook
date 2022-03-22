@@ -147,9 +147,6 @@
     <ClInclude Include="font.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKInventory.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
     <ClInclude Include="code\unreal\FName.h">
       <Filter>Header Files\code\unreal</Filter>
     </ClInclude>
@@ -259,9 +256,6 @@
     </ClCompile>
     <ClCompile Include="code\unreal\FName.cpp">
       <Filter>Header Files\code\unreal</Filter>
-    </ClCompile>
-    <ClCompile Include="code\MKInventory.cpp">
-      <Filter>Header Files\code</Filter>
     </ClCompile>
     <ClCompile Include="code\helper\eKeyboardMan.cpp">
       <Filter>Header Files\code\helper</Filter>

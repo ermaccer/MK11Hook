@@ -1,5 +1,6 @@
 #pragma once
 #include "PlayerInfo.h"
+#include "mk10utils.h"
 
 enum  PLAYER_NUM
 {
@@ -20,30 +21,15 @@ public:
 	int GetFunctionID(int hash);
 };
 
-
-class MKScriptVM {
-private:
-	char data[14 * 4];
-public:
-	MKScriptVM(int val);
-	void Set(MKScript*, unsigned int funcHash);
-	void Run();
-	
-	static void BeginVar();
-	static void PushVar(void* var);
-};
-
 class FGGameInfo {
 public:
 	void SetStage(const char* stage);
 	void ResetStageInteractables();
 	PlayerInfo* GetInfo(PLAYER_NUM plr);
-
-
-	MKScript* GetFightScript();
-	MKScript* GetGenericScript();
 };
 
 MKScript* GetScript(const char* name);
+
+int64 GetScriptVar(MKScript* script, const char* name);
 
 FGGameInfo* GetGameInfo();

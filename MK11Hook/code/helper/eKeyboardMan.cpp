@@ -5,7 +5,7 @@
 
 eVKKeyCode eKeyboardMan::GetLastKey()
 {
-	eVKKeyCode key = VK_KEY_MAX;
+	eVKKeyCode key = VK_KEY_NULL;
 	for (int i = 0; i < VK_KEY_MAX; i++)
 	{
 		if (GetAsyncKeyState(i) & 0x8000)

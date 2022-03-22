@@ -56,8 +56,6 @@ public:
 
 	void ClearAbilities();
 
-	CharacterInfo* GetCharacterData(int unk);
-
 
 	void ActivateHeadTracking();
 	void KillHeadTracking();

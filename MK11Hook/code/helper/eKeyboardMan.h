@@ -1,6 +1,7 @@
 #pragma once
 
 enum eVKKeyCode {
+	VK_KEY_NULL,
 	VK_KEY_NONE = 254,
 	VK_KEY_0 = 48,
 	VK_KEY_1,

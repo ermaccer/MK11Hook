@@ -109,7 +109,6 @@
     <ClInclude Include="code\mk11menu.h" />
     <ClInclude Include="code\MKCamera.h" />
     <ClInclude Include="code\MKCharacter.h" />
-    <ClInclude Include="code\MKInventory.h" />
     <ClInclude Include="code\MKModifier.h" />
     <ClInclude Include="code\MKObject.h" />
     <ClInclude Include="code\MKStructs.h" />
@@ -157,7 +156,6 @@
     <ClCompile Include="code\mk11menu.cpp" />
     <ClCompile Include="code\MKCamera.cpp" />
     <ClCompile Include="code\MKCharacter.cpp" />
-    <ClCompile Include="code\MKInventory.cpp" />
     <ClCompile Include="code\MKModifier.cpp" />
     <ClCompile Include="code\MKObject.cpp" />
     <ClCompile Include="code\PlayerInfo.cpp" />

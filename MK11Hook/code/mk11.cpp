@@ -7,7 +7,6 @@
 #include "MKCharacter.h"
 #include "MKModifier.h"
 #include "mkcamera.h"
-#include "MKInventory.h"
 #include "PlayerInfo.h"
 #include "unreal/FName.h"
 #include "MKObject.h"
@@ -258,7 +257,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 			TheMenu->RunBrutalityWatcher();
 	}
 
-	((void(__fastcall*)())_addr(0x141153D20))();
+	((void(__fastcall*)())_addr(0x141152BE0))();
 }
 
 void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4)
@@ -311,7 +310,7 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 
 	printf("MK11Hook::Info() | %s VS %s\n", GetCharacterName(PLAYER1), GetCharacterName(PLAYER2));
 
-	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141159CB0))(eventID, a2, a3, a4);
+	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141158B70))(eventID, a2, a3, a4);
 
 }
 
@@ -319,7 +318,7 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 int64 MK11Hooks::HookSetProperty(int64 ptr, char * name, int64 unk)
 {
 	hud_property = ptr;
-	return ((int64(__fastcall*)(int64, char*, int64))_addr(0x141A6BE90))(ptr, name, unk);
+	return ((int64(__fastcall*)(int64, char*, int64))_addr(0x141A6B2D0))(ptr, name, unk);
 }
 
 void MK11Hooks::HookReadPropertyValue(int64 ptr, int* unk, int* value)
@@ -332,14 +331,6 @@ void MK11Hooks::HookReadPropertyValue(int64 ptr, int* unk, int* value)
 	}
 
 	*unk = *(int*)(ptr + 408) & input | *unk & ~*(int*)(ptr + 408);
-}
-
-int64 MK11Hooks::HookLoadouts(int64 ptr)
-{
-	if (TheMenu->m_bDisableGearLoadouts)
-		return true;
-	else
-		return ((int64(__fastcall*)(int64))_addr(0x14086F670))(ptr);
 }
 
 void MK11Hooks::HookDispatch(int64 ptr, int a2)
@@ -358,7 +349,7 @@ void MK11Hooks::HookDispatch(int64 ptr, int a2)
 		((void(*)(int64, int))*(int64*)(arg + 0xD8))(ptr, a2);
 	}
 	else
-		((int64(__fastcall*)(int64, int))_addr(0x141172FF0))(ptr, a2);
+		((int64(__fastcall*)(int64, int))_addr(0x141171F80))(ptr, a2);
 
 }
 
@@ -408,7 +399,7 @@ void MK11Hooks::HookSetLadderScreen(CharacterDefinition* chr, char * name, int64
 
 MKCharacter* GetObj(PLAYER_NUM plr)
 {
-	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F87D0))(plr);
+	return ((MKCharacter*(__fastcall*)(PLAYER_NUM))_addr(0x1408F8F60))(plr);
 }
 
 PlayerInfo* GetInfo(PLAYER_NUM plr)
@@ -420,17 +411,17 @@ void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
 	int64 object = (int64)GetInfo(plr);
 	int64 ptr = *(int64*)(object + 32);
-	((int64(__fastcall*)(int64, FVector*))_addr(0x1411509E0))(ptr, vec);
+	((int64(__fastcall*)(int64, FVector*))_addr(0x14114F8A0))(ptr, vec);
 }
 
 void HideHUD()
 {
-	((void(__fastcall*)(int, int))_addr(0x1408F5220))(8, 8);
+	((void(__fastcall*)(int, int))_addr(0x1408F59B0))(8, 8);
 }
 
 void ShowHUD()
 {
-	((void(__fastcall*)(int, int))_addr(0x1408F5B60))(8, 8);
+	((void(__fastcall*)(int, int))_addr(0x1408F62F0))(8, 8);
 }
 
 void SetCharacterMKX(PLAYER_NUM plr, char * name)
@@ -452,7 +443,7 @@ char * GetCharacterName(PLAYER_NUM plr)
 
 void SlowGameTimeForXTicks(float speed, int ticks)
 {
-	((void(__fastcall*)(float, int, int))_addr(0x1405C0280))(speed, ticks, 0);
+	((void(__fastcall*)(float, int, int))_addr(0x1405C0A10))(speed, ticks, 0);
 }
 
 
@@ -463,31 +454,31 @@ void SetKryptCharacter(int64 ptr, char * name)
 
 	printf("MK11Hook::SetKryptCharacter() | Loading character %s\n", name);
 
-	((void(__fastcall*)(int64, char*))_addr(0x140821A50))(ptr, name);
+	((void(__fastcall*)(int64, char*))_addr(0x1408221E0))(ptr, name);
 }
 
 void SetKryptCharacterL(int64 ptr, char * name, int unk)
 {
-	((void(__fastcall*)(int64, char*, int))_addr(0x141A6A2A0))(ptr, name, unk);
+	((void(__fastcall*)(int64, char*, int))_addr(0x141A696E0))(ptr, name, unk);
 }
 
 void SetKryptCharacterClass(int64 ptr, char * name, int unk)
 {
 	if (TheMenu->m_bKryptModifier)
 		name = TheMenu->szCurrentKryptCharacterClass;
-	((void(__fastcall*)(int64, char*, int))_addr(0x142396240))(ptr, name, unk);
+	((void(__fastcall*)(int64, char*, int))_addr(0x142395AD0))(ptr, name, unk);
 }
 
 MKModifier* GetModifierManager()
 {
-	int64 info = ((int64(__fastcall*)())_addr(0x140679430))();
-	return ((MKModifier*(__fastcall*)(int64))_addr(0x14067B000))(info);
+	int64 info = ((int64(__fastcall*)())_addr(0x140679BC0))();
+	return ((MKModifier*(__fastcall*)(int64))_addr(0x14067B790))(info);
 }
 
 void LoadModifierAssets()
 {
 	int64 gameinfo = *(__int64*)_addr(GFG_GAME_INFO);
-	((void(__fastcall*)(int64, bool))_addr(0x14057D5C0))(gameinfo, 1);
+	((void(__fastcall*)(int64, bool))_addr(0x14057DD50))(gameinfo, 1);
 
 }
 

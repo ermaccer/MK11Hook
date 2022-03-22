@@ -10,5 +10,4 @@ class PlayerInfo {
 public:
 	void SetMeter(eMeterValues type, float value);
 	void SetDamageMult(float value);
-	void SetColor(FName color, FVector* value);
 };
