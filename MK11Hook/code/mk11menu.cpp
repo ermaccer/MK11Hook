@@ -1521,7 +1521,7 @@ void MK11Menu::DrawCheatsTab()
 		ImGui::NextColumn();
 		if (ImGui::Checkbox("P1##ikbs", &m_bInfKBsP1))
 		{
-			if (m_bEasyKBsP1)
+			if (m_bInfKBsP1)
 				GetObj(PLAYER1)->SetInfiniteKrushingBlows(true);
 			else
 				GetObj(PLAYER1)->SetInfiniteKrushingBlows(false);
@@ -1529,10 +1529,29 @@ void MK11Menu::DrawCheatsTab()
 		ImGui::SameLine();
 		if (ImGui::Checkbox("P2##ikbs", &m_bInfKBsP2))
 		{
-			if (m_bEasyKBsP2)
+			if (m_bInfKBsP2)
 				GetObj(PLAYER2)->SetInfiniteKrushingBlows(true);
 			else
 				GetObj(PLAYER2)->SetInfiniteKrushingBlows(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Quick Uppercut Recovery\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##ups", &m_bFastUppercutsP1))
+		{
+			if (m_bFastUppercutsP1)
+				GetObj(PLAYER1)->SetFastUppercutRecovery(true);
+			else
+				GetObj(PLAYER1)->SetFastUppercutRecovery(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##ups", &m_bFastUppercutsP2))
+		{
+			if (m_bFastUppercutsP2)
+				GetObj(PLAYER2)->SetFastUppercutRecovery(true);
+			else
+				GetObj(PLAYER2)->SetFastUppercutRecovery(false);
 		}
 		ImGui::NextColumn();
 	}

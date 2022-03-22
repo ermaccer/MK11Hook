@@ -86,6 +86,8 @@ public:
 	bool	m_bEasyKBsP2 = false;
 	bool    m_bInfKBsP1 = false;
 	bool	m_bInfKBsP2 = false;
+	bool    m_bFastUppercutsP1 = false;
+	bool    m_bFastUppercutsP2 = false;
 
 	bool	m_bChangePlayerSpeed = false;
 	bool	m_bChangePlayerScale = false;

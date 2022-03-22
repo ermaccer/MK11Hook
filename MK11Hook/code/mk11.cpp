@@ -115,6 +115,16 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bNoHealthP1)		p1->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP1)	p1->SetLife(0.01f);
 
+
+		if (TheMenu->m_bEasyKBsP1)
+			p1->SetEasyKrushingBlows(true);
+
+		if (TheMenu->m_bInfKBsP1)
+			p1->SetInfiniteKrushingBlows(true);
+
+		if (TheMenu->m_bFastUppercutsP1)
+			p1->SetFastUppercutRecovery(true);
+
 		if (TheMenu->m_bDisableComboScaling)
 		{
 			if (p1_info)
@@ -172,6 +182,15 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bInfiniteHealthP2)	p2->SetLife(1000.0f);
 		if (TheMenu->m_bNoHealthP2)	p2->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP2)	p2->SetLife(0.01f);
+
+		if (TheMenu->m_bEasyKBsP2)
+			p2->SetEasyKrushingBlows(true);
+
+		if (TheMenu->m_bInfKBsP2)
+			p2->SetInfiniteKrushingBlows(true);
+
+		if (TheMenu->m_bFastUppercutsP2)
+			p2->SetFastUppercutRecovery(true);
 
 		if (TheMenu->m_bDisableComboScaling)
 		{
