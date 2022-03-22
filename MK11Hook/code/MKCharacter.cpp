@@ -26,6 +26,11 @@ void MKCharacter::SetEasyKrushingBlows(bool enable)
 	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C7970))(this, enable, 1);
 }
 
+void MKCharacter::SetInfiniteKrushingBlows(bool enable)
+{
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CABD0))(this, enable, 1);
+}
+
 int MKCharacter::GetAbility()
 {
 	return *(int*)(this + 64304);

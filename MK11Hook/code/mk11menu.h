@@ -82,6 +82,10 @@ public:
 	bool	m_bInfiniteDefendP2 = false;
 	bool	m_bOneHealthP1 = false;
 	bool	m_bOneHealthP2 = false;
+	bool    m_bEasyKBsP1 = false;
+	bool	m_bEasyKBsP2 = false;
+	bool    m_bInfKBsP1 = false;
+	bool	m_bInfKBsP2 = false;
 
 	bool	m_bChangePlayerSpeed = false;
 	bool	m_bChangePlayerScale = false;

@@ -1496,28 +1496,51 @@ void MK11Menu::DrawCheatsTab()
 	ImGui::Checkbox("P2##def", &m_bInfiniteDefendP2);
 	ImGui::NextColumn();
 
+	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	{
+		ImGui::Text("Easy Krushing Blows\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##kbs", &m_bEasyKBsP1))
+		{
+			if (m_bEasyKBsP1)
+				GetObj(PLAYER1)->SetEasyKrushingBlows(true);
+			else
+				GetObj(PLAYER1)->SetEasyKrushingBlows(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##kbs", &m_bEasyKBsP2))
+		{
+			if (m_bEasyKBsP2)
+				GetObj(PLAYER2)->SetEasyKrushingBlows(true);
+			else
+				GetObj(PLAYER2)->SetEasyKrushingBlows(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Infinite Krushing Blows\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##ikbs", &m_bInfKBsP1))
+		{
+			if (m_bEasyKBsP1)
+				GetObj(PLAYER1)->SetInfiniteKrushingBlows(true);
+			else
+				GetObj(PLAYER1)->SetInfiniteKrushingBlows(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##ikbs", &m_bInfKBsP2))
+		{
+			if (m_bEasyKBsP2)
+				GetObj(PLAYER2)->SetInfiniteKrushingBlows(true);
+			else
+				GetObj(PLAYER2)->SetInfiniteKrushingBlows(false);
+		}
+		ImGui::NextColumn();
+	}
+
+
+
 
 	ImGui::Columns(1);
-	ImGui::Separator();
-	if (GetObj(PLAYER1) && GetObj(PLAYER2))
-		ImGui::Text("Easy Krushing Blows");
-
-	if (GetObj(PLAYER1))
-	{
-		if (ImGui::Button("Enable  P1"))
-			GetObj(PLAYER1)->SetEasyKrushingBlows(true);
-		ImGui::SameLine();
-		if (ImGui::Button("Disable P1"))
-			GetObj(PLAYER1)->SetEasyKrushingBlows(false);
-	}
-	if (GetObj(PLAYER1))
-	{
-		if (ImGui::Button("Enable  P2"))
-			GetObj(PLAYER1)->SetEasyKrushingBlows(true);
-		ImGui::SameLine();
-		if (ImGui::Button("Disable P2"))
-			GetObj(PLAYER1)->SetEasyKrushingBlows(false);
-	}
 	ImGui::Separator();
 
 }
@@ -1935,7 +1958,6 @@ bool MK11Menu::GetActiveState()
 
 void MK11Menu::RunLastScript()
 {
-	MKScriptVM vm(0);
 	if (m_pScript->GetFunctionID(m_nHash))
 	{
 		switch (m_nScriptExecuteType)
@@ -1945,11 +1967,6 @@ void MK11Menu::RunLastScript()
 			break;
 		case SCRIPT_P2:
 			GetObj(PLAYER2)->ExecuteScript(m_pScript, m_nHash);
-			break;
-		case SCRIPT_GLOBAL:
-			vm.BeginVar();
-			vm.Set(m_pScript, m_nHash);
-			vm.Run();
 			break;
 		default:
 			break;
@@ -2027,8 +2044,6 @@ void MK11Menu::ProcessScriptHotkeys()
 	{
 		if (GetAsyncKeyState(m_vKeyBinds[i].key) & 0x1)
 		{
-			MKScriptVM vm(0);
-
 			MKScript* script = GetScript(m_vKeyBinds[i].scriptName);
 			if (script->GetFunctionID(m_vKeyBinds[i].functionHash))
 			{
@@ -2039,11 +2054,6 @@ void MK11Menu::ProcessScriptHotkeys()
 					break;
 				case SCRIPT_P2:
 					GetObj(PLAYER2)->ExecuteScript(script, m_vKeyBinds[i].functionHash);
-					break;
-				case SCRIPT_GLOBAL:
-					vm.BeginVar();
-					vm.Set(script, m_vKeyBinds[i].functionHash);
-					vm.Run();
 					break;
 				default:
 					break;

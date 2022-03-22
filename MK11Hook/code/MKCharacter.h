@@ -47,6 +47,7 @@ public:
 	void SetScale(FVector* scale);
 	void SetSpeed(float speed);
 	void SetEasyKrushingBlows(bool enable);
+	void SetInfiniteKrushingBlows(bool enable);
 	void SetAbility(unsigned int id);
 
 	float GetLife();
