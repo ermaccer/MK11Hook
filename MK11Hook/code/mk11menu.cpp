@@ -1628,8 +1628,7 @@ void MK11Menu::DrawMiscTab()
 void MK11Menu::DrawScriptTab()
 {
 	ImGui::RadioButton("On Player1", &m_nScriptExecuteType, SCRIPT_P1); ImGui::SameLine();
-	ImGui::RadioButton("On Player2", &m_nScriptExecuteType, SCRIPT_P2); ImGui::SameLine();
-	ImGui::RadioButton("On Global", &m_nScriptExecuteType, SCRIPT_GLOBAL);
+	ImGui::RadioButton("On Player2", &m_nScriptExecuteType, SCRIPT_P2);
 
 	static char szScriptSource[256] = {};
 	ImGui::InputText("Script Source", szScriptSource, sizeof(szScriptSource));
@@ -1909,7 +1908,6 @@ void MK11Menu::DrawScriptReference()
 	case USG:
 		ImGui::BulletText("On Player1 - selected function will execute on Player 1 object.\nUse with character scripts or FightEngine");
 		ImGui::BulletText("On Player2 - selected function will execute on Player 2 object.\nUse with character scripts or FightEngine");
-		ImGui::BulletText("On Global - selected function will execute without a specified object.\nUse this with utils or functions that change hud etc.");
 
 		ImGui::TextWrapped("Some common player functions:");
 		ImGui::BulletText("BrutalityVictory1");
