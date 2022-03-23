@@ -48,7 +48,7 @@ void OnInitializeHook()
 
 
 	InjectHook(_addr(0x14086D970), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
-	InjectHook(_addr(0x1405992AE), tramp->Jump(MK11Hooks::HookSetLadderScreen));
+	InjectHook(_addr(0x1405992A7), tramp->Jump(MK11Hooks::HookSetLadderScreen));
 
 
 
@@ -71,9 +71,6 @@ void OnInitializeHook()
 	if (SettingsMgr->bEnableGamepadSupport)
 		InjectHook(_addr(0x14238A761), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
 
-	Nop(_addr(0x141B488E4), 5);
-	Nop(_addr(0x141B48909), 6);
-	Nop(_addr(0x141B4891C), 6);
 }
 
 bool ValidateGameVersion()
