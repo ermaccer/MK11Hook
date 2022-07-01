@@ -275,4 +275,11 @@ void MKCamera::HookedSetRotation(FRotator * rot)
 
 }
 
+FMatrix MKCamera::GetMatrix()
+{
+	FRotator rot = camRot;
+	FMatrix mat(&rot);
+	return mat;
+}
+
 

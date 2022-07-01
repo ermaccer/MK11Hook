@@ -11,6 +11,8 @@
 #include "unreal/FName.h"
 #include "MKObject.h"
 #include "Krypt.h"
+#include "MKCommand.h"
+#include "helper/eMouse.h"
 
 int64 hud_property = 0;
 
@@ -18,6 +20,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 {
 	TheMenu->Process();
 	Notifications->Update();
+	eMouse::UpdateMouse();
 
 	MKCharacter* p1 = GetObj(PLAYER1);
 	MKCharacter* p2 = GetObj(PLAYER2);
@@ -222,42 +225,7 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		}
 	}
 
-	if (TheMenu->m_bFreeCam)
-	{
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXPlus))
-			TheMenu->camPos.X += TheMenu->m_fFreeCameraSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXMinus))
-			TheMenu->camPos.X -= TheMenu->m_fFreeCameraSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYPlus))
-			TheMenu->camPos.Y += TheMenu->m_fFreeCameraSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYMinus))
-			TheMenu->camPos.Y -= TheMenu->m_fFreeCameraSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZPlus))
-			TheMenu->camPos.Z += TheMenu->m_fFreeCameraSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZMinus))
-			TheMenu->camPos.Z -= TheMenu->m_fFreeCameraSpeed;
-
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
-			TheMenu->camRot.Yaw -= TheMenu->m_nFreeCameraRotationSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
-			TheMenu->camRot.Yaw += TheMenu->m_nFreeCameraRotationSpeed;
-
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
-			TheMenu->camRot.Roll -= TheMenu->m_nFreeCameraRotationSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
-			TheMenu->camRot.Roll += TheMenu->m_nFreeCameraRotationSpeed;
-
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
-			TheMenu->camRot.Pitch -= TheMenu->m_nFreeCameraRotationSpeed;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
-			TheMenu->camRot.Pitch += TheMenu->m_nFreeCameraRotationSpeed;
-
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
-			TheMenu->camFov -= 1.0f;
-		if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
-			TheMenu->camFov += 1.0f;
-	}
-
+	TheMenu->UpdateFreecam();
 
 	if (TheMenu->m_bForceCameraUpdate)
 	{
@@ -285,6 +253,8 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 	TheMenu->m_bCustomCameraPos = false;
 	TheMenu->m_bCustomCameraRot = false;
 	TheMenu->m_bYObtained = false;
+
+
 
 	if (TheMenu->m_bStageModifier)
 		GetGameInfo()->SetStage(TheMenu->szStageModifierStage);
@@ -331,6 +301,11 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 
 	((void(__fastcall*)(int64, int64, int64, int64))_addr(0x141158B70))(eventID, a2, a3, a4);
 
+}
+
+void MK11Hooks::HookPreFightStart()
+{
+	((void(__fastcall*)())_addr(0x140CFBAB0))();
 }
 
 
@@ -428,9 +403,9 @@ PlayerInfo* GetInfo(PLAYER_NUM plr)
 
 void GetCharacterPosition(FVector * vec, PLAYER_NUM plr)
 {
-	int64 object = (int64)GetInfo(plr);
-	int64 ptr = *(int64*)(object + 32);
-	((int64(__fastcall*)(int64, FVector*))_addr(0x14114F8A0))(ptr, vec);
+	int64 object = (int64)GetObj(plr);
+	if (object)
+		((int64(__fastcall*)(int64, FVector*))_addr(0x14114F8A0))(object, vec);
 }
 
 void HideHUD()

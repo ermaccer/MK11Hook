@@ -1,18 +1,7 @@
 #pragma once
-
-struct FVector
-{
-	float X;
-	float Y;
-	float Z;
-};
-
-struct FRotator 
-{
-	int Pitch;
-	int Yaw;
-	int Roll;
-};
+#include "unreal/FVector.h"
+#include "unreal/FQuat.h"
+#include "unreal/FRotator.h"
 
 struct FLinearColor
 {

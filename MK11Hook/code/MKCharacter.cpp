@@ -52,6 +52,11 @@ void MKCharacter::SetAbility(unsigned int id)
 	*(int*)(this + 64304) = id;
 }
 
+void MKCharacter::SetCombos(bool enable)
+{
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C7300))(this, enable, 1);
+}
+
 float MKCharacter::GetLife()
 {
 	return 	*(float*)(this + 3104);
@@ -94,4 +99,15 @@ void MKCharacter::ExecuteScript(MKScript* script, int function)
 {
 	((void(__thiscall*)(MKCharacter*, MKScript*, int, int))_addr(0x1404D1CC0))(this, script, function, 1);
 }
+
+MKScript* MKCharacter::GetMyScript()
+{
+	return *(MKScript**)(this + 0xA7D8);
+}
+
+VMProc* MKCharacter::GetMyProc()
+{
+	return *(VMProc**)(this + 0x10E0);
+}
+
 

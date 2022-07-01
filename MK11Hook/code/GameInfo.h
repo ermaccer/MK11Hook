@@ -19,6 +19,8 @@ enum  PLAYER_NUM
 class MKScript {
 public:
 	int GetFunctionID(int hash);
+	int64 GetVar(const char* name);
+	unsigned int GetCurrentFunc();
 };
 
 class FGGameInfo {
@@ -33,3 +35,4 @@ MKScript* GetScript(const char* name);
 int64 GetScriptVar(MKScript* script, const char* name);
 
 FGGameInfo* GetGameInfo();
+int GetGameState();

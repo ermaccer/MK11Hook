@@ -15,6 +15,7 @@
 #include "GameInfo.h"
 #include "Krypt.h"
 #include "MKObject.h"
+#include "helper/eMouse.h"
 
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
@@ -748,9 +749,6 @@ static void ShowHelpMarker(const char* desc)
 
 void MK11Menu::Initialize()
 {
-	orgMouse.x = GetSystemMetrics(SM_CXSCREEN) / 2;
-	orgMouse.y = GetSystemMetrics(SM_CYSCREEN) / 2;
-
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szCurrentModifier, szModifierModes[0]);
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
@@ -859,9 +857,8 @@ void MK11Menu::Draw()
 
 void MK11Menu::Process()
 {
+	m_bIsFocused = IsWindowFocused();
 	UpdateControls();
-	if (m_bFreeCamMouseControl)
-		UpdateMouse();
 }
 
 void MK11Menu::UpdateControls()
@@ -923,30 +920,67 @@ void MK11Menu::UpdateControls()
 
 }
 
-void MK11Menu::UpdateMouse()
+void MK11Menu::UpdateFreecam()
 {
-	if (m_bIsActive) return;
-
-	GetCursorPos(&curMouse);
-	mouseSpeedX = curMouse.x - orgMouse.x;
-	mouseSpeedY = curMouse.y - orgMouse.y;
-
-
-	if (m_bIsFocused)
+	if (TheMenu->m_bFreeCam)
 	{
-		if (TheMenu->m_bFreeCam)
+		if (TheCamera)
 		{
-			int newVal = TheMenu->camRot.Yaw;
-			newVal += mouseSpeedX / mouseSens;
-			TheMenu->camRot.Yaw = newVal;
+			FVector fwd = TheCamera->GetMatrix().GetForward();
+			FVector strafe = TheCamera->GetMatrix().GetRight();
+			FVector up = TheCamera->GetMatrix().GetUp();
+
+			// forward
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXPlus))
+				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * 1;
 
 
-			int newValY = TheMenu->camRot.Pitch;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXMinus))
+				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * -1;
 
-			if (m_bFreeCamMouseInvertY) mouseSpeedY *= -1;
+			// strafe
 
-			newValY += mouseSpeedY / mouseSens;
-			TheMenu->camRot.Pitch = newValY;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYPlus))
+				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * 1;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYMinus))
+				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * -1;
+
+			// up
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZPlus))
+				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * 1;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZMinus))
+				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * -1;
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
+				TheMenu->camRot.Yaw -= TheMenu->m_nFreeCameraRotationSpeed;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
+				TheMenu->camRot.Yaw += TheMenu->m_nFreeCameraRotationSpeed;
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
+				TheMenu->camRot.Roll -= TheMenu->m_nFreeCameraRotationSpeed;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
+				TheMenu->camRot.Roll += TheMenu->m_nFreeCameraRotationSpeed;
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
+				TheMenu->camRot.Pitch -= TheMenu->m_nFreeCameraRotationSpeed;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
+				TheMenu->camRot.Pitch += TheMenu->m_nFreeCameraRotationSpeed;
+
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
+				TheMenu->camFov -= 1.0f;
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
+				TheMenu->camFov += 1.0f;
+
+			// mouse
+			{
+				if (!TheMenu->m_bIsActive && TheMenu->m_bMouseControl)
+				{
+					TheMenu->camRot.Pitch += eMouse::GetDeltaY();
+					TheMenu->camRot.Yaw += eMouse::GetDeltaX();
+				}
+			}
 		}
 	}
 
@@ -1382,16 +1416,7 @@ void MK11Menu::DrawCameraTab()
 
 		ImGui::InputFloat("Freecam Speed", &m_fFreeCameraSpeed);
 		ImGui::InputInt("Freecam Rotation Speed", &m_nFreeCameraRotationSpeed);
-
-		ImGui::Separator();
-		ImGui::Checkbox("Mouse Control", &m_bFreeCamMouseControl);
-
-		if (m_bFreeCamMouseControl)
-		{
-			ImGui::SameLine();  ImGui::TextColored(ImVec4(1.f, 0.3f, 0.3f, 1.f), "This feature is not yet finished!");
-			ImGui::Checkbox("Invert Y", &m_bFreeCamMouseInvertY);
-			ImGui::SliderInt("Mouse Smoothness", &mouseSens, 1, 15);
-		}
+		ImGui::Checkbox("Mouse Control", &m_bMouseControl);
 	}
 
 
@@ -1566,8 +1591,8 @@ void MK11Menu::DrawCheatsTab()
 
 void MK11Menu::DrawKryptTab()
 {
-	ImGui::Text("Make sure you match the character class! It's trial & error if a character doesn't work.");
-	ImGui::Text("Normal characters use Base class, while Sektor/Cyrax use NPCs. Some might not work at all.");
+	ImGui::TextWrapped("Make sure you match the character class! It's trial & error if a character doesn't work.");
+	ImGui::TextWrapped("Normal characters use Base class, while Sektor/Cyrax use NPCs. Some might not work at all.");
 	ImGui::Separator();
 	ImGui::Checkbox("Change Krypt Character", &m_bKryptModifier);
 
@@ -1588,7 +1613,7 @@ void MK11Menu::DrawKryptTab()
 
 	if (ImGui::BeginCombo("Krypt Character", szCurrentKryptCharacter))
 	{
-		for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
+		for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
 		{
 			bool is_selected = (szCurrentKryptCharacter == szKryptCharacters[n]);
 			if (ImGui::Selectable(szKryptCharacters[n], is_selected))
@@ -1682,6 +1707,15 @@ void MK11Menu::DrawScriptTab()
 			RunLastScript();
 		}
 
+		static char szScriptVariable[256] = {};
+		static int64 test;
+		ImGui::InputText("Script Variable", szScriptVariable, sizeof(szScriptVariable));
+		if (ImGui::Button("Get Var Ptr"))
+		{
+			test = GetScriptVar(m_pScript, szScriptVariable);
+			std::cout << std::hex << test << std::endl;
+		}
+		
 	}
 	else
 	{
@@ -1712,13 +1746,15 @@ void MK11Menu::DrawSettings()
 	static const char* settingNames[] = {
 		"Menu",
 		"INI",
-		"Keys"
+		"Keys",
+		"Mouse"
 	};
 
 	enum eSettings {
 		MENU,
 		INI,
 		KEYS,
+		MOUSE
 	};
 
 	ImGui::BeginChild("##settings", { 12 * ImGui::GetFontSize(), 0 }, true);
@@ -1742,7 +1778,9 @@ void MK11Menu::DrawSettings()
 	case MENU:
 		ImGui::TextWrapped("All user settings are saved to mk11hook_user.ini.");
 		ImGui::Text("Menu Scale");
+		ImGui::PushItemWidth(-FLT_MIN);
 		ImGui::InputFloat("", &SettingsMgr->fMenuScale);
+		ImGui::PopItemWidth();
 		break;
 	case INI:            
 		ImGui::TextWrapped("These settings control MK11Hook.ini options. Any changes require game restart to take effect.");
@@ -1806,6 +1844,15 @@ void MK11Menu::DrawSettings()
 			}
 
 		}
+		break;
+	case MOUSE:
+		ImGui::TextWrapped("All user settings are saved to mk11hook_user.ini.");
+		ImGui::Text("Sensitivity");
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::SliderInt("", &SettingsMgr->mouse.sens, 1, 50);
+		ImGui::PopItemWidth();
+		ImGui::Checkbox("Invert X", &SettingsMgr->mouse.invert_x);
+		ImGui::Checkbox("Invert Y", &SettingsMgr->mouse.invert_y);
 		break;
 	default:
 		break;
@@ -1954,10 +2001,12 @@ void MK11Menu::DrawDebug()
 	ImGui::PopStyleVar(1);
 	ImGui::Text("MK11Hook %s Debug (%.2f FPS)", MK11HOOK_VERSION, ImGui::GetIO().Framerate);
 	ImGui::Text("");
-	ImGui::Text("Player 1 Object: 0x%X Info: 0x%X",GetObj(PLAYER1), GetInfo(PLAYER1));
-	ImGui::Text("Player 2 Object: 0x%X Info: 0x%X", GetObj(PLAYER2), GetInfo(PLAYER2));
-	ImGui::Text("P1: %s", GetCharacterName(PLAYER1));
-	ImGui::Text("P2: %s", GetCharacterName(PLAYER2));
+	ImGui::Text("Player 1 Object: 0x%p Info: 0x%p",GetObj(PLAYER1), GetInfo(PLAYER1));
+	ImGui::Text("Player 2 Object: 0x%p Info: 0x%p", GetObj(PLAYER2), GetInfo(PLAYER2));
+	if (GetInfo(PLAYER1)->pad)
+	ImGui::Text("P1: %s Hits: %d %d Button: %d", GetCharacterName(PLAYER1), GetInfo(PLAYER1)->GetHits().hits, GetInfo(PLAYER1)->GetHits().airHits, GetInfo(PLAYER1)->pad->buttons.id);
+	if (GetInfo(PLAYER2)->pad)
+	ImGui::Text("P2: %s Hits: %d %d Button: %d", GetCharacterName(PLAYER2), GetInfo(PLAYER2)->GetHits().hits, GetInfo(PLAYER2)->GetHits().airHits, GetInfo(PLAYER2)->pad->buttons.id);
 	ImGui::End();
 }
 #endif
@@ -2090,4 +2139,12 @@ char * GetMK11HookVersion()
 	static char buffer[512] = {};
 	sprintf(buffer, "MK11Hook by ermaccer (%s)", MK11HOOK_VERSION);
 	return buffer;
+}
+
+bool IsWindowFocused()
+{
+	if (eDirectX11Hook::ms_bInit)
+		return GetForegroundWindow() == eDirectX11Hook::ms_hWindow;
+
+	return false;
 }

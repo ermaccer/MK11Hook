@@ -16,11 +16,10 @@
 #include <iostream>
 
 using namespace Memory::VP;
-
+int64 __fastcall GenericTrue2Return() { return 2; }
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
-
 
 void OnInitializeHook()
 {
@@ -38,7 +37,7 @@ void OnInitializeHook()
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
 	InjectHook(_addr(0x14092BC93), tramp->Jump(MK11Hooks::HookProcessStuff));
 	InjectHook(_addr(0x14090D3B3), tramp->Jump(MK11Hooks::HookStartupFightRecording));
-
+	InjectHook(_addr(0x14090E4D8), tramp->Jump(MK11Hooks::HookPreFightStart));
 
 	Nop(_addr(0x1419A88F3), 7);
 	Nop(_addr(0x1419A8903), 8);

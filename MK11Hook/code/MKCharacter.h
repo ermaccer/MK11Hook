@@ -2,7 +2,7 @@
 #include "MKStructs.h"
 #include "mk10utils.h"
 #include "GameInfo.h"
-
+#include "VMProc.h"
 
 struct CharacterCAP {
 	char* Name;
@@ -50,6 +50,7 @@ public:
 	void SetInfiniteKrushingBlows(bool enable);
 	void SetFastUppercutRecovery(bool enable);
 	void SetAbility(unsigned int id);
+	void SetCombos(bool enable);
 
 	float GetLife();
 
@@ -69,6 +70,9 @@ public:
 
 
 	void ExecuteScript(MKScript* script, int function);
+
+	MKScript* GetMyScript();
+	VMProc* GetMyProc();
 };
 
 

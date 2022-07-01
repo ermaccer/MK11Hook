@@ -24,6 +24,11 @@ FGGameInfo* GetGameInfo()
 	return *(FGGameInfo**)_addr(GFG_GAME_INFO);
 }
 
+int GetGameState()
+{
+	return *(int*)((*(int64*)_addr(GFG_GAME_INFO)) + 1944);
+}
+
 void FGGameInfo::SetStage(const char* stage)
 {
 	((void(__thiscall*)(FGGameInfo*, const char*))_addr(0x14059A460))(this, stage);
@@ -46,4 +51,14 @@ PlayerInfo* FGGameInfo::GetInfo(PLAYER_NUM plr)
 int MKScript::GetFunctionID(int hash)
 {
 	return ((int(__thiscall*)(MKScript*, int, int))_addr(0x14114C5F0))(this, hash, 0);
+}
+
+int64 MKScript::GetVar(const char* name)
+{
+	return ((int64(__fastcall*)(MKScript*, const char*, int))_addr(0x14114F750))(this, name, 1);
+}
+
+unsigned int MKScript::GetCurrentFunc()
+{
+	return *(unsigned int*)(this + 360);
 }

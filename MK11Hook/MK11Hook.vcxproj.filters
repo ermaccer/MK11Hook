@@ -28,14 +28,14 @@
     <Filter Include="Header Files\kiero\minhook">
       <UniqueIdentifier>{db46cdf8-7c42-4a12-a5f1-14ed4879f476}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\dx">
-      <UniqueIdentifier>{7187d197-8447-41c0-9f40-8dcab7f80186}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\code\helper">
       <UniqueIdentifier>{bb5a43a5-8836-46b1-9a85-18be7a5c70a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\code\unreal">
       <UniqueIdentifier>{28f5b54e-93a3-4310-8370-b568866173c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\code\plugin">
+      <UniqueIdentifier>{625ccf99-cebc-4904-a474-5f92cefdad83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +129,6 @@
     <ClInclude Include="code\MKCharacter.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
-    <ClInclude Include="eDirectX11Hook.h">
-      <Filter>Source Files\dx</Filter>
-    </ClInclude>
     <ClInclude Include="code\MKStructs.h">
       <Filter>Header Files\code</Filter>
     </ClInclude>
@@ -172,6 +169,39 @@
       <Filter>Header Files\code</Filter>
     </ClInclude>
     <ClInclude Include="code\helper\eGamepadManager.h">
+      <Filter>Header Files\code\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="code\plugin\ePluginInterface.h">
+      <Filter>Header Files\code\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MKCommand.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="code\VMProc.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
+    <ClInclude Include="eDirectX11Hook.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FMath.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FMatrix.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FQuat.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FRotator.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\FVector.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\helper\eMath.h">
+      <Filter>Header Files\code\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="code\helper\eMouse.h">
       <Filter>Header Files\code\helper</Filter>
     </ClInclude>
   </ItemGroup>
@@ -242,9 +272,6 @@
     <ClCompile Include="code\MKCharacter.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
-    <ClCompile Include="eDirectX11Hook.cpp">
-      <Filter>Source Files\dx</Filter>
-    </ClCompile>
     <ClCompile Include="code\MKModifier.cpp">
       <Filter>Header Files\code</Filter>
     </ClCompile>
@@ -279,6 +306,27 @@
       <Filter>Header Files\code</Filter>
     </ClCompile>
     <ClCompile Include="code\helper\eGamepadManager.cpp">
+      <Filter>Header Files\code\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="code\plugin\ePluginInterface.cpp">
+      <Filter>Header Files\code\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="code\VMProc.cpp">
+      <Filter>Header Files\code</Filter>
+    </ClCompile>
+    <ClCompile Include="eDirectX11Hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="code\unreal\FMath.cpp">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="code\unreal\FMatrix.cpp">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="code\helper\eMath.cpp">
+      <Filter>Header Files\code\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="code\helper\eMouse.cpp">
       <Filter>Header Files\code\helper</Filter>
     </ClCompile>
   </ItemGroup>
