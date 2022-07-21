@@ -114,6 +114,7 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iHookMenuOpenKey", iHookMenuOpenKey);
 	user.WriteInteger("Settings", "iToggleFreezeWorldKey", iToggleFreezeWorldKey);
 	user.WriteInteger("Settings", "iToggleCustomCamKey", iToggleCustomCamKey);
+	user.WriteInteger("Settings", "iToggleSlowMoKey", iToggleSlowMoKey);
 	user.WriteInteger("Settings", "iFreeCameraKeyXMinus", iFreeCameraKeyXMinus);
 	user.WriteInteger("Settings", "iFreeCameraKeyYPlus", iFreeCameraKeyYPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyYMinus", iFreeCameraKeyYMinus);
