@@ -109,5 +109,3 @@ VMProc* MKCharacter::GetMyProc()
 {
 	return *(VMProc**)(this + 0x10E0);
 }
-
-

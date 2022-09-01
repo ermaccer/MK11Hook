@@ -42,6 +42,12 @@ struct Gamepad {
 	ButtonInfo oldButtons;
 };
 
+
+class AIDrone {
+public:
+	void Set(const char* script, int unk);
+};
+
 class PlayerInfo {
 public:
 	char _pad[48];
@@ -53,4 +59,6 @@ public:
 	float GetMeter(eMeterValues type);
 
 	HitCounter GetHits();
+
+	AIDrone* GetDrone();
 };

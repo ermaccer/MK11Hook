@@ -705,6 +705,25 @@ const char* szBones[] = {
 };
 
 
+const char* szAI[] = {
+	"AI_ATFatalitySoaker.mko",
+	"AI_ButtonMasher.mko",
+	"AI_DebugBrutality.mko",
+	"AI_DebugInteractable.mko",
+	"AI_DebugKrushingBlow.mko",
+	"AI_DebugOnlineButtonMasher.mko",
+	"AI_Dummy.mko",
+	"AI_Fighter.mko",
+	"AI_Flying.mko",
+	"AI_Normal.mko",
+	"AI_PlayerSelectArena.mko",
+	//"AI_Practice.mko",
+	"AI_SingleMove.mko",
+	"AI_Test.mko",
+	"AI_Tutorial.mko",
+	"AI_Verifier.mko",
+};
+
 int GetCamMode(const char* mode)
 {
 	for (int i = 0; i < TOTAL_CUSTOM_CAMERAS; i++)
@@ -761,6 +780,8 @@ void MK11Menu::Initialize()
 	sprintf(szAbilityReferenceChararacter, szKryptCharacters[0]);
 	sprintf(szPlayer1Bone, szBones[0]);
 	sprintf(szPlayer2Bone, szBones[0]);
+	sprintf(szPlayer1AI, szAI[0]);
+	sprintf(szPlayer2AI, szAI[0]);
 }
 
 void MK11Menu::Draw()
@@ -788,12 +809,12 @@ void MK11Menu::Draw()
 
 	if (ImGui::BeginTabBar("##tabs"))
 	{
-		if (ImGui::BeginTabItem("Character Modifier"))
+		if (ImGui::BeginTabItem("Character"))
 		{
 			DrawCharacterTab();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Stage Modifier"))
+		if (ImGui::BeginTabItem("Stage"))
 		{
 			DrawStageTab();
 			ImGui::EndTabItem();
@@ -803,17 +824,17 @@ void MK11Menu::Draw()
 			DrawModifiersTab();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Player Control"))
+		if (ImGui::BeginTabItem("Player"))
 		{
 			DrawPlayerTab();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Speed Modifier"))
+		if (ImGui::BeginTabItem("Speed"))
 		{
 			DrawSpeedTab();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Camera Control"))
+		if (ImGui::BeginTabItem("Camera"))
 		{
 			DrawCameraTab();
 			ImGui::EndTabItem();
@@ -831,6 +852,11 @@ void MK11Menu::Draw()
 		if (ImGui::BeginTabItem("Krypt"))
 		{
 			DrawKryptTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("AI"))
+		{
+			DrawAITab();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Misc."))
@@ -1707,6 +1733,7 @@ void MK11Menu::DrawScriptTab()
 			RunLastScript();
 		}
 
+#ifdef _DEBUG
 		static char szScriptVariable[256] = {};
 		static int64 test;
 		ImGui::InputText("Script Variable", szScriptVariable, sizeof(szScriptVariable));
@@ -1715,7 +1742,7 @@ void MK11Menu::DrawScriptTab()
 			test = GetScriptVar(m_pScript, szScriptVariable);
 			std::cout << std::hex << test << std::endl;
 		}
-		
+#endif
 	}
 	else
 	{
@@ -1733,6 +1760,44 @@ void MK11Menu::DrawScriptTab()
 
 	if (ImGui::Button("Clear All"))
 		m_vKeyBinds.clear();
+
+}
+
+void MK11Menu::DrawAITab()
+{
+	ImGui::Checkbox("Change Player 1 AI", &m_bAIDroneModifierP1);
+
+	if (ImGui::BeginCombo("Player 1 AI", szPlayer1AI))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(szAI); n++)
+		{
+			bool is_selected = (szPlayer1AI == szAI[n]);
+			if (ImGui::Selectable(szAI[n], is_selected))
+				sprintf(szPlayer1AI, szAI[n]);
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+	ImGui::Checkbox("Change Player 2 AI", &m_bAIDroneModifierP2);
+
+	if (ImGui::BeginCombo("Player 2 AI", szPlayer2AI))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(szAI); n++)
+		{
+			bool is_selected = (szPlayer2AI == szAI[n]);
+			if (ImGui::Selectable(szAI[n], is_selected))
+				sprintf(szPlayer2AI, szAI[n]);
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::Separator();
 
 }
 

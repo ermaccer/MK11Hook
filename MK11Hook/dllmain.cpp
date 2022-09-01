@@ -21,6 +21,7 @@ int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)

@@ -159,7 +159,7 @@ void eDirectX11Hook::ReloadImGuiFont()
 {
 	if (!(SettingsMgr->fMenuScale < 1.0f))
 	{
-		float fontSize = 13.0f;
+		float fontSize = 16.0f;
 		ImGuiStyle * style = &ImGui::GetStyle();
 		ImGuiIO io = ImGui::GetIO();
 
@@ -168,7 +168,7 @@ void eDirectX11Hook::ReloadImGuiFont()
 			io.Fonts->Clear();
 			io.Fonts->AddFontFromMemoryCompressedTTF(Font_compressed_data, Font_compressed_size, fontSize * SettingsMgr->fMenuScale);
 			io.Fonts->Build();
-		}
+		}	
 
 		style->WindowPadding = ms_localStyleCopy.WindowPadding;
 		style->WindowRounding = ms_localStyleCopy.WindowRounding;

@@ -104,6 +104,8 @@ public:
 	bool	m_bBrutalityWatcher = false;
 	bool	m_bBrutalityDoneP1 = false;
 	bool	m_bBrutalityDoneP2 = false;
+	bool	m_bAIDroneModifierP1 = false;
+	bool	m_bAIDroneModifierP2 = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -163,6 +165,10 @@ public:
 
 	char szPlayer1Bone[128] = {};
 	char szPlayer2Bone[128] = {};
+
+	char szPlayer1AI[128] = {};
+	char szPlayer2AI[128] = {};
+
 	// camera
 
 	FVector  camPos = {};
@@ -193,6 +199,7 @@ public:
 	void DrawKryptTab();
 	void DrawMiscTab();
 	void DrawScriptTab();
+	void DrawAITab();
 
 	void DrawSettings();
 	void DrawAbilityReference();

@@ -31,3 +31,13 @@ HitCounter PlayerInfo::GetHits()
 {
 	return *(HitCounter*)((int64)this + 0x430);
 }
+
+AIDrone* PlayerInfo::GetDrone()
+{
+	return	((AIDrone*(__fastcall*)(PlayerInfo*))_addr(0x1405E4C70))(this);
+}
+
+void AIDrone::Set(const char* script, int unk)
+{
+	((void(__fastcall*)(AIDrone*, const char*, int))_addr(0x14042AA70))(this, script, unk);
+}

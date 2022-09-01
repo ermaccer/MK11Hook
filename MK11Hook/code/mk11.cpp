@@ -118,6 +118,11 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bNoHealthP1)		p1->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP1)	p1->SetLife(0.01f);
 
+		if (TheMenu->m_bAIDroneModifierP1)
+		{
+			if (AIDrone* drone = p1_info->GetDrone())
+				drone->Set(TheMenu->szPlayer1AI, 0);
+		}
 
 		if (TheMenu->m_bEasyKBsP1)
 			p1->SetEasyKrushingBlows(true);
@@ -185,6 +190,13 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bInfiniteHealthP2)	p2->SetLife(1000.0f);
 		if (TheMenu->m_bNoHealthP2)	p2->SetLife(0.0f);
 		if (TheMenu->m_bOneHealthP2)	p2->SetLife(0.01f);
+
+		if (TheMenu->m_bAIDroneModifierP2)
+		{
+			if (AIDrone* drone = p2_info->GetDrone())
+				drone->Set(TheMenu->szPlayer2AI, 0);
+		}
+
 
 		if (TheMenu->m_bEasyKBsP2)
 			p2->SetEasyKrushingBlows(true);
@@ -296,6 +308,8 @@ void __fastcall MK11Hooks::HookStartupFightRecording(int64 eventID, int64 a2, in
 		LoadModifierAssets();
 		printf("MK11Hook::Info() | P2 Tag Assist: %s\n", TheMenu->szPlayer2TagAssistCharacter);
 	}
+
+
 
 	printf("MK11Hook::Info() | %s VS %s\n", GetCharacterName(PLAYER1), GetCharacterName(PLAYER2));
 
