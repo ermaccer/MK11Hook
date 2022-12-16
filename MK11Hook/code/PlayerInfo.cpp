@@ -6,7 +6,7 @@
 
 void PlayerInfo::SetMeter(eMeterValues type, float value)
 {
-	((void(__fastcall*)(PlayerInfo*, int, float))_addr(0x1405FABE0))(this, type, value);
+	((void(__fastcall*)(PlayerInfo*, int, float))_addr(0x1405FEE50))(this, type, value);
 }
 
 void PlayerInfo::SetDamageMult(float value)
@@ -18,7 +18,7 @@ void PlayerInfo::SetDamageMult(float value)
 
 void PlayerInfo::RefreshMeter(bool value)
 {
-	((void(__fastcall*)(PlayerInfo*, bool))_addr(0x140602930))(this,value);
+	((void(__fastcall*)(PlayerInfo*, bool))_addr(0x140606BA0))(this,value);
 }
 
 float PlayerInfo::GetMeter(eMeterValues type)
@@ -34,10 +34,10 @@ HitCounter PlayerInfo::GetHits()
 
 AIDrone* PlayerInfo::GetDrone()
 {
-	return	((AIDrone*(__fastcall*)(PlayerInfo*))_addr(0x1405E4C70))(this);
+	return	((AIDrone*(__fastcall*)(PlayerInfo*))_addr(0x1405E8FE0))(this);
 }
 
 void AIDrone::Set(const char* script, int unk)
 {
-	((void(__fastcall*)(AIDrone*, const char*, int))_addr(0x14042AA70))(this, script, unk);
+	((void(__fastcall*)(AIDrone*, const char*, int))_addr(0x14042E640))(this, script, unk);
 }

@@ -20,25 +20,6 @@ public:
 	TagAssistModifierObject* CreateObject();
 };
 
-
-class Modifier : public BaseModifier {
-public:
-	Modifier(const char* character, int a3, int a4, char* a5);
-	void Activate(MKCharacter* who);
-};
-
-class ModifierAssistObject {
-public:
-	void Activate(MKCharacter* obj);
-};
-
-
-class ModifierAssist : public BaseModifier {
-public:
-	ModifierAssist(const char* name, int a3, int a4, char* a5);
-	ModifierAssistObject* CreateObject();
-};
-
 class MKModifier {
 public:
 	void ActivateModifier(BaseModifier* modifier, MKCharacter* obj);

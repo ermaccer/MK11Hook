@@ -7,33 +7,33 @@
 
 void MKCharacter::SetLife(float life)
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C8830))(this, life);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404CC300))(this, life);
 }
 
 void MKCharacter::SetScale(FVector * scale)
 {
-	((void(__fastcall*)(MKCharacter*, FVector*))_addr(0x1411608B0))(this, scale);
+	((void(__fastcall*)(MKCharacter*, FVector*))_addr(0x14117AC20))(this, scale);
 }
 
 void MKCharacter::SetSpeed(float speed)
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C4510))(this, speed);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x1404C7FE0))(this, speed);
 }
 
 
 void MKCharacter::SetEasyKrushingBlows(bool enable)
 {
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C7970))(this, enable, 1);
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CB440))(this, enable, 1);
 }
 
 void MKCharacter::SetInfiniteKrushingBlows(bool enable)
 {
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CABD0))(this, enable, 1);
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CE6A0))(this, enable, 1);
 }
 
 void MKCharacter::SetFastUppercutRecovery(bool enable)
 {
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C9770))(this, enable, 1);
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CD240))(this, enable, 1);
 }
 
 int MKCharacter::GetAbility()
@@ -54,7 +54,7 @@ void MKCharacter::SetAbility(unsigned int id)
 
 void MKCharacter::SetCombos(bool enable)
 {
-	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404C7300))(this, enable, 1);
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CADD0))(this, enable, 1);
 }
 
 float MKCharacter::GetLife()
@@ -69,35 +69,35 @@ void MKCharacter::ClearAbilities()
 
 void MKCharacter::ActivateHeadTracking()
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DC05C0))(this, 0.5);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DD9030))(this, 0.5);
 }
 
 void MKCharacter::KillHeadTracking()
 {
-	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DC0590))(this, 0.5);
+	((void(__fastcall*)(MKCharacter*, float))_addr(0x140DD9000))(this, 0.5);
 }
 
 void MKCharacter::SetBoneSize(const char * name, float size)
 {
 	FName fname(name, FNAME_Add, 1);
-	((void(__fastcall*)(int64, FName*, float))_addr(0x141A30590))(*(int64*)((int64)this + 0x250), &fname,  size);
+	((void(__fastcall*)(int64, FName*, float))_addr(0x141A39B30))(*(int64*)((int64)this + 0x250), &fname,  size);
 }
 
 void MKCharacter::GetBonePos(const char * name, FVector * pos)
 {
 	FName fname(name, FNAME_Add, 1);
-	((void(__fastcall*)(MKCharacter*, FName, FVector*))_addr(0x140DB9BF0))(this, fname, pos);
+	((void(__fastcall*)(MKCharacter*, FName, FVector*))_addr(0x140DD2660))(this, fname, pos);
 }
 
 void MKCharacter::GetBoneRot(const char * name, FRotator * rot)
 {
 	FName fname(name, FNAME_Add, 1);
-	((void(__fastcall*)(MKCharacter*, FName, FRotator*))_addr(0x1404A5550))(this, fname, rot);
+	((void(__fastcall*)(MKCharacter*, FName, FRotator*))_addr(0x1404A9220))(this, fname, rot);
 }
 
 void MKCharacter::ExecuteScript(MKScript* script, int function)
 {
-	((void(__thiscall*)(MKCharacter*, MKScript*, int, int))_addr(0x1404D1CC0))(this, script, function, 1);
+	((void(__thiscall*)(MKCharacter*, MKScript*, int, int))_addr(0x1404D5790))(this, script, function, 1);
 }
 
 MKScript* MKCharacter::GetMyScript()

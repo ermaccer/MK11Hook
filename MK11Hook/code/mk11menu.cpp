@@ -1232,7 +1232,7 @@ void MK11Menu::DrawModifiersTab()
 							sprintf(szPlayer1Bone, szBones[n]);
 						if (is_selected)
 							ImGui::SetItemDefaultFocus();
-
+				
 					}
 					ImGui::EndCombo();
 				}

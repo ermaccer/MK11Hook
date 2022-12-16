@@ -3,10 +3,10 @@
 
 MKObject* Krypt::GetKryptPlayer(int value)
 {
-	return ((MKObject*(__fastcall*)(Krypt*, int))_addr(0x140985370))(this, value);
+	return ((MKObject*(__fastcall*)(Krypt*, int))_addr(0x14098DA20))(this, value);
 }
 
 Krypt* GetKrypt()
 {
-	return ((Krypt*(__fastcall*)(int))_addr(0x140985210))(1);
+	return ((Krypt*(__fastcall*)(int))_addr(0x14098D8C0))(1);
 }

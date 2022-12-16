@@ -7,10 +7,10 @@
 #include "PlayerInfo.h"
 #include "CharacterDefinition.h"
 
-#define GFG_GAME_INFO  0x143498D90
+#define GFG_GAME_INFO  0x1434BA060 
 
 
-#define MK11HOOK_VERSION "0.5.4"
+#define MK11HOOK_VERSION "0.5.4-update"
 
 #define TOTAL_ABILITIES 20
 
@@ -58,7 +58,6 @@ namespace MK11Hooks {
 	// hooks
 	void  HookProcessStuff();
 	void  HookStartupFightRecording(int64 eventID, int64 a2, int64 a3, int64 a4);
-	void  HookPreFightStart();
 
 	void   HookReadPropertyValue(int64 ptr, int* unk, int* value);
 	int64  HookSetProperty(int64 ptr, char* name, int64 unk);
