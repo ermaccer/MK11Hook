@@ -133,6 +133,9 @@ void __fastcall MK11Hooks::HookProcessStuff()
 		if (TheMenu->m_bFastUppercutsP1)
 			p1->SetFastUppercutRecovery(true);
 
+		if (TheMenu->m_bNoKBsP1)
+			p1->SetKrushingBlowsDisabled(true);
+
 		if (TheMenu->m_bDisableComboScaling)
 		{
 			if (p1_info)
@@ -206,6 +209,9 @@ void __fastcall MK11Hooks::HookProcessStuff()
 
 		if (TheMenu->m_bFastUppercutsP2)
 			p2->SetFastUppercutRecovery(true);
+
+		if (TheMenu->m_bNoKBsP2)
+			p2->SetKrushingBlowsDisabled(true);
 
 		if (TheMenu->m_bDisableComboScaling)
 		{

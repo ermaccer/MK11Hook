@@ -14,6 +14,7 @@ void eSettingsManager::Init()
 
 	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
 	bEnableGamepadSupport = ini.ReadBoolean("Settings", "bEnableGamepadSupport", true);
+	bDisableAnimationTool = ini.ReadBoolean("Settings", "bDisableAnimationTool", false);
 	bUseLegacyCharacterModifier = ini.ReadBoolean("Settings", "bUseLegacyCharacterModifier", false);
 	bMakeAllAbilities1Slot = ini.ReadBoolean("Settings", "bMakeAllAbilities1Slot", false);
 	
@@ -115,6 +116,7 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iToggleFreezeWorldKey", iToggleFreezeWorldKey);
 	user.WriteInteger("Settings", "iToggleCustomCamKey", iToggleCustomCamKey);
 	user.WriteInteger("Settings", "iToggleSlowMoKey", iToggleSlowMoKey);
+	user.WriteInteger("Settings", "iFreeCameraKeyXPlus", iFreeCameraKeyXPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyXMinus", iFreeCameraKeyXMinus);
 	user.WriteInteger("Settings", "iFreeCameraKeyYPlus", iFreeCameraKeyYPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyYMinus", iFreeCameraKeyYMinus);

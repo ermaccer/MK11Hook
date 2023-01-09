@@ -10,7 +10,7 @@
 #define GFG_GAME_INFO  0x1434BA060 
 
 
-#define MK11HOOK_VERSION "0.5.4-update"
+#define MK11HOOK_VERSION "0.5.5"
 
 #define TOTAL_ABILITIES 20
 

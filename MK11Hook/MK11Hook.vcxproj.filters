@@ -204,6 +204,15 @@
     <ClInclude Include="code\helper\eMouse.h">
       <Filter>Header Files\code\helper</Filter>
     </ClInclude>
+    <ClInclude Include="code\unreal\SkeletalMesh.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\unreal\TArray.h">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="code\AnimationTool.h">
+      <Filter>Header Files\code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -328,6 +337,12 @@
     </ClCompile>
     <ClCompile Include="code\helper\eMouse.cpp">
       <Filter>Header Files\code\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="code\unreal\SkeletalMesh.cpp">
+      <Filter>Header Files\code\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="code\AnimationTool.cpp">
+      <Filter>Header Files\code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

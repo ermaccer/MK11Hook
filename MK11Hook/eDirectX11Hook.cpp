@@ -36,7 +36,7 @@ void SharedPresent()
 	if (eDirectX11Hook::ms_bFirstDraw)
 	{
 		Notifications->SetNotificationTime(7500);
-		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if controller support enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
+		Notifications->PushNotification("MK11Hook %s is running! Press F1 (or L3+R3 on a controller if controller support is enabled) to open the menu. Build date: %s\n", MK11HOOK_VERSION, __DATE__);
 		eDirectX11Hook::ms_bFirstDraw = false;
 	}
 

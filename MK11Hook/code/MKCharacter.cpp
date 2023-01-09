@@ -36,6 +36,11 @@ void MKCharacter::SetFastUppercutRecovery(bool enable)
 	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CD240))(this, enable, 1);
 }
 
+void MKCharacter::SetKrushingBlowsDisabled(bool enable)
+{
+	((void(__fastcall*)(MKCharacter*, int, int))_addr(0x1404CC250))(this, enable, 1);
+}
+
 int MKCharacter::GetAbility()
 {
 	return *(int*)(this + 64304);
@@ -108,4 +113,9 @@ MKScript* MKCharacter::GetMyScript()
 VMProc* MKCharacter::GetMyProc()
 {
 	return *(VMProc**)(this + 0x10E0);
+}
+
+USkeletalMeshComponent* MKCharacter::GetSkeleton()
+{
+	return *(USkeletalMeshComponent**)((int64)this + 0x250);
 }

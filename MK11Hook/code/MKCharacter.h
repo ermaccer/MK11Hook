@@ -3,6 +3,7 @@
 #include "mk10utils.h"
 #include "GameInfo.h"
 #include "VMProc.h"
+#include "unreal/SkeletalMesh.h"
 
 struct CharacterCAP {
 	char* Name;
@@ -49,6 +50,7 @@ public:
 	void SetEasyKrushingBlows(bool enable);
 	void SetInfiniteKrushingBlows(bool enable);
 	void SetFastUppercutRecovery(bool enable);
+	void SetKrushingBlowsDisabled(bool enable);
 	void SetAbility(unsigned int id);
 	void SetCombos(bool enable);
 
@@ -73,6 +75,8 @@ public:
 
 	MKScript* GetMyScript();
 	VMProc* GetMyProc();
+
+	USkeletalMeshComponent* GetSkeleton();
 };
 
 

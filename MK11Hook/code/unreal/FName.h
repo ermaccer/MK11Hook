@@ -1,4 +1,5 @@
 #pragma once
+#include "TArray.h"
 
 enum EFindName
 {
@@ -7,11 +8,21 @@ enum EFindName
 	FNAME_Replace,
 };
 
+struct FNameEntry {
+	char pad[16];
+	char name[128];
+};
 
 class FName {
-private:
+public:
 	int Index;
 	int Number;
-public:
+
+	FName();
 	FName(const char* Name, EFindName FindType, int formal);
 };
+
+
+TArray<FNameEntry*>* GetNames();
+
+char* GetName(int index);

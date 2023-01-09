@@ -16,7 +16,10 @@
 #include "Krypt.h"
 #include "MKObject.h"
 #include "helper/eMouse.h"
+#include "AnimationTool.h"
+#include "../utils/MemoryMgr.h"
 
+using namespace Memory::VP;
 static int64 timer = GetTickCount64();
 static int64 func_timer = GetTickCount64();
 char textBuffer[260] = {};
@@ -804,6 +807,14 @@ void MK11Menu::Draw()
 				m_bSubmenuActive[SUBMENU_SCRIPT] = true;
 			ImGui::EndMenu();
 		}
+		if (!SettingsMgr->bDisableAnimationTool)
+		{
+			if (ImGui::BeginMenu("Posing"))
+			{
+				m_bSubmenuActive[SUBMENU_ANIMATIONTOOL] = true;
+				ImGui::EndMenu();
+			}
+		}
 	}
 	ImGui::EndMenuBar();
 
@@ -878,6 +889,8 @@ void MK11Menu::Draw()
 	if (m_bSubmenuActive[SUBMENU_SETTINGS])
 		DrawSettings();
 
+	if (m_bSubmenuActive[SUBMENU_ANIMATIONTOOL])
+		DrawAnimationTool();
 
 }
 
@@ -885,6 +898,28 @@ void MK11Menu::Process()
 {
 	m_bIsFocused = IsWindowFocused();
 	UpdateControls();
+	if (!SettingsMgr->bDisableAnimationTool)
+	{
+		if (AnimationTool::ms_bActive)
+		{
+			Nop(_addr(0x140E4EB90), 3);
+		}
+		else
+		{
+			Patch<char>(_addr(0x140E4EB90), 0x48);
+			Patch<char>(_addr(0x140E4EB90) + 1, 0x8B);
+			Patch<char>(_addr(0x140E4EB90) + 2, 0x08);
+		}
+		AnimationTool::ProcessPosing();
+
+		if (!GetObj(PLAYER1))
+		{
+			Patch<char>(_addr(0x140E4EB90), 0x48);
+			Patch<char>(_addr(0x140E4EB90) + 1, 0x8B);
+			Patch<char>(_addr(0x140E4EB90) + 2, 0x08);
+		}
+	}
+
 }
 
 void MK11Menu::UpdateControls()
@@ -2039,6 +2074,11 @@ void MK11Menu::DrawScriptReference()
 	ImGui::EndChild();
 
 	ImGui::End();
+}
+
+void MK11Menu::DrawAnimationTool()
+{
+	AnimationTool::Draw();
 }
 
 void MK11Menu::DrawKeyBind(char* name, int* var)

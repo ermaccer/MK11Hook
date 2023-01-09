@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="code\AnimationTool.h" />
     <ClInclude Include="code\CharacterDefinition.h" />
     <ClInclude Include="code\eNotifManager.h" />
     <ClInclude Include="code\eSettingsManager.h" />
@@ -123,6 +124,8 @@
     <ClInclude Include="code\unreal\FQuat.h" />
     <ClInclude Include="code\unreal\FRotator.h" />
     <ClInclude Include="code\unreal\FVector.h" />
+    <ClInclude Include="code\unreal\SkeletalMesh.h" />
+    <ClInclude Include="code\unreal\TArray.h" />
     <ClInclude Include="code\VMProc.h" />
     <ClInclude Include="eDirectX11Hook.h" />
     <ClInclude Include="font.h" />
@@ -153,6 +156,7 @@
     <ClInclude Include="utils\Trampoline.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="code\AnimationTool.cpp" />
     <ClCompile Include="code\CharacterDefinition.cpp" />
     <ClCompile Include="code\eNotifManager.cpp" />
     <ClCompile Include="code\eSettingsManager.cpp" />
@@ -175,6 +179,7 @@
     <ClCompile Include="code\unreal\FMath.cpp" />
     <ClCompile Include="code\unreal\FMatrix.cpp" />
     <ClCompile Include="code\unreal\FName.cpp" />
+    <ClCompile Include="code\unreal\SkeletalMesh.cpp" />
     <ClCompile Include="code\VMProc.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="eDirectX11Hook.cpp" />

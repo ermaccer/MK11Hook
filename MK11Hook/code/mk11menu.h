@@ -4,8 +4,6 @@
 #include "helper/eKeyboardMan.h"
 #include "GameInfo.h"
 #include <vector>
-// as usual, based on mh2 debug menu
-
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,
@@ -29,6 +27,7 @@ enum eMenuSubMenus {
 	SUBMENU_NPC_MOVELIST,
 	SUBMENU_SETTINGS,
 	SUBMENU_SCRIPT,
+	SUBMENU_ANIMATIONTOOL,
 	TOTAL_SUBMENUS
 };
 
@@ -88,6 +87,8 @@ public:
 	bool	m_bInfKBsP2 = false;
 	bool    m_bFastUppercutsP1 = false;
 	bool    m_bFastUppercutsP2 = false;
+	bool    m_bNoKBsP1 = false;
+	bool	m_bNoKBsP2 = false;
 
 	bool	m_bChangePlayerSpeed = false;
 	bool	m_bChangePlayerScale = false;
@@ -204,6 +205,8 @@ public:
 	void DrawSettings();
 	void DrawAbilityReference();
 	void DrawScriptReference();
+	void DrawAnimationTool();
+
 
 	void DrawKeyBind(char* name, int* var);
 
