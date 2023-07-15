@@ -16,26 +16,26 @@
     <Filter Include="Header Files\utils">
       <UniqueIdentifier>{6834758c-f1eb-46bd-b135-9eafed9a2b9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\code">
-      <UniqueIdentifier>{6fab38a8-464d-4b02-a552-57b123e0811c}</UniqueIdentifier>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{e60151e0-164f-4808-8cd0-48a3de92a7b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\kiero">
-      <UniqueIdentifier>{6e44a2d2-602b-4012-ab74-ceeb894855ca}</UniqueIdentifier>
+    <Filter Include="Header Files\gui\imgui">
+      <UniqueIdentifier>{45764f76-8faa-4e46-8f7f-4f1862c40249}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\imgui">
-      <UniqueIdentifier>{f20a7fdb-d8c5-4087-bc49-a8e002d5c06e}</UniqueIdentifier>
+    <Filter Include="Header Files\minhook">
+      <UniqueIdentifier>{671f0197-868a-4806-b8af-83d503018103}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\kiero\minhook">
-      <UniqueIdentifier>{db46cdf8-7c42-4a12-a5f1-14ed4879f476}</UniqueIdentifier>
+    <Filter Include="Header Files\plugin">
+      <UniqueIdentifier>{3215c02c-3004-41a1-806e-bb7142829e61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\code\helper">
-      <UniqueIdentifier>{bb5a43a5-8836-46b1-9a85-18be7a5c70a3}</UniqueIdentifier>
+    <Filter Include="Header Files\helper">
+      <UniqueIdentifier>{5374410b-b893-438f-8a34-690a5ecb933a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\code\unreal">
-      <UniqueIdentifier>{28f5b54e-93a3-4310-8370-b568866173c6}</UniqueIdentifier>
+    <Filter Include="Header Files\mk">
+      <UniqueIdentifier>{0080ab55-e5c7-4a00-84bb-639fa2a2c367}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\code\plugin">
-      <UniqueIdentifier>{625ccf99-cebc-4904-a474-5f92cefdad83}</UniqueIdentifier>
+    <Filter Include="Header Files\unreal">
+      <UniqueIdentifier>{543a24c7-fc3e-4000-93fe-e87ac0ef11eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,304 +45,361 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\LateStaticInit.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\MemoryMgr.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\Patterns.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\Trampoline.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="code\mk10utils.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
-    <ClInclude Include="code\mk11.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
-    <ClInclude Include="code\mk11menu.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\kiero.h">
-      <Filter>Header Files\kiero</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imconfig.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_dx11.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_win32.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\buffer.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\trampoline.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\hde32.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\hde64.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\pstdint.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\table32.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="kiero\minhook\src\hde\table64.h">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClInclude>
-    <ClInclude Include="code\eSettingsManager.h">
-      <Filter>Header Files\code</Filter>
-    </ClInclude>
-    <ClInclude Include="IniReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="code\eNotifManager.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="gui\dx11hook.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKCharacter.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="gui\font.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKStructs.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="gui\gui_impl.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKModifier.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="gui\log.h">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="utils\DelimStringReader.h">
+    <ClInclude Include="gui\notifications.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imconfig.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_impl_dx11.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_impl_win32.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_internal.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_rectpack.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_textedit.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imstb_truetype.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\buffer.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\trampoline.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\hde\hde32.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\hde\hde64.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\hde\pstdint.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\hde\table32.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="minhook\src\hde\table64.h">
+      <Filter>Header Files\minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\Menu.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\Settings.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\addr.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="code\helper\eAbilityNames.h">
-      <Filter>Header Files\code\helper</Filter>
+    <ClInclude Include="utils\core.h">
+      <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="font.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="utils\IniReader.h">
+      <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FName.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="utils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="code\helper\eKeyboardMan.h">
-      <Filter>Header Files\code\helper</Filter>
+    <ClInclude Include="helper\eKeyboardMan.h">
+      <Filter>Header Files\helper</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKCamera.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="helper\eAbilityNames.h">
+      <Filter>Header Files\helper</Filter>
     </ClInclude>
-    <ClInclude Include="code\GameInfo.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="helper\eGamepadManager.h">
+      <Filter>Header Files\helper</Filter>
     </ClInclude>
-    <ClInclude Include="code\CharacterDefinition.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="helper\eMath.h">
+      <Filter>Header Files\helper</Filter>
     </ClInclude>
-    <ClInclude Include="code\PlayerInfo.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="helper\eMouse.h">
+      <Filter>Header Files\helper</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKObject.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="mk\LadderInfo.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\Krypt.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="mk\SecretFight.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\helper\eGamepadManager.h">
-      <Filter>Header Files\code\helper</Filter>
+    <ClInclude Include="mk\Krypt.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\plugin\ePluginInterface.h">
-      <Filter>Header Files\code\plugin</Filter>
+    <ClInclude Include="mk\MKObject.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\MKCommand.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="mk\CharacterDefinition.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\VMProc.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="mk\GameInfo.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="eDirectX11Hook.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="mk\MKCamera.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FMath.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="mk\MKCharacter.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FMatrix.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="mk\MKModifier.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FQuat.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="mk\PlayerInfo.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FRotator.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="mk\VMProc.h">
+      <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\FVector.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="unreal\FMath.h">
+      <Filter>Header Files\unreal</Filter>
     </ClInclude>
-    <ClInclude Include="code\helper\eMath.h">
-      <Filter>Header Files\code\helper</Filter>
+    <ClInclude Include="unreal\FMatrix.h">
+      <Filter>Header Files\unreal</Filter>
     </ClInclude>
-    <ClInclude Include="code\helper\eMouse.h">
-      <Filter>Header Files\code\helper</Filter>
+    <ClInclude Include="unreal\FName.h">
+      <Filter>Header Files\unreal</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\SkeletalMesh.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="unreal\FQuat.h">
+      <Filter>Header Files\unreal</Filter>
     </ClInclude>
-    <ClInclude Include="code\unreal\TArray.h">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClInclude Include="unreal\FRotator.h">
+      <Filter>Header Files\unreal</Filter>
     </ClInclude>
-    <ClInclude Include="code\AnimationTool.h">
-      <Filter>Header Files\code</Filter>
+    <ClInclude Include="unreal\FVector.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="unreal\SkeletalMesh.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="unreal\TArray.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\AnimationTool.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\Hooks.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="mk\MKCommand.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
+    <ClInclude Include="mk\MKStructs.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Patterns.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\dx12hook.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\imgui\imgui_impl_dx12.h">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\const.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="mk\Engine.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
+    <ClInclude Include="mk\MKScript.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\PatternSolver.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\API.h">
+      <Filter>Header Files\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\PluginInterface.h">
+      <Filter>Header Files\plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils\Patterns.cpp">
-      <Filter>Header Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="code\mk10utils.cpp">
-      <Filter>Header Files\code</Filter>
-    </ClCompile>
-    <ClCompile Include="code\mk11.cpp">
-      <Filter>Header Files\code</Filter>
-    </ClCompile>
-    <ClCompile Include="code\mk11menu.cpp">
-      <Filter>Header Files\code</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\kiero.cpp">
-      <Filter>Header Files\kiero</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Header Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\buffer.c">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hook.c">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\trampoline.c">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hde\hde32.c">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClCompile>
-    <ClCompile Include="kiero\minhook\src\hde\hde64.c">
-      <Filter>Header Files\kiero\minhook</Filter>
-    </ClCompile>
-    <ClCompile Include="IniReader.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="code\eSettingsManager.cpp">
-      <Filter>Header Files\code</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="code\eNotifManager.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\dx11hook.cpp">
+      <Filter>Header Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="code\MKCharacter.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\gui_impl.cpp">
+      <Filter>Header Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="code\MKModifier.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\log.cpp">
+      <Filter>Header Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Header Files\imgui</Filter>
+    <ClCompile Include="gui\notifications.cpp">
+      <Filter>Header Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="code\helper\eAbilityNames.cpp">
-      <Filter>Header Files\code\helper</Filter>
+    <ClCompile Include="gui\imgui\imgui.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\unreal\FName.cpp">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClCompile Include="gui\imgui\imgui_demo.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\helper\eKeyboardMan.cpp">
-      <Filter>Header Files\code\helper</Filter>
+    <ClCompile Include="gui\imgui\imgui_draw.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\MKCamera.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\imgui\imgui_impl_dx11.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\GameInfo.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\imgui\imgui_impl_win32.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\CharacterDefinition.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\imgui\imgui_tables.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\PlayerInfo.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="gui\imgui\imgui_widgets.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="code\MKObject.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="minhook\src\buffer.c">
+      <Filter>Header Files\minhook</Filter>
     </ClCompile>
-    <ClCompile Include="code\Krypt.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="minhook\src\hook.c">
+      <Filter>Header Files\minhook</Filter>
     </ClCompile>
-    <ClCompile Include="code\helper\eGamepadManager.cpp">
-      <Filter>Header Files\code\helper</Filter>
+    <ClCompile Include="minhook\src\trampoline.c">
+      <Filter>Header Files\minhook</Filter>
     </ClCompile>
-    <ClCompile Include="code\plugin\ePluginInterface.cpp">
-      <Filter>Header Files\code\plugin</Filter>
+    <ClCompile Include="minhook\src\hde\hde32.c">
+      <Filter>Header Files\minhook</Filter>
     </ClCompile>
-    <ClCompile Include="code\VMProc.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="minhook\src\hde\hde64.c">
+      <Filter>Header Files\minhook</Filter>
     </ClCompile>
-    <ClCompile Include="eDirectX11Hook.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="plugin\Menu.cpp">
+      <Filter>Header Files\plugin</Filter>
     </ClCompile>
-    <ClCompile Include="code\unreal\FMath.cpp">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClCompile Include="plugin\Settings.cpp">
+      <Filter>Header Files\plugin</Filter>
     </ClCompile>
-    <ClCompile Include="code\unreal\FMatrix.cpp">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClCompile Include="utils\addr.cpp">
+      <Filter>Header Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="code\helper\eMath.cpp">
-      <Filter>Header Files\code\helper</Filter>
+    <ClCompile Include="utils\IniReader.cpp">
+      <Filter>Header Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="code\helper\eMouse.cpp">
-      <Filter>Header Files\code\helper</Filter>
+    <ClCompile Include="helper\eKeyboardMan.cpp">
+      <Filter>Header Files\helper</Filter>
     </ClCompile>
-    <ClCompile Include="code\unreal\SkeletalMesh.cpp">
-      <Filter>Header Files\code\unreal</Filter>
+    <ClCompile Include="helper\eAbilityNames.cpp">
+      <Filter>Header Files\helper</Filter>
     </ClCompile>
-    <ClCompile Include="code\AnimationTool.cpp">
-      <Filter>Header Files\code</Filter>
+    <ClCompile Include="helper\eGamepadManager.cpp">
+      <Filter>Header Files\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="helper\eMath.cpp">
+      <Filter>Header Files\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="helper\eMouse.cpp">
+      <Filter>Header Files\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\LadderInfo.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\SecretFight.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\Krypt.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKObject.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\CharacterDefinition.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\GameInfo.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKCamera.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKCharacter.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKModifier.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\PlayerInfo.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\VMProc.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\FMath.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\FMatrix.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\FName.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\SkeletalMesh.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\AnimationTool.cpp">
+      <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Patterns.cpp">
+      <Filter>Header Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\dx12hook.cpp">
+      <Filter>Header Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\imgui\imgui_impl_dx12.cpp">
+      <Filter>Header Files\gui\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\Engine.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\Hooks.cpp">
+      <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKScript.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\PatternSolver.cpp">
+      <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\API.cpp">
+      <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\PluginInterface.cpp">
+      <Filter>Header Files\plugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

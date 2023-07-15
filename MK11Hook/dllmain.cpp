@@ -1,26 +1,44 @@
-#include "code/eSettingsManager.h"
-#include "eDirectX11Hook.h"
-
+// dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
+#include <iostream>
+
+#include "gui/dx11hook.h"
+#include "gui/dx12hook.h"
+#include "gui/log.h"
+#include "gui/notifications.h"
+
+#include "plugin/Menu.h"
+#include "plugin/Settings.h"
+#include "plugin/Hooks.h"
+#include "plugin/PatternSolver.h"
+#include "plugin/PluginInterface.h"
+
 #include "utils/MemoryMgr.h"
 #include "utils/Trampoline.h"
 #include "utils/Patterns.h"
-#include "code/mk10utils.h"
-#include "code/mk11.h"
-#include "code/mk11menu.h"
-#include "code/eNotifManager.h"
-#include "code/mkcamera.h"
-#include "code/helper/eGamepadManager.h"
-#include "code/helper/eAbilityNames.h"
-#include "code/MKObject.h"
+
+#include "mk/GameInfo.h"
+#include "mk/Krypt.h"
+
+#include "helper/eGamepadManager.h"
+#include "helper/eAbilityNames.h"
+
 #include <iostream>
+#include <Commctrl.h>
+
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#pragma comment(lib, "Comctl32.lib")
 
 using namespace Memory::VP;
-int64 __fastcall GenericTrue2Return() { return 2; }
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
+
+bool IsDX12()
+{
+	return GetModuleHandle("d3d12.dll") ? true : false;
+}
 
 void OnInitializeHook()
 {
@@ -31,84 +49,142 @@ void OnInitializeHook()
 		freopen("CONOUT$", "w", stderr);
 	}
 
-	printf("MK11Hook::OnInitializeHook() | Begin!\n");
-	TheMenu->Initialize();
+	eLog::Message(__FUNCTION__, "INFO: MK11Hook Begin!");
+	eLog::Message(__FUNCTION__, "INFO: Is DirectX12 - %s", IsDX12() ? "Yes" : "No");
+
 	Notifications->Init();
+	eAbiltityNames::Init();
+	FGGameInfo::FindGameInfo();
+	Krypt::FindKrypt();
+	if (SettingsMgr->bEnableGamepadSupport)
+		eGamepadManager::Initialize();
 
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
-	InjectHook(_addr(0x1409312C3), tramp->Jump(MK11Hooks::HookProcessStuff));
-	InjectHook(_addr(0x140910F53), tramp->Jump(MK11Hooks::HookStartupFightRecording));
+	InjectHook(_pattern(PATID_MKProcDispatch_Hook), tramp->Jump(MKProcDispatch_Hook));
+	InjectHook(_pattern(PATID_RecordEvent_Hook), tramp->Jump(RecordEvent_Hook));
+
+	Nop(_pattern(PATID_CameraPositionNOP), 7);
+	Nop(_pattern(PATID_CameraRotationNOP), 8);
+
+	InjectHook(_pattern(PATID_CameraPositionHook), tramp->Jump(&MKCamera::HookedSetPosition));
+	InjectHook(_pattern(PATID_CameraRotationHook), tramp->Jump(&MKCamera::HookedSetRotation));
+
+	InjectHook(_pattern(PATID_SetSelectScreen_Hook), tramp->Jump(SetSelectScreen_Hook), PATCH_JUMP);
+	InjectHook(_pattern(PATID_SetCharacterLadder_Hook), tramp->Jump(SetCharacterLadder_Hook));
+
+	InjectHook(_pattern(PATID_ReadPropertyValue_Hook), tramp->Jump(ReadPropertyValue_Hook), PATCH_JUMP);
+	InjectHook(_pattern(PATID_SetProperty_Hook), tramp->Jump(SetProperty));
 
 
-	// 0xFE00
-	Nop(_addr(0x1419B86F3), 7);
-	Nop(_addr(0x1419B8703), 8);
-	InjectHook(_addr(0x1419B8711), tramp->Jump(&MKCamera::HookedSetPosition));
-	InjectHook(_addr(0x1419B871E), tramp->Jump(&MKCamera::HookedSetRotation));
-
-
-
-	InjectHook(_addr(0x140871510), tramp->Jump(MK11Hooks::HookSetSelectScreen), PATCH_JUMP);
-	InjectHook(_addr(0x14059D14E), tramp->Jump(MK11Hooks::HookSetLadderScreen));
-
-
-
-	InjectHook(_addr(0x14097F8E4), tramp->Jump(SetKryptCharacter));
-	InjectHook(_addr(0x14097F8FB), tramp->Jump(SetKryptCharacterL));
-	InjectHook(_addr(0x14097F95A), tramp->Jump(SetKryptCharacterClass));
-
+	InjectHook(_pattern(PATID_Dispatch_Hook), tramp->Jump(Dispatch_Hook));
 
 	if (SettingsMgr->bMakeAllAbilities1Slot)
-		InjectHook(_addr(0x140724F40), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
+		InjectHook(_pattern(PATID_1SlotAbilitiesHook), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
 
-
-	InjectHook(_addr(0x141A8BBF0), tramp->Jump(MK11Hooks::HookReadPropertyValue), PATCH_JUMP);
-	InjectHook(_addr(0x1412B96C8), tramp->Jump(MK11Hooks::HookSetProperty));
-
-
-	InjectHook(_addr(0x141B5D7E4), tramp->Jump(MK11Hooks::HookDispatch));
+	InjectHook(_pattern(PATID_SetKryptCharacter_Hook), tramp->Jump(SetKryptCharacter));
+	InjectHook(_pattern(PATID_SetKryptCharacterL_Hook), tramp->Jump(SetKryptCharacterL));
+	InjectHook(_pattern(PATID_SetKryptCharacterClass_Hook), tramp->Jump(SetKryptCharacterClass));
 
 	//gamepad
 	if (SettingsMgr->bEnableGamepadSupport)
-		InjectHook(_addr(0x1423A2291), tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+	{
+		// only hook if xinputgetstate was loaded
+		if (eGamepadManager::hXInputDLL && eGamepadManager::pXInputGetStateFunc)
+		{
+			uintptr_t xinput_addr = _pattern(PATID_XInputGetState_Hook);
+			xinput_addr += *(unsigned int*)(xinput_addr)+4;
 
+			InjectHook(xinput_addr, tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+		}
+
+	}
+
+	HANDLE h = 0;
+
+	if (IsDX12())
+		h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX12Hook_Thread), 0, NULL, 0);
+	else
+		h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX11Hook_Thread), 0, NULL, 0);
+
+	if (!(h == nullptr)) CloseHandle(h);
 }
 
 bool ValidateGameVersion()
 {
-	char* gameName = (char*)_addr(0x14261CEA0);
+	PatternSolver::Initialize();
 
-	if (strcmp(gameName, "Mortal Kombat 11") == 0)
-		return true;
-	else
+	if (PatternSolver::CheckMissingPatterns())
 	{
-		MessageBoxA(0, "Invalid game version!\nMK11Hook only supports latest Steam executable, not DirectX12 one.\n\n"
-			"If you still cannot run the plugin and made sure that the game is updated, MK11Hook needs to be updated.", 0, MB_ICONINFORMATION);
-		return false;
+		int nButtonPressed = 0;
+		TASKDIALOGCONFIG config;
+		ZeroMemory(&config, sizeof(TASKDIALOGCONFIG));
+
+		const TASKDIALOG_BUTTON buttons[] = {
+			{ IDOK, L"Launch anyway\nThe game might crash or have missing features!" },
+			{ IDNO, L"Exit" }
+		};
+		config.cbSize = sizeof(config);
+
+		config.dwFlags = TDF_ENABLE_HYPERLINKS | TDF_CAN_BE_MINIMIZED | TDF_USE_COMMAND_LINKS;
+		config.pszMainIcon = TD_WARNING_ICON;
+
+		config.pszWindowTitle = L"Warning";
+		config.pszMainInstruction = L"MK11Hook";
+		config.pszContent = L"Could not start MK11Hook!\n\n"
+			L"One or more code patterns could not be found, this might indicate"
+			L" that game version is not supported or the plugin has not been updated.\n\n"
+			L"MK11Hook officially is only tested with latest Steam version.\n"
+			L"Check log for more details.\n";
+
+
+		config.pButtons = buttons;
+		config.cButtons = ARRAYSIZE(buttons);
+
+		if (SUCCEEDED(TaskDialogIndirect(&config, &nButtonPressed, NULL, NULL)))
+		{
+			switch (nButtonPressed)
+			{
+			case IDOK:
+				return true;
+				break;
+			case IDNO:
+				exit(0);
+				break;
+			default:
+				break;
+			}
+		}
+
 	}
+
+	return true;
+
 }
 
+extern "C"
+{
+	__declspec(dllexport) void InitializeASI()
+	{
+		eLog::Initialize();
 
+		if (ValidateGameVersion())
+		{
+			OnInitializeHook();
+		}
 
+	}
+}
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		if (ValidateGameVersion())
-		{
-			eDirectX11Hook::Init();
-			SettingsMgr->Init();
-			eAbiltityNames::Init();
-			DisableThreadLibraryCalls(hMod);
-			CreateThread(nullptr, 0, DirectXHookThread, hMod, 0, nullptr);
-
-			OnInitializeHook();
-		}
 		break;
 	case DLL_PROCESS_DETACH:
-		kiero::shutdown();
+		eGamepadManager::Shutdown();
+		GUIImplementation::Shutdown();
+		PluginInterface::UnloadPlugins();
 		break;
 	}
 	return TRUE;
