@@ -3,7 +3,7 @@ A plugin for Mortal Kombat 11.
 
 # Installation
 
-####  MK11Hook only works with latest (non DX12) Steam version!
+####  MK11Hook only works with latest Steam version!
 
 You can download binary files from [Releases](https://github.com/ermaccer/MK11Hook/) page. Extract **mk11hook.zip**
 to Binaries\Retail folder of Mortal Kombat 11.
