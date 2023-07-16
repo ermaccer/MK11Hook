@@ -679,13 +679,15 @@ void AnimationTool::LoadPose(char* path)
 
 		PoseEntry e;
 		e.atom = ent.atom;
+		sprintf(e.boneName, ent.boneName);
+
 
 		if (ms_bTargetP2)
 			plr2_pose.push_back(e);
 		else
 			plr1_pose.push_back(e);
 
-		sprintf(e.boneName, ent.boneName);
+
 	}
 }
 
