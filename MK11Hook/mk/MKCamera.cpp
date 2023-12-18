@@ -272,7 +272,6 @@ void MKCamera::HookedSetRotation(FRotator * rot)
 		if (!TheMenu->m_bCustomCameraRot && !TheMenu->m_bFreeCam)
 		{
 			TheMenu->camRot = *rot;
-
 			SetRotation(rot);
 		}
 		else
