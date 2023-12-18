@@ -27,11 +27,14 @@ eSettingsManager::eSettingsManager()
 	iToggleSlowMoKey = user.ReadInteger("Settings", "iToggleSlowMoKey", -1);
 	if (iToggleSlowMoKey == -1) iToggleSlowMoKey = VK_F5;
 
-	iResetStageInteractablesKey = user.ReadInteger("Settings", "iResetStageInteractablesKey", -1);
-	if (iResetStageInteractablesKey == -1) iResetStageInteractablesKey = -1;
-
 	iToggleFreeCameraKey = user.ReadInteger("Settings", "iToggleFreeCameraKey", -1);
-	if (iToggleFreeCameraKey == -1) iToggleFreeCameraKey = -1;
+	if (iToggleFreeCameraKey == -1) iToggleFreeCameraKey = 0;
+
+	iToggleHUDKey = user.ReadInteger("Settings", "iToggleHUDKey", -1);
+	if (iToggleHUDKey == -1) iToggleHUDKey = 0;
+
+	iResetStageInteractablesKey = user.ReadInteger("Settings", "iResetStageInteractablesKey", -1);
+	if (iResetStageInteractablesKey == -1) iResetStageInteractablesKey = 0;
 
 	iFreeCameraKeyFOVPlus = user.ReadInteger("Settings", "iFreeCameraKeyFOVPlus", -1);
 	if (iFreeCameraKeyFOVPlus == -1) iFreeCameraKeyFOVPlus = ini.ReadInteger("Settings", "iFreeCameraKeyFOVPlus", 0);
@@ -39,23 +42,23 @@ eSettingsManager::eSettingsManager()
 	iFreeCameraKeyFOVMinus = user.ReadInteger("Settings", "iFreeCameraKeyFOVMinus", -1);
 	if (iFreeCameraKeyFOVMinus == -1) iFreeCameraKeyFOVMinus = ini.ReadInteger("Settings", "iFreeCameraKeyFOVMinus", 0);
 
-	iFreeCameraKeyXPlus = user.ReadInteger("Settings", "iFreeCameraKeyXPlus", -1);
-	if (iFreeCameraKeyXPlus == -1) iFreeCameraKeyXPlus = ini.ReadInteger("Settings", "iFreeCameraKeyXPlus", 0);
+	iFreeCameraKeyForward = user.ReadInteger("Settings", "iFreeCameraKeyXPlus", -1);
+	if (iFreeCameraKeyForward == -1) iFreeCameraKeyForward = ini.ReadInteger("Settings", "iFreeCameraKeyXPlus", 0);
 
-	iFreeCameraKeyXMinus = user.ReadInteger("Settings", "iFreeCameraKeyXMinus", -1);
-	if (iFreeCameraKeyXMinus == -1) iFreeCameraKeyXMinus = ini.ReadInteger("Settings", "iFreeCameraKeyXMinus", 0);
+	iFreeCameraKeyBackward = user.ReadInteger("Settings", "iFreeCameraKeyXMinus", -1);
+	if (iFreeCameraKeyBackward == -1) iFreeCameraKeyBackward = ini.ReadInteger("Settings", "iFreeCameraKeyXMinus", 0);
 
-	iFreeCameraKeyYPlus = user.ReadInteger("Settings", "iFreeCameraKeyYPlus", -1);
-	if (iFreeCameraKeyYPlus == -1) iFreeCameraKeyYPlus = ini.ReadInteger("Settings", "iFreeCameraKeyYPlus", 0);
+	iFreeCameraKeyLeft = user.ReadInteger("Settings", "iFreeCameraKeyYPlus", -1);
+	if (iFreeCameraKeyLeft == -1) iFreeCameraKeyLeft = ini.ReadInteger("Settings", "iFreeCameraKeyYPlus", 0);
 
-	iFreeCameraKeyYMinus = user.ReadInteger("Settings", "iFreeCameraKeyYMinus", -1);
-	if (iFreeCameraKeyYMinus == -1) iFreeCameraKeyYMinus = ini.ReadInteger("Settings", "iFreeCameraKeyYMinus", 0);
+	iFreeCameraKeyRight = user.ReadInteger("Settings", "iFreeCameraKeyYMinus", -1);
+	if (iFreeCameraKeyRight == -1) iFreeCameraKeyRight = ini.ReadInteger("Settings", "iFreeCameraKeyYMinus", 0);
 
-	iFreeCameraKeyZPlus = user.ReadInteger("Settings", "iFreeCameraKeyZPlus", -1);
-	if (iFreeCameraKeyZPlus == -1) iFreeCameraKeyZPlus = ini.ReadInteger("Settings", "iFreeCameraKeyZPlus", 0);
+	iFreeCameraKeyUp = user.ReadInteger("Settings", "iFreeCameraKeyZPlus", -1);
+	if (iFreeCameraKeyUp == -1) iFreeCameraKeyUp = ini.ReadInteger("Settings", "iFreeCameraKeyZPlus", 0);
 
-	iFreeCameraKeyZMinus = user.ReadInteger("Settings", "iFreeCameraKeyZMinus", -1);
-	if (iFreeCameraKeyZMinus == -1) iFreeCameraKeyZMinus = ini.ReadInteger("Settings", "iFreeCameraKeyZMinus", 0);
+	iFreeCameraKeyDown = user.ReadInteger("Settings", "iFreeCameraKeyZMinus", -1);
+	if (iFreeCameraKeyDown == -1) iFreeCameraKeyDown = ini.ReadInteger("Settings", "iFreeCameraKeyZMinus", 0);
 
 	iFreeCameraKeyYawPlus = user.ReadInteger("Settings", "iFreeCameraKeyYawPlus", -1);
 	if (iFreeCameraKeyYawPlus == -1) iFreeCameraKeyYawPlus = ini.ReadInteger("Settings", "iFreeCameraKeyYawPlus", 0);
@@ -96,12 +99,12 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iToggleFreezeWorldKey", iToggleFreezeWorldKey);
 	user.WriteInteger("Settings", "iToggleCustomCamKey", iToggleCustomCamKey);
 	user.WriteInteger("Settings", "iToggleSlowMoKey", iToggleSlowMoKey);
-	user.WriteInteger("Settings", "iFreeCameraKeyXPlus", iFreeCameraKeyXPlus);
-	user.WriteInteger("Settings", "iFreeCameraKeyXMinus", iFreeCameraKeyXMinus);
-	user.WriteInteger("Settings", "iFreeCameraKeyYPlus", iFreeCameraKeyYPlus);
-	user.WriteInteger("Settings", "iFreeCameraKeyYMinus", iFreeCameraKeyYMinus);
-	user.WriteInteger("Settings", "iFreeCameraKeyZPlus", iFreeCameraKeyZPlus);
-	user.WriteInteger("Settings", "iFreeCameraKeyZMinus", iFreeCameraKeyZMinus);
+	user.WriteInteger("Settings", "iFreeCameraKeyXPlus", iFreeCameraKeyForward);
+	user.WriteInteger("Settings", "iFreeCameraKeyXMinus", iFreeCameraKeyBackward);
+	user.WriteInteger("Settings", "iFreeCameraKeyYPlus", iFreeCameraKeyLeft);
+	user.WriteInteger("Settings", "iFreeCameraKeyYMinus", iFreeCameraKeyRight);
+	user.WriteInteger("Settings", "iFreeCameraKeyZPlus", iFreeCameraKeyUp);
+	user.WriteInteger("Settings", "iFreeCameraKeyZMinus", iFreeCameraKeyDown);
 	user.WriteInteger("Settings", "iFreeCameraKeyYawPlus", iFreeCameraKeyYawPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyYawMinus", iFreeCameraKeyYawMinus);
 	user.WriteInteger("Settings", "iFreeCameraKeyRollPlus", iFreeCameraKeyRollPlus);
@@ -112,6 +115,8 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVMinus", iFreeCameraKeyFOVMinus);
 	user.WriteInteger("Settings", "iResetStageInteractablesKey", iResetStageInteractablesKey);
 	user.WriteInteger("Settings", "iToggleFreeCameraKey", iToggleFreeCameraKey);
+	user.WriteInteger("Settings", "iToggleHUDKey", iToggleHUDKey);
+
 	user.WriteInteger("Mouse", "Sensitivity", mouse.sens);
 	user.WriteBoolean("Mouse", "InvertY", mouse.invert_y);
 	user.WriteBoolean("Mouse", "InvertX", mouse.invert_x);
@@ -129,12 +134,13 @@ void eSettingsManager::ResetKeys()
 	iToggleFreezeWorldKey = VK_F2;
 	iResetStageInteractablesKey = 0;
 	iToggleFreeCameraKey = 0;
-	iFreeCameraKeyXPlus = 104;
-	iFreeCameraKeyXMinus = 98;
-	iFreeCameraKeyYPlus = 102;
-	iFreeCameraKeyYMinus = 100;
-	iFreeCameraKeyZPlus = 103;
-	iFreeCameraKeyZMinus = 97;
+	iToggleHUDKey = 0;
+	iFreeCameraKeyForward = 104;
+	iFreeCameraKeyBackward = 98;
+	iFreeCameraKeyLeft = 102;
+	iFreeCameraKeyRight = 100;
+	iFreeCameraKeyUp = 103;
+	iFreeCameraKeyDown = 97;
 	iFreeCameraKeyYawPlus = 39;
 	iFreeCameraKeyYawMinus = 37;
 	iFreeCameraKeyPitchPlus = 38;

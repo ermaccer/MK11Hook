@@ -59,6 +59,8 @@ public:
 	void SetKrushingBlowsDisabled(bool enable);
 	void SetAbility(unsigned int id);
 	void SetCombos(bool enable);
+	void SetXRayInfinite(bool enable);
+	void SetXRayNoRequirement(bool enable);
 
 	void Rotate(float x, float y, float z);
 

@@ -78,6 +78,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_MKCharacter_SetFastUppercutRecovery] = GetPattern("33 C0 41 83 F8 03 44 0F 47 C0 49 63 C0 4C 8D 04 C1 49 8B 88 F0 0D 00 00 48 8B C1 48 0F BA E9 1C", 0);
     ms_patterns[PATID_MKCharacter_SetKrushingBlowsDisabled] = GetPattern("33 C0 49 B9 FF FF FF FF FF FF EF FF 41 83 F8 03", 0);
     ms_patterns[PATID_MKCharacter_SetCombos] = GetPattern("33 C0 41 83 F8 03 44 0F 47 C0 49 63 C0 4C 8D 04 C1 49 8B 88 F0 0D 00 00 48 8B C1 48 0F BA E9 1A", 0);
+    ms_patterns[PATID_MKCharacter_SetInfiniteXrays] = GetPattern("40 53 48 83 EC 20 48 8B 81 ? ? ? ? 48 8B D9 48 85 C0 74 5B 80 F2 01 48 89 74 24 ? 48 89 7C 24 ? 0F B6 FA 89 B8", 0);
+    ms_patterns[PATID_MKCharacter_SetXrayNoRequirement] = GetPattern("48 89 5C 24 ? 57 48 83 EC 20 33 C0 8B FA 41 83 F8 03 48 BA ? ? ? ? ? ? ? ? 44 0F 47 C0 49 63 C0 4C 8D 0C C1 4D 8B 81 ? ? ? ? 49 8B C0 48 0B C2", 0);
     ms_patterns[PATID_MKCharacter_ActivateHeadTracking] = GetPattern("48 83 EC 38 0F 29 74 24 20 0F 28 F1 E8 ? ? ? ? 48 85 C0 74 0F 48 8B 10 0F 28 CE 48 8B C8 FF 92 88 00 00 00 0F 28 74 24 20", 0);
     ms_patterns[PATID_MKCharacter_KillHeadTracking] = GetPattern("48 83 EC 38 0F 29 74 24 20 0F 28 F1 E8 ? ? ? ? 48 85 C0 74 0F 48 8B 10 0F 28 CE 48 8B C8 FF 92 90 00 00 00 0F 28 74 24 20", 0);
     ms_patterns[PATID_MKCharacter_SetBoneSize] = GetPattern("48 89 5C 24 08 57 48 83 EC 50 48 8B F9 0F 29 74 24 40 48 8B 89 ? ? 00 00 0F 28 F2 48 8B DA", 0);
@@ -116,6 +118,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_USkeletalMeshComponent_GetBoneName] = GetPattern("48 89 5C 24 08 57 48 83 EC 20 48 8B 89 ? ? 00 00 41 8B D8", 0);
 
     ms_patterns[PATID_XInputGetState_Hook] = GetPattern("48 8D 55 17 8B CB E8 ? ? ? ? 85 C0", 7);
+
+    ms_patterns[PATID_GetScaleform] = GetPattern("83 3D ? ? ? ? ? 74 72 45 8B C4 8B 15", 2);
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -197,6 +201,8 @@ const char* PatternSolver::GetPatternName(int id)
         "MKCharacter_SetFastUppercutRecovery",
         "MKCharacter_SetKrushingBlowsDisabled",
         "MKCharacter_SetCombos",
+        "MKCharacter_SetInfiniteXrays",
+        "MKCharacter_SetXrayNoRequirement",
         "MKCharacter_ActivateHeadTracking",
         "MKCharacter_KillHeadTracking",
         "MKCharacter_SetBoneSize",
@@ -228,6 +234,7 @@ const char* PatternSolver::GetPatternName(int id)
         "GetNames",
         "USkeletalMeshComponent_GetBoneName",
         "XInputGetState_Hook",
+        "GetScaleform"
     };
 
     return szPatternNames[id];

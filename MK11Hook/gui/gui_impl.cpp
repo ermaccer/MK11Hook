@@ -657,6 +657,8 @@ LRESULT WINAPI GUIImplementation::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 			TheMenu->OnResetStageInteractables();
 		if (wParam == SettingsMgr->iToggleFreeCameraKey)
 			TheMenu->OnToggleFreeCamera();
+		if (wParam == SettingsMgr->iToggleHUDKey)
+			TheMenu->OnToggleHUD();
 		break;
 	default:
 		break;

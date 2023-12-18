@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "../unreal/FName.h"
+#include "Engine.h"
 
 void MKCharacter::SetLife(float life)
 {
@@ -74,6 +75,20 @@ void MKCharacter::SetAbility(unsigned int id)
 void MKCharacter::SetCombos(bool enable)
 {
 	static uintptr_t pat = _pattern(PATID_MKCharacter_SetCombos);
+	if (pat)
+		((void(__fastcall*)(MKCharacter*, int, int))pat)(this, enable, 1);
+}
+
+void MKCharacter::SetXRayInfinite(bool enable)
+{
+	static uintptr_t pat = _pattern(PATID_MKCharacter_SetInfiniteXrays);
+	if (pat)
+		((void(__fastcall*)(MKCharacter*, int, int))pat)(this, enable, 1);
+}
+
+void MKCharacter::SetXRayNoRequirement(bool enable)
+{
+	static uintptr_t pat = _pattern(PATID_MKCharacter_SetXrayNoRequirement);
 	if (pat)
 		((void(__fastcall*)(MKCharacter*, int, int))pat)(this, enable, 1);
 }

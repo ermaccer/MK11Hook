@@ -19,6 +19,7 @@
 
 #include "mk/GameInfo.h"
 #include "mk/Krypt.h"
+#include "mk/Scaleform.h"
 
 #include "helper/eGamepadManager.h"
 #include "helper/eAbilityNames.h"
@@ -56,6 +57,8 @@ void OnInitializeHook()
 	eAbiltityNames::Init();
 	FGGameInfo::FindGameInfo();
 	Krypt::FindKrypt();
+	Scaleform::FindData();
+
 	if (SettingsMgr->bEnableGamepadSupport)
 		eGamepadManager::Initialize();
 

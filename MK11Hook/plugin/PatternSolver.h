@@ -54,6 +54,8 @@ enum EPatternID {
 	PATID_MKCharacter_SetFastUppercutRecovery,
 	PATID_MKCharacter_SetKrushingBlowsDisabled,
 	PATID_MKCharacter_SetCombos,
+	PATID_MKCharacter_SetInfiniteXrays,
+	PATID_MKCharacter_SetXrayNoRequirement,
 	PATID_MKCharacter_ActivateHeadTracking,
 	PATID_MKCharacter_KillHeadTracking,
 	PATID_MKCharacter_SetBoneSize,
@@ -92,6 +94,7 @@ enum EPatternID {
 	PATID_USkeletalMeshComponent_GetBoneName,
 
 	PATID_XInputGetState_Hook,
+	PATID_GetScaleform,
 
 	PATID_Total_Patterns
 };

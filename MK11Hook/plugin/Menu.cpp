@@ -4,6 +4,7 @@
 #include "../helper/eAbilityNames.h"
 #include "../helper/eKeyboardMan.h"
 #include "../helper/eMouse.h"
+#include "../mk/Scaleform.h"
 
 #include "../gui/notifications.h"
 #include "../gui/imgui/imgui.h"
@@ -818,6 +819,22 @@ void MK11Menu::OnToggleFreeCamera()
 	m_bFreeCam ^= 1;
 }
 
+void MK11Menu::OnToggleHUD()
+{
+	if (m_bIsActive)
+		return;
+
+	m_bHideHUD ^= 1;
+
+	if (Scaleform::ms_bActive)
+	{
+		if (m_bHideHUD)
+			*Scaleform::ms_bActive = false;
+		else
+			*Scaleform::ms_bActive = true;
+	}
+}
+
 void MK11Menu::Draw()
 {
 	if (!m_bIsActive)
@@ -999,25 +1016,25 @@ void MK11Menu::UpdateFreecam()
 
 			// forward
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXPlus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyForward))
 				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * 1;
 
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyXMinus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyBackward))
 				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * -1;
 
 			// strafe
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYPlus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyLeft))
 				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * 1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYMinus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRight))
 				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * -1;
 
 			// up
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZPlus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyUp))
 				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * 1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyZMinus))
+			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyDown))
 				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * -1;
 
 			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
@@ -1364,7 +1381,7 @@ void MK11Menu::DrawModifiersTab()
 		}
 		if (ImGui::BeginTabItem("AI"))
 		{
-			ImGui::TextWrapped("This will only change existing AI's script, it will not make human character be controlled AI.");
+			ImGui::TextWrapped("This will only change existing AI's script, it will not make human character be controlled by AI.");
 			ImGui::Separator();
 			ImGui::Checkbox("Change Player 1 AI", &m_bAIDroneModifierP1);
 
@@ -1487,7 +1504,7 @@ void MK11Menu::DrawCameraTab()
 
 	ImGui::Separator();
 	ImGui::Checkbox("Enable Free Camera", &m_bFreeCam);
-	ImGui::SameLine(); ShowHelpMarker("Allows to move camera with keyboard.Keys can be changed in the Settings menu or in the .ini file.");
+	ImGui::SameLine(); ShowHelpMarker("Allows to move camera with keyboard. Keys can be changed in the Settings menu or in the .ini file.");
 
 	if (m_bFreeCam)
 	{
@@ -1654,6 +1671,44 @@ void MK11Menu::DrawCheatsTab()
 				GetObj(PLAYER2)->SetFastUppercutRecovery(false);
 		}
 		ImGui::NextColumn();
+
+		ImGui::Text("Infinite Fatal Blows\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##ixr", &m_bInfiniteXraysP1))
+		{
+			if (m_bInfiniteXraysP1)
+				GetObj(PLAYER1)->SetXRayInfinite(true);
+			else
+				GetObj(PLAYER1)->SetXRayInfinite(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##ixr", &m_bInfiniteXraysP2))
+		{
+			if (m_bInfiniteXraysP2)
+				GetObj(PLAYER2)->SetFastUppercutRecovery(true);
+			else
+				GetObj(PLAYER2)->SetFastUppercutRecovery(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Fatal Blow Always Active\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##uxr", &m_bXrayAlwaysP1))
+		{
+			if (m_bXrayAlwaysP1)
+				GetObj(PLAYER1)->SetXRayNoRequirement(true);
+			else
+				GetObj(PLAYER1)->SetXRayNoRequirement(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##uxr", &m_bXrayAlwaysP2))
+		{
+			if (m_bXrayAlwaysP2)
+				GetObj(PLAYER2)->SetXRayNoRequirement(true);
+			else
+				GetObj(PLAYER2)->SetXRayNoRequirement(false);
+		}
+		ImGui::NextColumn();
 	}
 
 
@@ -1713,10 +1768,20 @@ void MK11Menu::DrawMiscTab()
 	if (ImGui::Button("Show FightHUD"))
 		ShowHUD();
 
+
 	ImGui::Checkbox("Hide FightHUD In Game", &m_bAutoHideHUD);
-	ImGui::Checkbox("Disable HUD Completely", &m_bDisableHUD);
-	ImGui::SameLine();
-	ShowHelpMarker("Start a fight/go back to menu for this option to take effect.");
+
+	if (ImGui::Checkbox("Disable HUD", &m_bHideHUD))
+	{
+		if (Scaleform::ms_bActive)
+		{
+			if (m_bHideHUD)
+				*Scaleform::ms_bActive = false;
+			else
+				*Scaleform::ms_bActive = true;
+		}
+	}
+
 
 	ImGui::Checkbox("Disable Head Tracking", &m_bDisableHeadTracking);
 	ImGui::SameLine();
@@ -1738,12 +1803,6 @@ void MK11Menu::DrawScriptTab()
 	ImGui::Separator();
 	ImGui::RadioButton("On Player1", &m_nScriptExecuteType, SCRIPT_P1); ImGui::SameLine();
 	ImGui::RadioButton("On Player2", &m_nScriptExecuteType, SCRIPT_P2);
-	ImGui::Separator();
-
-	ImGui::TextWrapped("Mode");
-	ImGui::Separator();
-	ImGui::RadioButton("Basic", &scriptMode, ScriptTab_Basic); ImGui::SameLine();
-	ImGui::RadioButton("Advanced", &scriptMode, ScriptTab_Advanced);
 	ImGui::Separator();
 
 	static char szScriptSource[256] = {};
@@ -1810,17 +1869,6 @@ void MK11Menu::DrawScriptTab()
 			}
 
 		}
-		else if (scriptMode == ScriptTab_Advanced)
-		{
-			ImGui::TextWrapped("Functions with params are not supported!");
-
-			ImGui::InputText("Function Name", szFunction, sizeof(szFunction));
-			ImGui::InputInt("Function Index", &functionIndex, 1, 100, ImGuiInputTextFlags_ReadOnly);
-			ImGui::SameLine(); ShowHelpMarker("Read only.");
-		}
-
-
-		
 
 		static eScriptKeyBind bind;
 		if (ImGui::Button("Add Hotkey"))
@@ -1958,18 +2006,19 @@ void MK11Menu::DrawSettings()
 		KeyBind(&SettingsMgr->iFreeCameraKeyRollPlus, "Roll+", "r_plus");
 		KeyBind(&SettingsMgr->iFreeCameraKeyRollMinus, "Roll-", "r_minus");
 
-		KeyBind(&SettingsMgr->iFreeCameraKeyXPlus, "X+", "x_plus");
-		KeyBind(&SettingsMgr->iFreeCameraKeyXMinus, "X-", "x_minus");
-		KeyBind(&SettingsMgr->iFreeCameraKeyYPlus, "Y+", "y_plus");
-		KeyBind(&SettingsMgr->iFreeCameraKeyYMinus, "Y-", "y_minus");
-		KeyBind(&SettingsMgr->iFreeCameraKeyZPlus, "Z+", "z_plus");
-		KeyBind(&SettingsMgr->iFreeCameraKeyZMinus, "Z-", "z_minus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyForward, "Forwards", "x_plus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyBackward, "Backwards", "x_minus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyLeft, "Left", "y_plus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyRight, "Right", "y_minus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyUp, "Up", "z_plus");
+		KeyBind(&SettingsMgr->iFreeCameraKeyDown, "Down", "z_minus");
 
 
 		ImGui::Separator();
 		ImGui::LabelText("##", "Misc");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleFreeCameraKey, "Toggle Free Camera", "fcam");
+		KeyBind(&SettingsMgr->iToggleHUDKey, "Toggle HUD", "thud");
 		KeyBind(&SettingsMgr->iToggleCustomCamKey, "Toggle Custom Cameras", "ccam");
 		KeyBind(&SettingsMgr->iResetStageInteractablesKey, "Reset Stage Objects", "r_stage");
 		ImGui::Separator();

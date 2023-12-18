@@ -1,8 +1,7 @@
 #pragma once
 #include "PlayerInfo.h"
-#include "..\utils.h"
+#include "../utils.h"
 
-#define GFG_GAME_INFO  0x1434BA060 
 #define TOTAL_ABILITIES 20
 
 

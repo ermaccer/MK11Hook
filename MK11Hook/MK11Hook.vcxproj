@@ -140,6 +140,7 @@
     <ClInclude Include="mk\MKScript.h" />
     <ClInclude Include="mk\MKStructs.h" />
     <ClInclude Include="mk\PlayerInfo.h" />
+    <ClInclude Include="mk\Scaleform.h" />
     <ClInclude Include="mk\SecretFight.h" />
     <ClInclude Include="mk\VMProc.h" />
     <ClInclude Include="pch.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="mk\MKObject.cpp" />
     <ClCompile Include="mk\MKScript.cpp" />
     <ClCompile Include="mk\PlayerInfo.cpp" />
+    <ClCompile Include="mk\Scaleform.cpp" />
     <ClCompile Include="mk\SecretFight.cpp" />
     <ClCompile Include="mk\VMProc.cpp" />
     <ClCompile Include="pch.cpp">

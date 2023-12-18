@@ -82,7 +82,7 @@ void ReadPropertyValue_Hook(int64 ptr, int* unk, int* value)
 	int input = *value;
 	if (ptr == hud_property)
 	{
-		if (TheMenu->m_bDisableHUD)
+		if (TheMenu->m_bHideHUD)
 			input ^= 1;
 	}
 
@@ -173,6 +173,12 @@ void PluginDispatch()
 		if (TheMenu->m_bNoKBsP1)
 			p1->SetKrushingBlowsDisabled(true);
 
+		if (TheMenu->m_bInfiniteXraysP1)
+			p1->SetXRayInfinite(true);
+
+		if (TheMenu->m_bXrayAlwaysP1)
+			p1->SetXRayNoRequirement(true);
+
 		if (TheMenu->m_bDisableComboScaling)
 		{
 			if (p1_info)
@@ -249,6 +255,12 @@ void PluginDispatch()
 
 		if (TheMenu->m_bNoKBsP2)
 			p2->SetKrushingBlowsDisabled(true);
+
+		if (TheMenu->m_bInfiniteXraysP2)
+			p2->SetXRayInfinite(true);
+
+		if (TheMenu->m_bXrayAlwaysP2)
+			p2->SetXRayNoRequirement(true);
 
 		if (TheMenu->m_bDisableComboScaling)
 		{

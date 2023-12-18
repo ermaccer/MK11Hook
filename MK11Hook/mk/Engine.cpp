@@ -19,7 +19,6 @@ void RecordEvent(int64 eventID, int64 a2, int64 a3, int64 a4)
 	static uintptr_t pat = _pattern(PATID_RecordEvent);
 	if (pat)
 		((void(__fastcall*)(int64, int64, int64, int64))pat)(eventID, a2, a3, a4);
-	
 }
 
 MKCharacter* GetObj(PLAYER_NUM plr)

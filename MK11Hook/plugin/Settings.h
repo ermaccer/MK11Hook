@@ -13,7 +13,6 @@ public:
 	eSettingsManager();
 
 	bool bEnableConsoleWindow;
-	bool bDisableComboDamageScaling;
 	
 	bool bUseLegacyCharacterModifier;
 	bool bMakeAllAbilities1Slot;
@@ -29,13 +28,15 @@ public:
 	int iToggleFreezeWorldKey = VK_F2;
 	int iResetStageInteractablesKey;
 	int iToggleFreeCameraKey;
+	int iToggleHUDKey;
+
 	// free camera keys
-	int iFreeCameraKeyXPlus;
-	int iFreeCameraKeyXMinus;
-	int iFreeCameraKeyYPlus;
-	int iFreeCameraKeyYMinus;
-	int iFreeCameraKeyZPlus;
-	int iFreeCameraKeyZMinus;
+	int iFreeCameraKeyForward;
+	int iFreeCameraKeyBackward;
+	int iFreeCameraKeyLeft;
+	int iFreeCameraKeyRight;
+	int iFreeCameraKeyUp;
+	int iFreeCameraKeyDown;
 
 	
 	int iFreeCameraKeyYawPlus;

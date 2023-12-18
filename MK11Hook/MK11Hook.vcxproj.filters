@@ -243,6 +243,9 @@
     <ClInclude Include="plugin\PluginInterface.h">
       <Filter>Header Files\plugin</Filter>
     </ClInclude>
+    <ClInclude Include="mk\Scaleform.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -400,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="plugin\PluginInterface.cpp">
       <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\Scaleform.cpp">
+      <Filter>Header Files\mk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

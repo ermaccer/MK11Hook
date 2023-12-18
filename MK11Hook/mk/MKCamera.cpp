@@ -1,7 +1,5 @@
-#include "mkcamera.h"
+#include "MKCamera.h"
 #include "../plugin/Menu.h"
-#include <iostream>
-#include <Windows.h>
 #include "MKCharacter.h"
 
 MKCamera* TheCamera;

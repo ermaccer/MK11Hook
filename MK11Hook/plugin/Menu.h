@@ -10,7 +10,7 @@
 #include "../utils.h"
 
 
-#define MK11HOOK_VERSION "0.5.6"
+#define MK11HOOK_VERSION "0.5.7"
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,
@@ -71,7 +71,7 @@ public:
 	bool	 m_bUsePlayerTwoAsTracker = false;
 	bool	 m_bYObtained = false;
 	bool	 m_bStageModifier = false;
-	bool	 m_bDisableHUD = false;
+	bool	 m_bHideHUD = false;
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
 
@@ -96,6 +96,10 @@ public:
 	bool    m_bFastUppercutsP2 = false;
 	bool    m_bNoKBsP1 = false;
 	bool	m_bNoKBsP2 = false;
+	bool	m_bInfiniteXraysP1 = false;
+	bool	m_bInfiniteXraysP2 = false;
+	bool	m_bXrayAlwaysP1 = false;
+	bool	m_bXrayAlwaysP2 = false;
 
 	bool	m_bChangePlayerSpeed = false;
 	bool	m_bChangePlayerScale = false;
@@ -198,6 +202,7 @@ public:
 	void	 OnToggleCustomCameras();
 	void	 OnResetStageInteractables();
 	void	 OnToggleFreeCamera();
+	void	 OnToggleHUD();
 
 	void	 Draw();
 	void	 Process();
