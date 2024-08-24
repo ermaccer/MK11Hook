@@ -10,7 +10,7 @@
 #include "../utils.h"
 
 
-#define MK11HOOK_VERSION "0.5.7"
+#define MK11HOOK_VERSION "0.5.8"
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,
@@ -74,6 +74,7 @@ public:
 	bool	 m_bHideHUD = false;
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
+	bool	 m_bDisableDOF = false;
 
 	// cheats
 	bool	m_bInfiniteHealthP1 = false;

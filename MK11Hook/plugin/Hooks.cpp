@@ -2,6 +2,17 @@
 
 int64 hud_property = 0;
 
+void(__fastcall* pProcessDOFSettings)(int64, int64, int64, int64) = 0;
+
+
+void ProcessDOFSettings(int64 settings, int64 a2, int64 newSettings, int64 a4)
+{
+	if (pProcessDOFSettings)
+		pProcessDOFSettings(settings, a2, newSettings, a4);
+
+	if (TheMenu->m_bDisableDOF)
+		*(int*)(settings + 36) = 0;
+}
 
 void MKProcDispatch_Hook()
 {

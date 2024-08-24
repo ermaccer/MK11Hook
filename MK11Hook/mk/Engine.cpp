@@ -40,7 +40,6 @@ void HideHUD()
 	static uintptr_t pat = _pattern(PATID_HideHUD);
 	if (pat)
 		((void(__fastcall*)(int, int))pat)(8, 8);
-
 }
 
 void ShowHUD()

@@ -614,8 +614,8 @@ const char* szStageNames[]{
 	"BGND_TournamentLVECT",
 	"BGND_TournamentLVFKT",
 	"BGND_WuShiDragonGrotto",
-
 };
+
 const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 	"Third Person",
 	"Third Person #2",
@@ -1517,6 +1517,7 @@ void MK11Menu::DrawCameraTab()
 
 
 	ImGui::Separator();
+	ImGui::Checkbox("Disable DOF", &m_bDisableDOF);
 	ImGui::Checkbox("Force Camera To Move", &m_bForceCameraUpdate);
 	ImGui::SameLine(); ShowHelpMarker("Check this option if camera doesn't move in cinematics.");
 
@@ -1685,9 +1686,9 @@ void MK11Menu::DrawCheatsTab()
 		if (ImGui::Checkbox("P2##ixr", &m_bInfiniteXraysP2))
 		{
 			if (m_bInfiniteXraysP2)
-				GetObj(PLAYER2)->SetFastUppercutRecovery(true);
+				GetObj(PLAYER2)->SetXRayInfinite(true);
 			else
-				GetObj(PLAYER2)->SetFastUppercutRecovery(false);
+				GetObj(PLAYER2)->SetXRayInfinite(false);
 		}
 		ImGui::NextColumn();
 

@@ -24,7 +24,6 @@
 #include "helper/eGamepadManager.h"
 #include "helper/eAbilityNames.h"
 
-#include <iostream>
 #include <Commctrl.h>
 
 #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -87,6 +86,10 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_SetKryptCharacter_Hook), tramp->Jump(SetKryptCharacter));
 	InjectHook(_pattern(PATID_SetKryptCharacterL_Hook), tramp->Jump(SetKryptCharacterL));
 	InjectHook(_pattern(PATID_SetKryptCharacterClass_Hook), tramp->Jump(SetKryptCharacterClass));
+
+
+	ReadCall(_pattern(PATID_ProcessDOFSettings), pProcessDOFSettings);
+	InjectHook(_pattern(PATID_ProcessDOFSettings), tramp->Jump(ProcessDOFSettings), PATCH_CALL);
 
 	//gamepad
 	if (SettingsMgr->bEnableGamepadSupport)
@@ -157,11 +160,9 @@ bool ValidateGameVersion()
 				break;
 			}
 		}
-
 	}
 
 	return true;
-
 }
 
 extern "C"

@@ -121,6 +121,8 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_GetScaleform] = GetPattern("83 3D ? ? ? ? ? 74 72 45 8B C4 8B 15", 2);
 
+    ms_patterns[PATID_ProcessDOFSettings] = GetPattern("48 8D 4B 44 E8 ? ? ? ? 48 8D 44 24", 4);
+
     auto end = std::chrono::high_resolution_clock::now();
 
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
@@ -234,7 +236,8 @@ const char* PatternSolver::GetPatternName(int id)
         "GetNames",
         "USkeletalMeshComponent_GetBoneName",
         "XInputGetState_Hook",
-        "GetScaleform"
+        "GetScaleform",
+        "ProcessDOFSettings"
     };
 
     return szPatternNames[id];

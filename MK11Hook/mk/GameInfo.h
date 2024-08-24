@@ -1,6 +1,6 @@
 #pragma once
 #include "PlayerInfo.h"
-#include "../utils.h"
+#include "..\utils.h"
 
 #define TOTAL_ABILITIES 20
 

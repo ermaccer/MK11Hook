@@ -95,6 +95,7 @@ enum EPatternID {
 
 	PATID_XInputGetState_Hook,
 	PATID_GetScaleform,
+	PATID_ProcessDOFSettings,
 
 	PATID_Total_Patterns
 };
