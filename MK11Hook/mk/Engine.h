@@ -25,3 +25,4 @@ void GetCharacterPosition(FVector* vec, PLAYER_NUM plr);
 char* GetCharacterName(PLAYER_NUM plr);
 
 void SetCharacterMKX(PLAYER_NUM plr, char* name);
+void SetCharacterAI(PLAYER_NUM plr, char* script, int level);

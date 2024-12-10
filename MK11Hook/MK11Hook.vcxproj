@@ -215,6 +215,7 @@
     <ClCompile Include="plugin\API.cpp" />
     <ClCompile Include="plugin\Hooks.cpp" />
     <ClCompile Include="plugin\Menu.cpp" />
+    <ClCompile Include="plugin\ModifierList.cpp" />
     <ClCompile Include="plugin\PatternSolver.cpp" />
     <ClCompile Include="plugin\PluginInterface.cpp" />
     <ClCompile Include="plugin\Settings.cpp" />

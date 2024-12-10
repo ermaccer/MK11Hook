@@ -620,21 +620,36 @@ void eAbiltityNames::Init()
 
 }
 
-eAbilityNameEntry eAbiltityNames::Get(const char * chrName)
+eAbilityNameEntry* eAbiltityNames::Get(const char * chrName)
 {
-	std::string input = chrName;
-	eAbilityNameEntry result;
+	std::string inName(chrName);
+	std::transform(inName.begin(), inName.end(), inName.begin(), std::tolower);
+
+	eAbilityNameEntry* result =  nullptr;
 
 	for (unsigned int i = 0; i < m_aAbilityNames.size(); i++)
 	{
-		if (m_aAbilityNames[i].chr == input)
+		std::string abilityName(m_aAbilityNames[i].chr);
+		std::transform(abilityName.begin(), abilityName.end(), abilityName.begin(), std::tolower);
+
+		if (abilityName == inName)
 		{
-			result = m_aAbilityNames[i];
+			result = &m_aAbilityNames[i];
 			break;
 		}
 	}
 
 	return result;
+}
+
+int eAbiltityNames::GetAmount(eAbilityNameEntry* ability)
+{
+	int amount = 0;
+	for (int i = 0; i < TOTAL_ABILITIES; i++)
+		if (ability->abNames[i])
+			amount++;
+
+	return amount;
 }
 
 eAbilityNameEntry::eAbilityNameEntry()
@@ -643,7 +658,7 @@ eAbilityNameEntry::eAbilityNameEntry()
 
 	for (int i = 0; i < TOTAL_ABILITIES; i++)
 	{
-		abNames[i] = "";
+		abNames[i] = nullptr;
 	}
 		
 }

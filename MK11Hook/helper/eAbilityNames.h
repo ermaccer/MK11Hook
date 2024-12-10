@@ -15,6 +15,7 @@ class eAbiltityNames {
 public:
 	static std::vector<eAbilityNameEntry> m_aAbilityNames;
 	static void Init();
-	static eAbilityNameEntry Get(const char* chrName);
+	static eAbilityNameEntry* Get(const char* chrName);
+	static int GetAmount(eAbilityNameEntry* ability);
 
 };

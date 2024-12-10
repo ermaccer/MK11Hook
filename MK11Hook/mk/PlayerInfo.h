@@ -46,6 +46,7 @@ struct Gamepad {
 class AIDrone {
 public:
 	void Set(const char* script, int unk);
+	void SetLevel(float level);
 };
 
 class PlayerInfo {
@@ -57,6 +58,8 @@ public:
 	void SetDamageMult(float value);
 	void RefreshMeter(bool value);
 	float GetMeter(eMeterValues type);
+
+	void MakeDrone();
 
 	HitCounter GetHits();
 

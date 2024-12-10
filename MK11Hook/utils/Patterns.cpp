@@ -8,7 +8,11 @@
 #include "Patterns.h"
 
 #define WIN32_LEAN_AND_MEAN
+
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
+
 #include <windows.h>
 #include <algorithm>
 
@@ -19,7 +23,7 @@
 
 #if PATTERNS_USE_HINTS
 
- // from boost someplace
+// from boost someplace
 template <std::uint64_t FnvPrime, std::uint64_t OffsetBasis>
 struct basic_fnv_1
 {
@@ -46,235 +50,243 @@ typedef basic_fnv_1<fnv_prime, fnv_offset_basis> fnv_1;
 namespace hook
 {
 
-	ptrdiff_t details::get_process_base()
-	{
-		return ptrdiff_t(GetModuleHandle(nullptr));
-	}
+ptrdiff_t details::get_process_base()
+{
+	return ptrdiff_t(GetModuleHandle(nullptr));
+}
 
 
 #if PATTERNS_USE_HINTS
-	static auto& getHints()
-	{
-		static std::multimap<uint64_t, uintptr_t> hints;
-		return hints;
-	}
+static auto& getHints()
+{
+	static std::multimap<uint64_t, uintptr_t> hints;
+	return hints;
+}
 #endif
 
-	static void TransformPattern(std::string_view pattern, std::basic_string<uint8_t>& data, std::basic_string<uint8_t>& mask)
+static void TransformPattern(std::string_view pattern, std::basic_string<uint8_t>& data, std::basic_string<uint8_t>& mask)
+{
+	uint8_t tempDigit = 0;
+	bool tempFlag = false;
+
+	auto tol = [] (char ch) -> uint8_t
 	{
-		uint8_t tempDigit = 0;
-		bool tempFlag = false;
-
-		auto tol = [](char ch) -> uint8_t
-		{
-			if (ch >= 'A' && ch <= 'F') return uint8_t(ch - 'A' + 10);
-			if (ch >= 'a' && ch <= 'f') return uint8_t(ch - 'a' + 10);
-			return uint8_t(ch - '0');
-		};
-
-		for (auto ch : pattern)
-		{
-			if (ch == ' ')
-			{
-				continue;
-			}
-			else if (ch == '?')
-			{
-				data.push_back(0);
-				mask.push_back(0);
-			}
-			else if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'F') || (ch >= 'a' && ch <= 'f'))
-			{
-				uint8_t thisDigit = tol(ch);
-
-				if (!tempFlag)
-				{
-					tempDigit = thisDigit << 4;
-					tempFlag = true;
-				}
-				else
-				{
-					tempDigit |= thisDigit;
-					tempFlag = false;
-
-					data.push_back(tempDigit);
-					mask.push_back(0xFF);
-				}
-			}
-		}
-	}
-
-	class executable_meta
-	{
-	private:
-		uintptr_t m_begin;
-		uintptr_t m_end;
-
-		template<typename TReturn, typename TOffset>
-		TReturn* getRVA(TOffset rva)
-		{
-			return (TReturn*)(m_begin + rva);
-		}
-
-	public:
-		explicit executable_meta(uintptr_t module)
-			: m_begin(module)
-		{
-			PIMAGE_DOS_HEADER dosHeader = getRVA<IMAGE_DOS_HEADER>(0);
-			PIMAGE_NT_HEADERS ntHeader = getRVA<IMAGE_NT_HEADERS>(dosHeader->e_lfanew);
-
-			m_end = m_begin + ntHeader->OptionalHeader.SizeOfImage;
-		}
-
-		executable_meta(uintptr_t begin, uintptr_t end)
-			: m_begin(begin), m_end(end)
-		{
-		}
-
-		inline uintptr_t begin() const { return m_begin; }
-		inline uintptr_t end() const { return m_end; }
+		if (ch >= 'A' && ch <= 'F') return uint8_t(ch - 'A' + 10);
+		if (ch >= 'a' && ch <= 'f') return uint8_t(ch - 'a' + 10);
+		return uint8_t(ch - '0');
 	};
 
-	namespace details
+	for (auto ch : pattern)
 	{
-
-		void basic_pattern_impl::Initialize(std::string_view pattern)
+		if (ch == ' ')
 		{
-			// get the hash for the base pattern
-#if PATTERNS_USE_HINTS
-			m_hash = fnv_1()(pattern);
-#endif
+			continue;
+		}
+		else if (ch == '?')
+		{
+			data.push_back(0);
+			mask.push_back(0);
+		}
+		else if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'F') || (ch >= 'a' && ch <= 'f'))
+		{
+			uint8_t thisDigit = tol(ch);
 
-			// transform the base pattern from IDA format to canonical format
-			TransformPattern(pattern, m_bytes, m_mask);
-
-#if PATTERNS_USE_HINTS
-			// if there's hints, try those first
-#if PATTERNS_CAN_SERIALIZE_HINTS
-			if (m_rangeStart == reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr)))
-#endif
+			if (!tempFlag)
 			{
-				auto range = getHints().equal_range(m_hash);
-
-				if (range.first != range.second)
-				{
-					std::for_each(range.first, range.second, [&](const auto& hint)
-						{
-							ConsiderHint(hint.second);
-						});
-
-					// if the hints succeeded, we don't need to do anything more
-					if (!m_matches.empty())
-					{
-						m_matched = true;
-						return;
-					}
-				}
+				tempDigit = thisDigit << 4;
+				tempFlag = true;
 			}
-#endif
+			else
+			{
+				tempDigit |= thisDigit;
+				tempFlag = false;
+
+				data.push_back(tempDigit);
+				mask.push_back(0xFF);
+			}
+		}
+	}
+}
+
+class executable_meta
+{
+private:
+	uintptr_t m_begin;
+	uintptr_t m_end;
+
+public:
+	explicit executable_meta(uintptr_t module)
+	{
+		PIMAGE_DOS_HEADER dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
+		PIMAGE_NT_HEADERS ntHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(module + dosHeader->e_lfanew);
+
+		m_begin = module + ntHeader->OptionalHeader.BaseOfCode;
+		m_end = m_begin + ntHeader->OptionalHeader.SizeOfCode;
+
+		// Executables with DRM bypassed may lie in their SizeOfCode and underreport severely
+		// We can somewhat detect this by checking if the code entry point is past
+		// these boundaries. It's not perfect, but it's safe.
+		const uintptr_t entryPoint = module + ntHeader->OptionalHeader.AddressOfEntryPoint;
+		if (entryPoint >= m_begin && entryPoint < m_end)
+		{
+			return;
 		}
 
-		void basic_pattern_impl::EnsureMatches(uint32_t maxCount)
+		// Alternate heuristics - scan the entire executable, minus headers
+		const uintptr_t sizeOfHeaders = ntHeader->OptionalHeader.SizeOfHeaders;
+		m_begin = module + sizeOfHeaders;
+		m_end = module + (ntHeader->OptionalHeader.SizeOfImage - sizeOfHeaders);
+	}
+
+	executable_meta(uintptr_t begin, uintptr_t end)
+		: m_begin(begin), m_end(end)
+	{
+	}
+
+	inline uintptr_t begin() const { return m_begin; }
+	inline uintptr_t end() const   { return m_end; }
+};
+
+namespace details
+{
+
+void basic_pattern_impl::Initialize(std::string_view pattern)
+{
+	// get the hash for the base pattern
+#if PATTERNS_USE_HINTS
+	m_hash = fnv_1()(pattern);
+#endif
+
+	// transform the base pattern from IDA format to canonical format
+	TransformPattern(pattern, m_bytes, m_mask);
+
+#if PATTERNS_USE_HINTS
+	// if there's hints, try those first
+#if PATTERNS_CAN_SERIALIZE_HINTS
+	if (m_rangeStart == reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr)))
+#endif
+	{
+		auto range = getHints().equal_range(m_hash);
+
+		if (range.first != range.second)
 		{
-			if (m_matched)
+			std::for_each(range.first, range.second, [&] (const auto& hint)
 			{
+				ConsiderHint(hint.second);
+			});
+
+			// if the hints succeeded, we don't need to do anything more
+			if (!m_matches.empty())
+			{
+				m_matched = true;
 				return;
 			}
-
-			// scan the executable for code
-			executable_meta executable = m_rangeStart != 0 && m_rangeEnd != 0 ? executable_meta(m_rangeStart, m_rangeEnd) : executable_meta(m_rangeStart);
-
-			auto matchSuccess = [&](uintptr_t address)
-			{
-#if PATTERNS_USE_HINTS
-				getHints().emplace(m_hash, address);
-#else
-				(void)address;
-#endif
-
-				return (m_matches.size() == maxCount);
-			};
-
-			const uint8_t* pattern = m_bytes.data();
-			const uint8_t* mask = m_mask.data();
-			const size_t maskSize = m_mask.size();
-			const size_t lastWild = m_mask.find_last_not_of(uint8_t(0xFF));
-
-			ptrdiff_t Last[256];
-
-			std::fill(std::begin(Last), std::end(Last), lastWild == std::string::npos ? -1 : static_cast<ptrdiff_t>(lastWild));
-
-			for (ptrdiff_t i = 0; i < static_cast<ptrdiff_t>(maskSize); ++i)
-			{
-				if (Last[pattern[i]] < i)
-				{
-					Last[pattern[i]] = i;
-				}
-			}
-
-			for (uintptr_t i = executable.begin(), end = executable.end() - maskSize; i <= end;)
-			{
-				uint8_t* ptr = reinterpret_cast<uint8_t*>(i);
-				ptrdiff_t j = maskSize - 1;
-
-				while ((j >= 0) && pattern[j] == (ptr[j] & mask[j])) j--;
-
-				if (j < 0)
-				{
-					m_matches.emplace_back(ptr);
-
-					if (matchSuccess(i))
-					{
-						break;
-					}
-					i++;
-				}
-				else i += std::max(ptrdiff_t(1), j - Last[ptr[j]]);
-			}
-
-			m_matched = true;
 		}
+	}
+#endif
+}
 
-		bool basic_pattern_impl::ConsiderHint(uintptr_t offset)
-		{
-			uint8_t* ptr = reinterpret_cast<uint8_t*>(offset);
+void basic_pattern_impl::EnsureMatches(uint32_t maxCount)
+{
+	if (m_matched)
+	{
+		return;
+	}
 
-#if PATTERNS_CAN_SERIALIZE_HINTS
-			const uint8_t* pattern = m_bytes.data();
-			const uint8_t* mask = m_mask.data();
+	// scan the executable for code
+	executable_meta executable = m_rangeStart != 0 && m_rangeEnd != 0 ? executable_meta(m_rangeStart, m_rangeEnd) : executable_meta(m_rangeStart);
 
-			for (size_t i = 0, j = m_mask.size(); i < j; i++)
-			{
-				if (pattern[i] != (ptr[i] & mask[i]))
-				{
-					return false;
-				}
-			}
+	auto matchSuccess = [&] (uintptr_t address)
+	{
+#if PATTERNS_USE_HINTS
+		getHints().emplace(m_hash, address);
+#else
+		(void)address;
 #endif
 
+		return (m_matches.size() == maxCount);
+	};
+
+	const uint8_t* pattern = m_bytes.data();
+	const uint8_t* mask = m_mask.data();
+	const size_t maskSize = m_mask.size();
+	const size_t lastWild = m_mask.find_last_not_of(uint8_t(0xFF));
+
+	ptrdiff_t Last[256];
+
+	std::fill(std::begin(Last), std::end(Last), lastWild == std::string::npos ? -1 : static_cast<ptrdiff_t>(lastWild) );
+
+	for ( ptrdiff_t i = 0; i < static_cast<ptrdiff_t>(maskSize); ++i )
+	{
+		if ( Last[ pattern[i] ] < i )
+		{
+			Last[ pattern[i] ] = i;
+		}
+	}
+
+	for (uintptr_t i = executable.begin(), end = executable.end() - maskSize; i <= end;)
+	{
+		uint8_t* ptr = reinterpret_cast<uint8_t*>(i);
+		ptrdiff_t j = maskSize - 1;
+
+		while((j >= 0) && pattern[j] == (ptr[j] & mask[j])) j--;
+
+		if(j < 0)
+		{
 			m_matches.emplace_back(ptr);
 
-			return true;
-		}
-
-#if PATTERNS_USE_HINTS && PATTERNS_CAN_SERIALIZE_HINTS
-		void basic_pattern_impl::hint(uint64_t hash, uintptr_t address)
-		{
-			auto& hints = getHints();
-
-			auto range = hints.equal_range(hash);
-
-			for (auto it = range.first; it != range.second; ++it)
+			if (matchSuccess(i))
 			{
-				if (it->second == address)
-				{
-					return;
-				}
+				break;
 			}
-
-			hints.emplace(hash, address);
+			i++;
 		}
+		else i += std::max(ptrdiff_t(1), j - Last[ ptr[j] ]);
+	}
+
+	m_matched = true;
+}
+
+bool basic_pattern_impl::ConsiderHint(uintptr_t offset)
+{
+	uint8_t* ptr = reinterpret_cast<uint8_t*>(offset);
+
+#if PATTERNS_CAN_SERIALIZE_HINTS
+	const uint8_t* pattern = m_bytes.data();
+	const uint8_t* mask = m_mask.data();
+
+	for (size_t i = 0, j = m_mask.size(); i < j; i++)
+	{
+		if (pattern[i] != (ptr[i] & mask[i]))
+		{
+			return false;
+		}
+	}
 #endif
 
+	m_matches.emplace_back(ptr);
+
+	return true;
+}
+
+#if PATTERNS_USE_HINTS && PATTERNS_CAN_SERIALIZE_HINTS
+void basic_pattern_impl::hint(uint64_t hash, uintptr_t address)
+{
+	auto& hints = getHints();
+
+	auto range = hints.equal_range(hash);
+
+	for (auto it = range.first; it != range.second; ++it)
+	{
+		if (it->second == address)
+		{
+			return;
+		}
 	}
+
+	hints.emplace(hash, address);
+}
+#endif
+
+}
 }

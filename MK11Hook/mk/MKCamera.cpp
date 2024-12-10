@@ -263,6 +263,10 @@ void MKCamera::HookedSetRotation(FRotator * rot)
 				rot->Pitch += 1228;
 				TheMenu->camRot = *rot;
 				break;
+			case CAMERA_9_16:
+				rot->Roll += (int)(float)((float)(90.0 * 32767.0) / 180.0);
+				TheMenu->camRot = *rot;
+				break;
 			}
 		}
 		SetRotation(rot);

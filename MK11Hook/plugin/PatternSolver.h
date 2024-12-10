@@ -67,8 +67,12 @@ enum EPatternID {
 	PATID_TagAssistModifier_TagAssistModifier,
 	PATID_TagAssistModifier_Activate,
 	PATID_TagAssistModifier_CreateObject,
-	PATID_MKModifier_ActivateModifier,
-	PATID_TagAssistModifierObject_Activate,
+	PATID_MKModifier_Constructor,
+	PATID_MKModifier_Activate,
+	PATID_MKModifier_GetAssetPath,
+	PATID_MKModifierObject_Constructor,
+	PATID_MKModifierObject_Activate,
+
 	PATID_GetModifierManager,
 	PATID_LoadModifierAssets,
 
@@ -83,7 +87,9 @@ enum EPatternID {
 	PATID_PlayerInfo_SetMeter,
 	PATID_PlayerInfo_RefreshMeter,
 	PATID_PlayerInfo_GetDrone,
+	PATID_PlayerInfo_MakeDrone,
 	PATID_AIDrone_Set,
+	PATID_AIDrone_SetLevel,
 
 	PATID_SetKryptCharacter,
 	PATID_SetKryptCharacterL,
@@ -96,6 +102,10 @@ enum EPatternID {
 	PATID_XInputGetState_Hook,
 	PATID_GetScaleform,
 	PATID_ProcessDOFSettings,
+	PATID_FightStartupAddModifiers,
+	PATID_TArray_AddString,
+	PATID_FightStartupQueueModifiers,
+
 
 	PATID_Total_Patterns
 };

@@ -3,14 +3,16 @@
 #include "../mk/CharacterDefinition.h"
 #include "../mk/MKCharacter.h"
 #include "../mk/MKCamera.h"
+#include "../mk/MKModifier.h"
 #include "../mk/LadderInfo.h"
 #include "PluginInterface.h"
 
 #include "../helper/eKeyboardMan.h"
 #include "../utils.h"
 
+#define NUM_MODIFIERS 284
 
-#define MK11HOOK_VERSION "0.5.8"
+#define MK11HOOK_VERSION "0.5.9"
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,
@@ -19,6 +21,7 @@ enum eCustomCameras {
 	CAMERA_1STPERSON_MID,
 	CAMERA_INJUSTICE_2,
 	CAMERA_HEAD_TRACKING,
+	CAMERA_9_16,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -44,12 +47,26 @@ enum eScriptExecuteType {
 	SCRIPT_GLOBAL
 };
 
+enum eModifierEntryFlag {
+	ModifierEntryFlag_P1 = 1,
+	ModifierEntryFlag_P2 = 2,
+};
+
 struct eScriptKeyBind {
 	eScriptExecuteType type;
 	eVKKeyCode key;
 	char scriptName[128] = {};
 	unsigned int functionHash;
 };
+
+struct ModifierEntry {
+	std::string name;
+	int flag;
+	bool bothPlayers;
+	Modifier* modifierDefinition;
+};
+
+extern const char* szModifiers[NUM_MODIFIERS];
 
 class MK11Menu {
 public:
@@ -111,6 +128,7 @@ public:
 	bool	m_bKryptModifier = false;
 	bool	m_bTagAssist = false;
 	bool	m_bTagAssistP2 = false;
+	bool	m_bAddGlobalModifiers = false;
 	bool	m_bDisableGearLoadouts = false;
 	bool    m_bDisableComboScaling = false;
 	bool	m_bKryptAirbreak = false;
@@ -141,15 +159,19 @@ public:
 	int  m_nFreeCameraRotationSpeed = 120;
 	int  m_nCurrentCustomCamera = CAMERA_3RDPERSON;
 	int  m_nCurrentCharModifier = MODIFIER_SCREEN;
+
+	int  m_nAIDroneLevelP1 = 0;
+	int  m_nAIDroneLevelP2 = 0;
+
 	int  m_nP1Abilities = 0;
 	int  m_nP2Abilities = 0;
 
 	int* m_pCurrentVarToChange = nullptr;
 
 	bool m_bP1CustomAbilities = false;
-	bool m_P1Abilities[20] = {};
+	bool m_P1Abilities[TOTAL_ABILITIES] = {};
 	bool m_bP2CustomAbilities = false ;
-	bool m_P2Abilities[20] = {};
+	bool m_P2Abilities[TOTAL_ABILITIES] = {};
 
 	int  m_nScriptExecuteType = 0;
 	unsigned int m_nHash = 0;
@@ -180,6 +202,8 @@ public:
 
 	char szPlayer1AI[128] = {};
 	char szPlayer2AI[128] = {};
+
+	std::vector<ModifierEntry> m_ModifiersList;
 
 	// camera
 
@@ -226,6 +250,9 @@ public:
 	void	 DrawAbilityReference();
 	void	 DrawScriptReference();
 	void	 DrawAnimationTool();
+
+	void	 DrawModifiers_AbilityTab();
+	void	 DrawModifiers_AbilityTab_List(PLAYER_NUM player);
 
 
 	void	 DrawKeyBind(char* name, int* var);

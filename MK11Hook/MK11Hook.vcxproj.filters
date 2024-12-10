@@ -407,6 +407,9 @@
     <ClCompile Include="mk\Scaleform.cpp">
       <Filter>Header Files\mk</Filter>
     </ClCompile>
+    <ClCompile Include="plugin\ModifierList.cpp">
+      <Filter>Header Files\plugin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MK11Hook.rc">

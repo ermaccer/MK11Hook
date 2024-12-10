@@ -1,4 +1,5 @@
 #include "MKModifier.h"
+#include "Engine.h"
 
 
 TagAssistModifier::TagAssistModifier(const char * character)
@@ -15,26 +16,26 @@ void TagAssistModifier::Activate(PlayerInfo* info)
 		((void(__fastcall*)(BaseModifier*, PlayerInfo*))pat)(this, info);
 }
 
-TagAssistModifierObject * TagAssistModifier::CreateObject()
+Modifier* MKModifier::CreateModifier(const char* name)
 {
-	static uintptr_t pat = _pattern(PATID_TagAssistModifier_CreateObject);
-	if (pat)
-		return 	((TagAssistModifierObject*(__fastcall*)(BaseModifier*))pat)(this);
-	return nullptr;
+	return new Modifier(name);
 }
 
-void MKModifier::ActivateModifier(BaseModifier * modifier, MKCharacter * obj)
+void MKModifier::ActivateModifier(Modifier* mod, int playerFlags)
 {
-	static uintptr_t pat = _pattern(PATID_MKModifier_ActivateModifier);
-	if (pat)
-		((void(__fastcall*)(MKModifier*, BaseModifier*, MKCharacter*))pat)(this, modifier, obj);
-}
+	ModifierObject obj(mod, playerFlags);
 
-void TagAssistModifierObject::Activate(MKCharacter* obj)
-{
-	static uintptr_t pat = _pattern(PATID_TagAssistModifierObject_Activate);
-	if (pat)
-		((void(__fastcall*)(TagAssistModifierObject*, MKCharacter*))pat)(this, obj);
+	MKCharacter* p1 = GetObj(PLAYER1);
+
+	if (!p1)
+		return;
+
+	MKCharacter* p2 = GetObj(PLAYER2);
+
+	if (!p2)
+		return;
+
+	obj.Activate(p1, p2);
 }
 
 MKModifier* GetModifierManager()
@@ -58,4 +59,32 @@ void LoadModifierAssets()
 	static uintptr_t pat = _pattern(PATID_LoadModifierAssets);
 	if (pat)
 		((void(__fastcall*)(FGGameInfo*, bool))pat)(GetGameInfo(), 1);
+}
+
+Modifier::Modifier(const char* name)
+{
+	static uintptr_t pat = _pattern(PATID_MKModifier_Constructor);
+	if (pat)
+		((void(__fastcall*)(BaseModifier*, const char*, int, int64, int64))pat)(this, name, 1, 0, 0);
+}
+
+void Modifier::GetAssetPath(TArray<char>& path)
+{
+	static uintptr_t pat = _pattern(PATID_MKModifier_GetAssetPath);
+	if (pat)
+		((void(__fastcall*)(Modifier*, TArray<char>&))pat)(this, path);
+}
+
+ModifierObject::ModifierObject(Modifier* modifier, int flags)
+{
+	static uintptr_t pat = _pattern(PATID_MKModifierObject_Constructor);
+	if (pat)
+		((void(__fastcall*)(ModifierObject*, BaseModifier*, int))pat)(this, modifier, flags);
+}
+
+void ModifierObject::Activate(MKCharacter* p1, MKCharacter* p2)
+{
+	static uintptr_t pat = _pattern(PATID_MKModifierObject_Activate);
+	if (pat)
+		((void(__fastcall*)(ModifierObject*, MKCharacter*, MKCharacter*))pat)(this, p1, p2);
 }

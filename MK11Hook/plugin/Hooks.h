@@ -29,3 +29,8 @@ void SetKryptCharacterClass(int64 ptr, char* name, int unk);
 
 void PluginDispatch();
 void PluginFightStartup();
+void PluginFightStartupAddModifiers();
+void PluginFightStartupQueueModifiers(int64 ptr, int64 pathArray);
+
+extern void(*pPluginFightStartupAddModifiers)();
+extern void(*pPluginFightStartupQueueModifiers)(int64, int64);

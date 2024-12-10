@@ -49,7 +49,7 @@ void OnInitializeHook()
 		freopen("CONOUT$", "w", stderr);
 	}
 
-	eLog::Message(__FUNCTION__, "INFO: MK11Hook Begin!");
+	eLog::Message(__FUNCTION__, "INFO: MK11Hook (%s | %s) Begin!", MK11HOOK_VERSION, __DATE__);
 	eLog::Message(__FUNCTION__, "INFO: Is DirectX12 - %s", IsDX12() ? "Yes" : "No");
 
 	Notifications->Init();
@@ -71,17 +71,17 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_CameraPositionHook), tramp->Jump(&MKCamera::HookedSetPosition));
 	InjectHook(_pattern(PATID_CameraRotationHook), tramp->Jump(&MKCamera::HookedSetRotation));
 
-	InjectHook(_pattern(PATID_SetSelectScreen_Hook), tramp->Jump(SetSelectScreen_Hook), PATCH_JUMP);
+	InjectHook(_pattern(PATID_SetSelectScreen_Hook), tramp->Jump(SetSelectScreen_Hook), HookType::Jump);
 	InjectHook(_pattern(PATID_SetCharacterLadder_Hook), tramp->Jump(SetCharacterLadder_Hook));
 
-	InjectHook(_pattern(PATID_ReadPropertyValue_Hook), tramp->Jump(ReadPropertyValue_Hook), PATCH_JUMP);
+	InjectHook(_pattern(PATID_ReadPropertyValue_Hook), tramp->Jump(ReadPropertyValue_Hook), HookType::Jump);
 	InjectHook(_pattern(PATID_SetProperty_Hook), tramp->Jump(SetProperty));
 
 
 	InjectHook(_pattern(PATID_Dispatch_Hook), tramp->Jump(Dispatch_Hook));
 
 	if (SettingsMgr->bMakeAllAbilities1Slot)
-		InjectHook(_pattern(PATID_1SlotAbilitiesHook), tramp->Jump(GenericTrueReturn), PATCH_JUMP);
+		InjectHook(_pattern(PATID_1SlotAbilitiesHook), tramp->Jump(GenericTrueReturn), HookType::Jump);
 
 	InjectHook(_pattern(PATID_SetKryptCharacter_Hook), tramp->Jump(SetKryptCharacter));
 	InjectHook(_pattern(PATID_SetKryptCharacterL_Hook), tramp->Jump(SetKryptCharacterL));
@@ -89,7 +89,13 @@ void OnInitializeHook()
 
 
 	ReadCall(_pattern(PATID_ProcessDOFSettings), pProcessDOFSettings);
-	InjectHook(_pattern(PATID_ProcessDOFSettings), tramp->Jump(ProcessDOFSettings), PATCH_CALL);
+	InjectHook(_pattern(PATID_ProcessDOFSettings), tramp->Jump(ProcessDOFSettings));
+
+	ReadCall(_pattern(PATID_FightStartupAddModifiers), pPluginFightStartupAddModifiers);
+	InjectHook(_pattern(PATID_FightStartupAddModifiers), tramp->Jump(PluginFightStartupAddModifiers));
+
+	MH_CreateHook((void*)_pattern(PATID_FightStartupQueueModifiers), &PluginFightStartupQueueModifiers, (void**)&pPluginFightStartupQueueModifiers);
+	MH_EnableHook((void*)_pattern(PATID_FightStartupQueueModifiers));
 
 	//gamepad
 	if (SettingsMgr->bEnableGamepadSupport)
@@ -100,7 +106,7 @@ void OnInitializeHook()
 			uintptr_t xinput_addr = _pattern(PATID_XInputGetState_Hook);
 			xinput_addr += *(unsigned int*)(xinput_addr)+4;
 
-			InjectHook(xinput_addr, tramp->Jump(XInputGetState_Hook), PATCH_JUMP);
+			InjectHook(xinput_addr, tramp->Jump(XInputGetState_Hook), HookType::Jump);
 		}
 
 	}
@@ -169,6 +175,7 @@ extern "C"
 {
 	__declspec(dllexport) void InitializeASI()
 	{
+		MH_Initialize();
 		eLog::Initialize();
 
 		if (ValidateGameVersion())

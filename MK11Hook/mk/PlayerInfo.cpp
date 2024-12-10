@@ -28,6 +28,13 @@ float PlayerInfo::GetMeter(eMeterValues type)
 	return *(float*)(meter_ptr + 4);
 }
 
+void PlayerInfo::MakeDrone()
+{
+	static uintptr_t pat = _pattern(PATID_PlayerInfo_MakeDrone);
+	if (pat)
+		((void(__fastcall*)(PlayerInfo*))pat)(this);
+}
+
 HitCounter PlayerInfo::GetHits()
 {
 	return *(HitCounter*)((int64)this + 0x430);
@@ -46,4 +53,11 @@ void AIDrone::Set(const char* script, int unk)
 	static uintptr_t pat = _pattern(PATID_AIDrone_Set);
 	if (pat)
 		((void(__fastcall*)(AIDrone*, const char*, int))pat)(this, script, unk);
+}
+
+void AIDrone::SetLevel(float level)
+{
+	static uintptr_t pat = _pattern(PATID_AIDrone_SetLevel);
+	if (pat)
+		((void(__fastcall*)(AIDrone*, float))pat)(this, level);
 }

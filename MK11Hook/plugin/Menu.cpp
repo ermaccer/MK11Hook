@@ -5,11 +5,13 @@
 #include "../helper/eKeyboardMan.h"
 #include "../helper/eMouse.h"
 #include "../mk/Scaleform.h"
+#include "../mk/MKModifier.h"
 
 #include "../gui/notifications.h"
 #include "../gui/imgui/imgui.h"
 #include "../gui/gui_impl.h"
 
+#include <random>
 #include <math.h>
 #include <iostream>
 #include <Windows.h>
@@ -17,10 +19,9 @@
 
 
 using namespace Memory::VP;
-static int64 timer = GetTickCount64();
-static int64 func_timer = GetTickCount64();
-char textBuffer[260] = {};
 
+std::random_device rd;
+std::mt19937 mt(rd());
 
 const char* szCharacters[] = {
 	// place npcs first for easy access
@@ -622,8 +623,10 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 	"First Person",
 	"First Person Mid",
 	"Injustice 2",
-	"Head Perspective"
+	"Head Perspective",
+	"9:16",
 };
+
 const char* szCharClasses[TOTAL_CHARACTER_CLASSES] = {
 	"Base",
 	"TestCharacters",
@@ -1168,7 +1171,6 @@ void MK11Menu::DrawModifiersTab()
 			ImGui::Separator();
 			ImGui::Checkbox("Player 2 Tag Assist Modifier", &m_bTagAssistP2);
 
-
 			if (ImGui::BeginCombo("Player 2 Tag Assist Character", szPlayer2TagAssistCharacter))
 			{
 				for (int n = 0; n < IM_ARRAYSIZE(szKryptCharacters); n++)
@@ -1190,67 +1192,7 @@ void MK11Menu::DrawModifiersTab()
 		}
 		if (ImGui::BeginTabItem("Abilities"))
 		{
-			ImGui::Checkbox("Player 1 Custom Abilities", &m_bP1CustomAbilities);
-			ImGui::SameLine(); ShowHelpMarker("Set these on select screen! Changing these in game will make moves locked.");
-			ImGui::Separator();
-
-
-			for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
-			{
-				sprintf(textBuffer, "Ability %d", i + 1);
-
-				ImGui::Checkbox(textBuffer, &m_P1Abilities[i]);
-
-				if (i % 2 == 0)
-					ImGui::SameLine();
-			}
-
-
-			if (GetObj(PLAYER1))
-			{
-				if (ImGui::Button("Get##p1"))
-				{
-					int abilities = GetObj(PLAYER1)->GetAbility();
-
-					for (int i = 0; i < sizeof(m_P1Abilities) / sizeof(m_P1Abilities[0]); i++)
-					{
-						int id = (int)pow(2, i);
-						m_P1Abilities[i] = abilities & id;
-					}
-				}
-
-			}
-			ImGui::Separator();
-			ImGui::Checkbox("Player 2 Custom Abilities", &m_bP2CustomAbilities);
-			ImGui::Separator();
-
-			for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
-			{
-				int val = (int)pow(2, i);
-
-				sprintf(textBuffer, "Ability %d##p2", i + 1);
-
-				ImGui::Checkbox(textBuffer, &m_P2Abilities[i]);
-
-				if (i % 2 == 0)
-					ImGui::SameLine();
-			}
-
-			if (GetObj(PLAYER2))
-			{
-				if (ImGui::Button("Get##p2"))
-				{
-					int abilities = GetObj(PLAYER2)->GetAbility();
-
-					for (int i = 0; i < sizeof(m_P2Abilities) / sizeof(m_P2Abilities[0]); i++)
-					{
-						int id = (int)pow(2, i);
-						m_P2Abilities[i] = abilities & id;
-					}
-				}
-
-			}
-
+			DrawModifiers_AbilityTab();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Skeleton"))
@@ -1381,7 +1323,7 @@ void MK11Menu::DrawModifiersTab()
 		}
 		if (ImGui::BeginTabItem("AI"))
 		{
-			ImGui::TextWrapped("This will only change existing AI's script, it will not make human character be controlled by AI.");
+			ImGui::TextWrapped("Reload match to change if players are AI controlled.");
 			ImGui::Separator();
 			ImGui::Checkbox("Change Player 1 AI", &m_bAIDroneModifierP1);
 
@@ -1399,6 +1341,7 @@ void MK11Menu::DrawModifiersTab()
 				ImGui::EndCombo();
 			}
 
+			ImGui::SliderInt("Player 1 AI Level", &m_nAIDroneLevelP1, 0, 19);
 			ImGui::Separator();
 			ImGui::Checkbox("Change Player 2 AI", &m_bAIDroneModifierP2);
 
@@ -1415,6 +1358,140 @@ void MK11Menu::DrawModifiersTab()
 				}
 				ImGui::EndCombo();
 			}
+			ImGui::SliderInt("Player 2 AI Level", &m_nAIDroneLevelP2, 0, 19);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Tower Modifiers"))
+		{
+			ImGui::TextWrapped("Add modifiers in game and reload match to prevent potential crashes.");
+			ImGui::Separator();
+			ImGui::Checkbox("Add Tower Modifiers", &m_bAddGlobalModifiers);
+			ImGui::Separator();
+
+			enum EModifierFlagType {
+				ModifierFlagType_Both,
+				ModifierFlagType_P1Only,
+				ModifierFlagType_P2Only,
+			};
+			static int flagType = ModifierFlagType_Both;
+
+
+			ImGui::TextWrapped("Target");
+			ImGui::Separator();
+			ImGui::RadioButton("Both", &flagType, ModifierFlagType_Both); ImGui::SameLine();
+			ImGui::RadioButton("Player 1 Only", &flagType, ModifierFlagType_P1Only); ImGui::SameLine();
+			ImGui::RadioButton("Player 2 Only", &flagType, ModifierFlagType_P2Only);
+			ImGui::Separator();
+
+			static char modifierName[256] = {};
+			static ImGuiTextFilter filter;
+			ImGui::Text("Search Modifiers");
+			ImGui::PushItemWidth(-FLT_MIN);
+			filter.Draw("##modlist");
+			ImGui::PopItemWidth();
+			ImGui::BeginChild("##list", { 0, 125.0f }, true);
+			{
+
+				for (int i = 0; i < NUM_MODIFIERS; i++)
+				{
+					if (filter.PassFilter(szModifiers[i]))
+					{
+						bool is_selected = (modifierName == szModifiers[i]);
+						if (ImGui::Selectable(szModifiers[i], is_selected))
+						{
+							sprintf(modifierName, "%s", szModifiers[i]);
+						}
+					}
+
+
+				}
+			}
+			ImGui::EndChild();
+			if (strlen(modifierName) > 0)
+				ImGui::TextWrapped("Selected: %s", modifierName);
+			if (ImGui::Button("Add", { -FLT_MIN, 0 }))
+			{
+				ModifierEntry entry = {};
+				entry.name = modifierName;
+				switch (flagType)
+				{
+				case ModifierFlagType_Both:
+					entry.flag = ModifierEntryFlag_P1 | ModifierEntryFlag_P2;
+					entry.bothPlayers = true;
+					break;
+				case ModifierFlagType_P1Only:
+					entry.flag = ModifierEntryFlag_P1;
+					entry.bothPlayers = false;
+					break;
+				case ModifierFlagType_P2Only:
+					entry.flag = ModifierEntryFlag_P2;
+					entry.bothPlayers = false;
+					break;
+				default:
+					break;
+				}
+				m_ModifiersList.push_back(entry);
+			}
+			if (ImGui::Button("Add Random", { -FLT_MIN, 0 }))
+			{
+				std::uniform_int_distribution<int> random_dist(0, NUM_MODIFIERS);
+
+				int randomID = random_dist(mt);
+
+				ModifierEntry entry = {};
+				entry.name = szModifiers[randomID];
+				switch (flagType)
+				{
+				case ModifierFlagType_Both:
+					entry.flag = ModifierEntryFlag_P1 | ModifierEntryFlag_P2;
+					entry.bothPlayers = true;
+					break;
+				case ModifierFlagType_P1Only:
+					entry.flag = ModifierEntryFlag_P1;
+					entry.bothPlayers = false;
+					break;
+				case ModifierFlagType_P2Only:
+					entry.flag = ModifierEntryFlag_P2;
+					entry.bothPlayers = false;
+					break;
+				default:
+					break;
+				}
+				m_ModifiersList.push_back(entry);
+			}
+
+			ImGui::Separator();
+			unsigned int numModifiers = m_ModifiersList.size();
+			if (numModifiers > 0)
+			{
+				ImGui::TextWrapped("Modifiers to activate:");
+				ImGui::Separator();
+				for (unsigned int i = 0; i < m_ModifiersList.size(); i++)
+				{
+					char modifierLabel[64] = {};
+					sprintf(modifierLabel, "%d - %s##gm%d", i + 1, m_ModifiersList[i].name.c_str(), i);
+					char* modifierLabelType = "##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P1)
+						modifierLabelType = "P1##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P2)
+						modifierLabelType = "P2##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P1 && m_ModifiersList[i].flag & ModifierEntryFlag_P2)
+						modifierLabelType = "Both##";
+					ImGui::LabelText(modifierLabelType, modifierLabel);
+				}
+				if (ImGui::Button("Delete Last", { -FLT_MIN, 0 }))
+				{
+					m_ModifiersList.erase(m_ModifiersList.end() - 1);
+				}
+				if (ImGui::Button("Clear", { -FLT_MIN, 0 }))
+				{
+					m_ModifiersList.clear();
+				}
+
+			}
+
+
+
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -1512,9 +1589,6 @@ void MK11Menu::DrawCameraTab()
 		ImGui::InputInt("Free Camera Rotation Speed", &m_nFreeCameraRotationSpeed);
 		ImGui::Checkbox("Mouse Control", &m_bMouseControl);
 	}
-
-
-
 
 	ImGui::Separator();
 	ImGui::Checkbox("Disable DOF", &m_bDisableDOF);
@@ -2084,21 +2158,26 @@ void MK11Menu::DrawAbilityReference()
 	ImGui::SameLine();
 	ImGui::BeginChild("##movelist", { 0, -ImGui::GetFrameHeightWithSpacing() });
 
-	eAbilityNameEntry ab;
-	ab = eAbiltityNames::Get(szKryptCharacters[charID]);
+	
+	eAbilityNameEntry* ab = eAbiltityNames::Get(szKryptCharacters[charID]);
 
-	ImGui::LabelText("ID", "Name");
-	ImGui::Separator();
-
-	for (unsigned int i = 0; i < TOTAL_ABILITIES; i++)
+	if (ab)
 	{
-		if (strlen(ab.abNames[i]) > 0)
-		{
-			sprintf(textBuffer, "%d", i + 1);
-			ImGui::LabelText(textBuffer, ab.abNames[i]);
-		}
+		ImGui::LabelText("ID", "Name");
+		ImGui::Separator();
 
+		for (unsigned int i = 0; i < eAbiltityNames::GetAmount(ab); i++)
+		{
+			if (strlen(ab->abNames[i]) > 0)
+			{
+				static char textBuffer[256] = {};
+				sprintf(textBuffer, "%d", i + 1);
+				ImGui::LabelText(textBuffer, ab->abNames[i]);
+			}
+
+		}
 	}
+
 
 	ImGui::EndChild();
 	ImGui::End();
@@ -2170,6 +2249,74 @@ void MK11Menu::DrawScriptReference()
 void MK11Menu::DrawAnimationTool()
 {
 	AnimationTool::Draw();
+}
+
+void MK11Menu::DrawModifiers_AbilityTab()
+{
+	ImGui::TextWrapped("Set abilities before going into a fight. Changing these in game will make moves locked, restart match if that happens.");
+	ImGui::Separator();
+	ImGui::Checkbox("Player 1 Custom Abilities", &m_bP1CustomAbilities);
+	ImGui::Separator();
+	DrawModifiers_AbilityTab_List(PLAYER1);
+	ImGui::Checkbox("Player 2 Custom Abilities", &m_bP2CustomAbilities);
+	DrawModifiers_AbilityTab_List(PLAYER2);
+}
+
+void MK11Menu::DrawModifiers_AbilityTab_List(PLAYER_NUM player)
+{
+	static char abilityName[256] = {};
+
+	bool* abilities = &m_P1Abilities[0];
+	if (player == PLAYER2)
+		abilities = &m_P2Abilities[0];
+
+	int numAbilities = TOTAL_ABILITIES;
+
+	if (GetObj(player))
+	{
+		eAbilityNameEntry* ability = eAbiltityNames::Get(GetCharacterName(player));
+
+		if (!ability)
+			return;
+
+		numAbilities = eAbiltityNames::GetAmount(ability);
+
+		for (int i = 0; i < numAbilities; i++)
+		{
+			sprintf(abilityName, "%s##a%d%d", ability->abNames[i], player, i + 1);
+
+			ImGui::Checkbox(abilityName, &abilities[i]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < numAbilities; i++)
+		{
+			sprintf(abilityName, "Ability %d##a%d%d", i + 1,player,i + 1);
+
+			ImGui::Checkbox(abilityName, &abilities[i]);
+
+			if (i % 2 == 0)
+				ImGui::SameLine();
+		}
+	}
+
+
+	if (GetObj(player))
+	{
+		if (ImGui::Button("Get Current##p1"))
+		{
+			int curAbilities = GetObj(player)->GetAbility();
+
+			for (int i = 0; i < TOTAL_ABILITIES; i++)
+			{
+				int id = (int)pow(2, i);
+				abilities[i] = curAbilities & id;
+			}
+		}
+
+	}
+	ImGui::Separator();
 }
 
 void MK11Menu::DrawKeyBind(char* name, int* var)

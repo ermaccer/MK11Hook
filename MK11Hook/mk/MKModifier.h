@@ -1,28 +1,43 @@
 #pragma once
 #include "../mk/MKCharacter.h"
 #include "../mk/PlayerInfo.h"
+#include "../unreal/TArray.h"
 #include "../utils.h"
 
 class BaseModifier {
 public:
-	char data[96] = {};
+	char data[112] = {};
 };
 
-class TagAssistModifierObject {
+class Modifier : public BaseModifier {
 public:
-	void Activate(MKCharacter* obj);
+	Modifier(const char* name);
+
+	void GetAssetPath(TArray<char>& path);
 };
+
+class ModifierObject {
+public:
+	char data[512] = {};
+
+	ModifierObject(Modifier* modifier, int flags);
+
+	void Activate(MKCharacter* p1, MKCharacter* p2);
+};
+
+
+
 
 class TagAssistModifier : public BaseModifier {
 public:
 	TagAssistModifier(const char* character);
 	void Activate(PlayerInfo* info);
-	TagAssistModifierObject* CreateObject();
 };
 
 class MKModifier {
 public:
-	void ActivateModifier(BaseModifier* modifier, MKCharacter* obj);
+	static Modifier* CreateModifier(const char* name);
+	static void		 ActivateModifier(Modifier* mod, int playerFlags);
 };
 
 

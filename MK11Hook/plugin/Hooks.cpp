@@ -2,8 +2,9 @@
 
 int64 hud_property = 0;
 
-void(__fastcall* pProcessDOFSettings)(int64, int64, int64, int64) = 0;
-
+void(__fastcall* pProcessDOFSettings)(int64, int64, int64, int64) = nullptr;
+void(*pPluginFightStartupAddModifiers)() = nullptr;
+void(*pPluginFightStartupQueueModifiers)(int64, int64) = nullptr;
 
 void ProcessDOFSettings(int64 settings, int64 a2, int64 newSettings, int64 a4)
 {
@@ -169,7 +170,10 @@ void PluginDispatch()
 		if (TheMenu->m_bAIDroneModifierP1)
 		{
 			if (AIDrone* drone = p1_info->GetDrone())
+			{
 				drone->Set(TheMenu->szPlayer1AI, 0);
+				drone->SetLevel(TheMenu->m_nAIDroneLevelP1);
+			}
 		}
 
 		if (TheMenu->m_bEasyKBsP1)
@@ -251,7 +255,10 @@ void PluginDispatch()
 		if (TheMenu->m_bAIDroneModifierP2)
 		{
 			if (AIDrone* drone = p2_info->GetDrone())
+			{
 				drone->Set(TheMenu->szPlayer2AI, 0);
+				drone->SetLevel(TheMenu->m_nAIDroneLevelP2);
+			}
 		}
 
 
@@ -328,12 +335,10 @@ void PluginDispatch()
 
 void PluginFightStartup()
 {
-	printf("MK11Hook::Info() | Starting a new fight!\n");
+	eLog::Message("MK11Hook::Info()", "Starting a new fight!");
 	TheMenu->m_bCustomCameraPos = false;
 	TheMenu->m_bCustomCameraRot = false;
 	TheMenu->m_bYObtained = false;
-
-
 
 	if (TheMenu->m_bStageModifier)
 		GetGameInfo()->SetStage(TheMenu->szStageModifierStage);
@@ -354,34 +359,94 @@ void PluginFightStartup()
 			TagAssistModifier tag(TheMenu->szPlayer1TagAssistCharacter);
 			tag.Activate(GetInfo(PLAYER1));
 
-			TagAssistModifierObject* obj = tag.CreateObject();
-
-			if (obj)
-				obj->Activate(GetObj(PLAYER1));
-
-			GetModifierManager()->ActivateModifier(&tag, GetObj(PLAYER1));
 			LoadModifierAssets();
-			printf("MK11Hook::Info() | P1 Tag Assist: %s\n", TheMenu->szPlayer1TagAssistCharacter);
+			eLog::Message("MK11Hook::Info()", "P1 Tag Assist: %s", TheMenu->szPlayer1TagAssistCharacter);
 		}
 		if (TheMenu->m_bTagAssistP2)
 		{
 			TagAssistModifier tag(TheMenu->szPlayer2TagAssistCharacter);
 			tag.Activate(GetInfo(PLAYER2));
 
-			TagAssistModifierObject* obj = tag.CreateObject();
-
-			if (obj)
-				obj->Activate(GetObj(PLAYER2));
-
-			GetModifierManager()->ActivateModifier(&tag, GetObj(PLAYER2));
 			LoadModifierAssets();
-			printf("MK11Hook::Info() | P2 Tag Assist: %s\n", TheMenu->szPlayer2TagAssistCharacter);
+			eLog::Message("MK11Hook::Info()", "P2 Tag Assist: %s", TheMenu->szPlayer2TagAssistCharacter);
 		}
 
+
 	}
-	
 
 
 	printf("MK11Hook::Info() | %s VS %s\n", GetCharacterName(PLAYER1), GetCharacterName(PLAYER2));
 	PluginInterface::OnFightStartup();
+}
+
+void PluginFightStartupAddModifiers()
+{
+	if (TheMenu->m_bAIDroneModifierP1)
+		SetCharacterAI(PLAYER1, TheMenu->szPlayer1AI, TheMenu->m_nAIDroneLevelP1);
+	if (TheMenu->m_bAIDroneModifierP2)
+		SetCharacterAI(PLAYER2, TheMenu->szPlayer2AI, TheMenu->m_nAIDroneLevelP2);
+
+	if (!TheMenu->m_bAddGlobalModifiers)
+		return;
+
+	unsigned int numModifiers = TheMenu->m_ModifiersList.size();
+
+	std::string modifiersNames = "";
+	for (int i = 0; i < numModifiers; i++)
+	{
+		ModifierEntry& modifier = TheMenu->m_ModifiersList[i];
+
+		modifiersNames += modifier.name.c_str();
+		modifiersNames += "(";
+		if (modifier.flag & ModifierEntryFlag_P1)
+			modifiersNames += "P1";
+		if (modifier.flag & ModifierEntryFlag_P2)
+			modifiersNames += "P2";
+		modifiersNames += ")";
+		if (!(i == numModifiers - 1))
+			modifiersNames += ",";
+	}
+
+	eLog::Message("MK11Hook::Info()", "Used modifiers: %s", modifiersNames.c_str());
+
+	for (int i = 0; i < numModifiers; i++)
+	{
+		ModifierEntry& modifier = TheMenu->m_ModifiersList[i];
+
+		if (!modifier.modifierDefinition)
+			continue;
+
+		MKModifier::ActivateModifier(modifier.modifierDefinition, modifier.flag);
+	}
+
+	pPluginFightStartupAddModifiers();
+}
+
+void PluginFightStartupQueueModifiers(int64 ptr, int64 pathArray)
+{
+	if (TheMenu->m_bAddGlobalModifiers)
+	{
+		unsigned int numModifiers = TheMenu->m_ModifiersList.size();
+
+		for (int i = 0; i < numModifiers; i++)
+		{
+			ModifierEntry& modifier = TheMenu->m_ModifiersList[i];
+			modifier.modifierDefinition = MKModifier::CreateModifier(modifier.name.c_str());
+
+			if (modifier.modifierDefinition)
+			{
+				TArray<char> path;
+				modifier.modifierDefinition->GetAssetPath(path);
+
+				static uintptr_t pat = _pattern(PATID_TArray_AddString);
+				if (pat)
+					((void(__fastcall*)(int64, int64))pat)(pathArray, (int64)&path);
+			}
+		}
+	}
+
+
+
+	if (pPluginFightStartupQueueModifiers)
+		pPluginFightStartupQueueModifiers(ptr, pathArray);
 }
