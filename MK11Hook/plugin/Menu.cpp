@@ -3,6 +3,7 @@
 #include "AnimationTool.h"
 #include "../helper/eAbilityNames.h"
 #include "../helper/eKeyboardMan.h"
+#include "../helper/eGamepadManager.h"
 #include "../helper/eMouse.h"
 #include "../mk/Scaleform.h"
 #include "../mk/MKModifier.h"
@@ -1017,47 +1018,50 @@ void MK11Menu::UpdateFreecam()
 			FVector strafe = TheCamera->GetMatrix().GetRight();
 			FVector up = TheCamera->GetMatrix().GetUp();
 
+
+			float speed = m_fFreeCameraSpeed;
+			int rotSpeed = m_nFreeCameraRotationSpeed;
+
+
 			// forward
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyForward))
+				TheMenu->camPos += fwd * speed * 1;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyForward))
-				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * 1;
 
-
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyBackward))
-				TheMenu->camPos += fwd * TheMenu->m_fFreeCameraSpeed * -1;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyBackward))
+				TheMenu->camPos += fwd * speed * -1;
 
 			// strafe
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyLeft))
-				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * 1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRight))
-				TheMenu->camPos += strafe * TheMenu->m_fFreeCameraSpeed * -1;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyLeft))
+				TheMenu->camPos += strafe * speed * 1;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRight))
+				TheMenu->camPos += strafe * speed * -1;
 
 			// up
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyUp))
+				TheMenu->camPos += up * speed * 1;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyDown))
+				TheMenu->camPos += up * speed * -1;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyUp))
-				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * 1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyDown))
-				TheMenu->camPos += up * TheMenu->m_fFreeCameraSpeed * -1;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
+				TheMenu->camRot.Yaw -= rotSpeed;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
+				TheMenu->camRot.Yaw += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
-				TheMenu->camRot.Yaw -= TheMenu->m_nFreeCameraRotationSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
-				TheMenu->camRot.Yaw += TheMenu->m_nFreeCameraRotationSpeed;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
+				TheMenu->camRot.Roll -= rotSpeed;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
+				TheMenu->camRot.Roll += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
-				TheMenu->camRot.Roll -= TheMenu->m_nFreeCameraRotationSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
-				TheMenu->camRot.Roll += TheMenu->m_nFreeCameraRotationSpeed;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
+				TheMenu->camRot.Pitch -= rotSpeed;
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
+				TheMenu->camRot.Pitch += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
-				TheMenu->camRot.Pitch -= TheMenu->m_nFreeCameraRotationSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
-				TheMenu->camRot.Pitch += TheMenu->m_nFreeCameraRotationSpeed;
-
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
 				TheMenu->camFov -= 1.0f;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
 				TheMenu->camFov += 1.0f;
 
 			// mouse
@@ -1960,12 +1964,23 @@ void MK11Menu::DrawScriptTab()
 
 		if (m_bPressingKey)
 		{
-			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key!");
+			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key or a gamepad button!");
 			eVKKeyCode result = eKeyboardMan::GetLastKey();
+			int pad = eGamepadManager::GetLastButton();
 
 			if (result >= VK_BACKSPACE && result < VK_KEY_NONE)
 			{
 				bind.key = result;
+				bind.deviceType = KeybindDevice_Keyboard;
+
+				m_vKeyBinds.push_back(bind);
+				m_bPressingKey = false;
+			}
+			else if (pad >= 0)
+			{
+				bind.gamepadButton = (eGamepad_ButtonID)pad;
+				bind.deviceType = KeybindDevice_Pad;
+
 				m_vKeyBinds.push_back(bind);
 				m_bPressingKey = false;
 			}
@@ -1983,19 +1998,55 @@ void MK11Menu::DrawScriptTab()
 	else
 	{
 		if (strlen(szScriptSource) > 0)
-		ImGui::TextWrapped("Cannot load %s!", szScriptSource);
+			ImGui::TextWrapped("Cannot load %s!", szScriptSource);
 	}
 		
 
-	ImGui::Separator();
-	ImGui::TextWrapped("Registered hotkeys:");
-	for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
+	if (m_vKeyBinds.size() > 0)
 	{
-		ImGui::TextWrapped("%s - Run [0x%X] from %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), m_vKeyBinds[i].functionHash, m_vKeyBinds[i].scriptName);
-	}
+		ImGui::TextWrapped("Registered hotkeys:");
+		ImGui::Separator();
+		for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
+		{
+			eScriptKeyBind& keyBind = m_vKeyBinds[i];
 
-	if (ImGui::Button("Clear All"))
-		m_vKeyBinds.clear();
+			static char hotkeyButtonName[128] = {};
+			static char hotkeyLabel[128] = {};
+			char* hotkeyLabelType = "##";
+
+			if (keyBind.deviceType == KeybindDevice_Keyboard)
+			{
+				hotkeyLabelType = "Keyboard##";
+				sprintf_s(hotkeyButtonName, eKeyboardMan::KeyToString(keyBind.key));
+			}
+
+			if (keyBind.deviceType == KeybindDevice_Pad)
+			{
+				hotkeyLabelType = "Gamepad##";
+				sprintf_s(hotkeyButtonName, eGamepadManager::ButtonToString(keyBind.gamepadButton));
+			}
+
+
+			int functionHash = 0x0;
+			char* scriptSource = nullptr;
+
+			functionHash = keyBind.functionHash;
+			scriptSource = keyBind.scriptName;
+
+			sprintf_s(hotkeyLabel, "%s - Run [0x%X] from %s on %s##hk%d", hotkeyButtonName, functionHash, scriptSource, keyBind.type ? "P2" : "P1", i);
+
+			ImGui::LabelText(hotkeyLabelType, hotkeyLabel);
+		}
+		if (ImGui::Button("Delete Last", { -FLT_MIN, 0 }))
+		{
+			m_vKeyBinds.erase(m_vKeyBinds.end() - 1);
+		}
+		if (ImGui::Button("Clear", { -FLT_MIN, 0 }))
+		{
+			m_vKeyBinds.clear();
+		}
+
+	}
 
 }
 
@@ -2444,29 +2495,44 @@ void MK11Menu::RunBrutalityWatcher()
 
 void MK11Menu::ProcessScriptHotkeys()
 {
+	if (TheMenu->m_bIsActive)
+		return;
+
 	for (int i = 0; i < m_vKeyBinds.size(); i++)
 	{
-		if (GetAsyncKeyState(m_vKeyBinds[i].key) & 0x1)
+		eScriptKeyBind& keyBind = m_vKeyBinds[i];
+		bool keyBindPressed = false;
+
+		if (keyBind.deviceType == KeybindDevice_Keyboard && eKeyboardMan::GetKeyState(keyBind.key) & 0x1)
+			keyBindPressed = true;
+
+		if (keyBind.deviceType == KeybindDevice_Pad && eGamepadManager::GetState(keyBind.gamepadButton))
+			keyBindPressed = true;
+
+		if (keyBindPressed)
 		{
-			MKScript* script = GetScript(m_vKeyBinds[i].scriptName);
-			if (script->GetFunctionID(m_vKeyBinds[i].functionHash))
+			MKCharacter* obj = (MKCharacter*)GetObj(PLAYER1);
+			if (keyBind.type == SCRIPT_P2)
+				obj = (MKCharacter*)GetObj(PLAYER2);
+
+			MKScript* script = GetScript(keyBind.scriptName);
+			if (script)
 			{
-				switch (m_vKeyBinds[i].type)
+				if (script->GetFunctionID(keyBind.functionHash))
 				{
-				case SCRIPT_P1:
-					GetObj(PLAYER1)->ExecuteScript(script, m_vKeyBinds[i].functionHash);
-					break;
-				case SCRIPT_P2:
-					GetObj(PLAYER2)->ExecuteScript(script, m_vKeyBinds[i].functionHash);
-					break;
-				default:
-					break;
+					if (obj)
+						obj->ExecuteScript(script, keyBind.functionHash);
+				}
+				else
+				{
+					Notifications->SetNotificationTime(3500);
+					Notifications->PushNotification("Function %x does not exist!", keyBind.functionHash);
 				}
 			}
 			else
 			{
 				Notifications->SetNotificationTime(3500);
-				Notifications->PushNotification("Function %x does not exist!", m_vKeyBinds[i].functionHash);
+				Notifications->PushNotification("Script %s couldn't be loaded!", keyBind.scriptName);
 			}
 		}
 	}

@@ -32,6 +32,10 @@ public:
 	static void (*ImGui_SetItemDefaultFocus)();
 	static void (*ImGui_Separator)();
 	static bool (*ImGui_CollapsingHeader)(const char*);
+	static bool (*ImGui_ColorEdit4)(const char*, float*);
+	static uintptr_t(*GetPattern)(const char*, int);
+	static void (*PushNotif)(int, const char*);
+	static const char* (*GetVersion)();
 
 	static bool ms_bIsInitialized;
 	static void Initialize();

@@ -49,7 +49,9 @@ public:
 
 	static void ImGui_Process(ID3D11DeviceContext* pContext);
 	static void ImGui_ProcessDX12(ID3D12Device* pDevice, IDXGISwapChain3* pSwapChain);
-	
+
+	static void Gamepad_Process();
+	static void Gamepad_Reset();
 	static void GUI_Process();
 
 	static void OnBeforeResize(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags);

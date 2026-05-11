@@ -78,12 +78,27 @@ enum eVKKeyCode {
 	VK_CLOSE_BRACKET = 221,
 	VK_SINGLE_QUOTE = 222,
 
-	VK_KEY_MAX = 255
+	VK_KEY_MAX = 256
 };
 
 
 class eKeyboardMan {
 public:
+
+	static bool		   ms_keyboardBuffer[VK_KEY_MAX];
+	static bool		   ms_keyboardBufferJustPressed[VK_KEY_MAX];
+
+	static int		   ms_lastKey;
+
 	static eVKKeyCode  GetLastKey();
-	static const char* KeyToString(int code);
+	static const char* KeyToString(int vkKey);
+
+	static void SetKeyStatus(int vkKey, bool isDown);
+	static void SetLastPressedKey(int vkKey);
+	static void ResetKeys();
+
+	static int  GetKeyState(int vkKey);
+	static int  GetNumPressedKeys();
+
+	static void OnFocusLost();
 };

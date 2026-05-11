@@ -8,11 +8,12 @@
 #include "PluginInterface.h"
 
 #include "../helper/eKeyboardMan.h"
+#include "../helper/eGamepadManager.h"
 #include "../utils.h"
 
 #define NUM_MODIFIERS 284
 
-#define MK11HOOK_VERSION "0.5.9"
+#define MK11HOOK_VERSION "0.6.0"
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,
@@ -52,9 +53,16 @@ enum eModifierEntryFlag {
 	ModifierEntryFlag_P2 = 2,
 };
 
+enum eScriptKeyBind_HotkeyDevice {
+	KeybindDevice_Keyboard,
+	KeybindDevice_Pad
+};
+
 struct eScriptKeyBind {
 	eScriptExecuteType type;
+	eScriptKeyBind_HotkeyDevice deviceType;
 	eVKKeyCode key;
+	eGamepad_ButtonID gamepadButton;
 	char scriptName[128] = {};
 	unsigned int functionHash;
 };

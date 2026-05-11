@@ -18,4 +18,8 @@ extern "C"  {
 	__declspec(dllexport) void MK11HOOK_ImGui_SetItemDefaultFocus();
 	__declspec(dllexport) void MK11HOOK_ImGui_Separator();
 	__declspec(dllexport) bool MK11HOOK_ImGui_CollapsingHeader(const char* label);
+	__declspec(dllexport) uintptr_t MK11HOOK_GetPattern(const char* pattern, int offset);
+	__declspec(dllexport) bool MK11HOOK_ImGui_ColorEdit4(const char* label, float* col);
+	__declspec(dllexport) void MK11HOOK_PushNotif(int time, const char* text);
+	__declspec(dllexport) const char* MK11HOOK_GetVersion();
 }

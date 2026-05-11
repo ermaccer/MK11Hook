@@ -392,10 +392,6 @@ void GUIImplementation::OnPresent_GUIStart(IDXGISwapChain* pSwapChain)
 		ms_bShouldRefreshRenderTarget = true;
 	}
 
-
-	if (SettingsMgr->bEnableGamepadSupport && ms_bInit)
-		CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), 0, NULL, 0);
-
 	// load plugins only after gui was ok
 	PluginInterface::LoadPlugins();
 
@@ -640,6 +636,7 @@ LRESULT WINAPI GUIImplementation::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 	{
 	case WM_KILLFOCUS:
 		TheMenu->m_bIsFocused = false;
+		eKeyboardMan::OnFocusLost();
 		break;
 	case WM_SETFOCUS:
 		TheMenu->m_bIsFocused = true;
@@ -659,6 +656,13 @@ LRESULT WINAPI GUIImplementation::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 			TheMenu->OnToggleFreeCamera();
 		if (wParam == SettingsMgr->iToggleHUDKey)
 			TheMenu->OnToggleHUD();
+
+		eKeyboardMan::SetKeyStatus(wParam, true);
+		eKeyboardMan::SetLastPressedKey(wParam);
+		break;
+	case WM_KEYUP:
+		eKeyboardMan::SetKeyStatus(wParam, false);
+		eKeyboardMan::SetLastPressedKey(0);
 		break;
 	default:
 		break;
@@ -671,6 +675,28 @@ LRESULT WINAPI GUIImplementation::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 
 
 	return CallWindowProc(ms_pWndProc, hWnd, uMsg, wParam, lParam);
+}
+
+void GUIImplementation::Gamepad_Process()
+{
+	if (!SettingsMgr->bEnableGamepadSupport)
+		return;
+
+	if (!ms_bInit)
+		return;
+
+	eGamepadManager::Update();
+}
+
+void GUIImplementation::Gamepad_Reset()
+{
+	if (!SettingsMgr->bEnableGamepadSupport)
+		return;
+
+	if (!ms_bInit)
+		return;
+
+	eGamepadManager::Reset();
 }
 
 void GUIImplementation::GUI_Process()

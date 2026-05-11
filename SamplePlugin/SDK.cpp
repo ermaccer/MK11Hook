@@ -19,10 +19,14 @@ bool (*MK11HOOKSDK::ImGui_Selectable)(const char*, bool) = nullptr;
 void (*MK11HOOKSDK::ImGui_SetItemDefaultFocus)() = nullptr;
 void (*MK11HOOKSDK::ImGui_Separator)() = nullptr;
 bool (*MK11HOOKSDK::ImGui_CollapsingHeader)(const char*) = nullptr;
+bool (*MK11HOOKSDK::ImGui_ColorEdit4)(const char*, float*) = nullptr;
+uintptr_t(*MK11HOOKSDK::GetPattern)(const char*, int) = nullptr;
+void (*MK11HOOKSDK::PushNotif)(int, const char*) = nullptr;
+const char* (*MK11HOOKSDK::GetVersion)() = nullptr;
 
 void MK11HOOKSDK::Initialize()
 {
-	HMODULE hook = GetModuleHandle(L"mk11hook.asi");
+	HMODULE hook = GetModuleHandleW(L"mk11hook.asi");
 	if (!hook)
 	{
 		ms_bIsInitialized = false;
@@ -137,6 +141,34 @@ void MK11HOOKSDK::Initialize()
 
 	ImGui_CollapsingHeader = (bool(*)(const char*))GetProcAddress(hook, "MK11HOOK_ImGui_CollapsingHeader");
 	if (!ImGui_CollapsingHeader)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	ImGui_ColorEdit4 = (bool(*)(const char*, float*))GetProcAddress(hook, "MK11HOOK_ImGui_ColorEdit4");
+	if (!ImGui_ColorEdit4)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	GetPattern = (uintptr_t(*)(const char*, int))GetProcAddress(hook, "MK11HOOK_GetPattern");
+	if (!GetPattern)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	PushNotif = (void(*)(int, const char*))GetProcAddress(hook, "MK11HOOK_PushNotif");
+	if (!PushNotif)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	GetVersion = (const char* (*)())GetProcAddress(hook, "MK11HOOK_GetVersion");
+	if (!GetVersion)
 	{
 		ms_bIsInitialized = false;
 		return;

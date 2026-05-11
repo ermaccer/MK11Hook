@@ -2,6 +2,7 @@
 #include "Menu.h"
 #include "..\gui\imgui\imgui.h"
 #include "..\mk\PlayerInfo.h"
+#include "..\gui\notifications.h"
 
 bool MK11HOOK_GetMenuActive()
 {
@@ -81,5 +82,26 @@ void MK11HOOK_ImGui_Separator()
 bool MK11HOOK_ImGui_CollapsingHeader(const char* label)
 {
     return ImGui::CollapsingHeader(label);
+}
+
+uintptr_t MK11HOOK_GetPattern(const char* pattern, int offset)
+{
+    return PatternSolver::GetPattern(pattern, offset);
+}
+
+bool MK11HOOK_ImGui_ColorEdit4(const char* label, float* col)
+{
+    return ImGui::ColorEdit4(label, col);
+}
+
+void MK11HOOK_PushNotif(int time, const char* text)
+{
+    Notifications->SetNotificationTime(time);
+    Notifications->PushNotification(text);
+}
+
+const char* MK11HOOK_GetVersion()
+{
+    return MK11HOOK_VERSION;
 }
 

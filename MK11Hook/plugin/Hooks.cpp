@@ -1,5 +1,5 @@
 #include "Hooks.h"
-
+#include "../helper/eGamepadManager.h"
 int64 hud_property = 0;
 
 void(__fastcall* pProcessDOFSettings)(int64, int64, int64, int64) = nullptr;
@@ -138,6 +138,7 @@ void SetKryptCharacterClass(int64 ptr, char* name, int unk)
 
 void PluginDispatch()
 {
+	GUIImplementation::Gamepad_Process();
 	TheMenu->Process();
 	Notifications->Update();
 	eMouse::UpdateMouse();
@@ -330,7 +331,7 @@ void PluginDispatch()
 	}
 
 	PluginInterface::OnFrameTick();
-
+	GUIImplementation::Gamepad_Reset();
 }
 
 void PluginFightStartup()
