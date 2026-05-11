@@ -70,7 +70,7 @@ random players.
 
 # Building
 
-MK11Hook was developed & tested using Visual Studio 2017.
+MK11Hook was developed & tested using Visual Studio 2022.
 
 
 # Credits/Used stuff
@@ -79,6 +79,4 @@ https://github.com/CookiePLMonster/ModUtils
 
 https://github.com/ocornut/imgui
 
-https://github.com/Rebzzel/kiero
-
-D3D11 hook based on https://github.com/rdbo/ImGui-DirectX-11-Kiero-Hook
+Read more on https://ermaccer.github.io/posts/mk11hook/
