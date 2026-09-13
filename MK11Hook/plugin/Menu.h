@@ -13,7 +13,7 @@
 
 #define NUM_MODIFIERS 284
 
-#define MK11HOOK_VERSION "0.6.0"
+#define MK11HOOK_VERSION "0.6.1"
 
 enum eCustomCameras {
 	CAMERA_3RDPERSON,

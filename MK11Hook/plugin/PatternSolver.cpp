@@ -112,7 +112,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_PlayerInfo_SetMeter] = GetPattern("40 53 48 83 EC 30 0F 29 74 24 20 0F 57 F6 8B DA", 0);
     ms_patterns[PATID_PlayerInfo_RefreshMeter] = GetPattern("48 89 5C 24 10 56 48 81 EC 80 00 00 00 48 8B D9", 0);
     ms_patterns[PATID_PlayerInfo_GetDrone] = GetPattern("48 8B 81 50 04 00 00 48 85 C0 74 21", 0);
-    ms_patterns[PATID_PlayerInfo_MakeDrone] = GetPattern("40 56 57 41 56 48 83 EC 30 48 C7 44 24 ? ? ? ? ? 48 89 5C 24 ? 48 89 6C 24 ? 48 8B D9 48 85 C9 75 07 33 C0 E9 ? ? ? ? 48 8B 79 30 48 85 FF 74 F0 48 8B CF E8 ? ? ? ? 33 F6 85 C0 75 3E 44 8B F6 48 8B CF E8 ? ? ? ? 85 C0", 0);
+    ms_patterns[PATID_PlayerInfo_MakeDrone] = GetPattern("48 83 EC 28 48 85 C9 75 07 33 C0 48 83 C4 28 C3 48 89 5C 24 ? E8 ? ? ? ? 48 8B D8 48 85 C0 74 08 48 8B C8 E8 ? ? ? ? 48 8B C3 48 8B 5C 24 ? 48 83 C4 28 C3 CC CC CC CC CC CC CC CC CC 48 89 5C 24 08", 0);
     ms_patterns[PATID_AIDrone_Set] = GetPattern("48 89 5C 24 10 48 89 6C 24 18 56 57 41 56 48 83 EC 20 48 8B F9 48 8B F2 48 8B 0D ? ? ? ? BA 00 00 00 10", 0);
     ms_patterns[PATID_AIDrone_SetLevel] = GetPattern("40 53 48 83 EC 30 0F 29 74 24 ? 48 8B D9 0F 28 F1 0F 2F 35 ? ? ? ? 77 45 48 8B 89 ? ? ? ? 48 85 C9 74 27 8B 83 ? ? ? ? 3D ? ? ? ? 73 1A 8B D0 4C 8D 05 ? ? ? ? 8B 83", 0);
 
